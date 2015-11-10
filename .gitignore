@@ -1,0 +1,7 @@
+.bam
+*.swp
+*.o
+*.obj
+*.exe
+cengine
+
