@@ -58,7 +58,7 @@ static void game_render(CEngine_T * engine)
    glEnd();
    */
    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-   glDrawArrays(GL_POINTS, 0, 2);
+   glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
 static void game_input(CEngine_T * engine, SDL_Event * event)
@@ -67,7 +67,7 @@ static void game_input(CEngine_T * engine, SDL_Event * event)
 
 static void gl_init(void)
 {
-   float vdata[6];
+   float vdata[9];
    FloatWriter_T fw;
    //Initialize Projection Matrix 
    glMatrixMode( GL_PROJECTION ); 
@@ -80,12 +80,13 @@ static void gl_init(void)
 
    // Init Model Data
    FloatWriter_Setup(&fw, vdata);
-   FloatWriter_Write3F(&fw, 0, 0,  0);  
-   FloatWriter_Write3F(&fw, 0.1f, 0, 0);  
+   FloatWriter_Write3F(&fw, 0,    0,    0);  
+   FloatWriter_Write3F(&fw, 0.1f, 0,    0);  
+   FloatWriter_Write3F(&fw, 0.1f, 0.1f, 0);  
 
    glGenBuffers(1, &vbo);
    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-   glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6, vdata, GL_STATIC_DRAW);
+   glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 9, vdata, GL_STATIC_DRAW);
    glEnableVertexAttribArray(0);
    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
