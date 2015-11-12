@@ -13,6 +13,7 @@ if family == "windows" then
    settings.link.libs:Add("glew32");
 else
    settings.link.libs:Add("GL");
+   settings.link.libs:Add("GLEW");
 end
 
 
