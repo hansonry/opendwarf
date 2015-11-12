@@ -4,6 +4,7 @@
 #include "SDL2/SDL_opengl.h"
 #include "CEngine.h"
 #include "FloatWriter.h"
+#include "ShaderTool.h"
 
 static void gl_init(void);
 
@@ -32,6 +33,7 @@ int main(int args, char * argc[])
 
 
 GLuint vbo;
+GLuint shader_test1;
 
 static void game_setup(CEngine_T * engine)
 {
@@ -40,6 +42,7 @@ static void game_setup(CEngine_T * engine)
 
 static void game_cleanup(CEngine_T * engine)
 {
+   glDeleteProgram(shader_test1);
 }
 
 static void game_update(CEngine_T * engine, float seconds)
@@ -58,6 +61,7 @@ static void game_render(CEngine_T * engine)
    glVertex2f( -0.5f, 0.5f ); 
    glEnd();
    */
+   glUseProgram(shader_test1);
    glBindBuffer(GL_ARRAY_BUFFER, vbo);
    glDrawArrays(GL_TRIANGLES, 0, 3);
 }
@@ -93,4 +97,6 @@ static void gl_init(void)
    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 9, vdata, GL_STATIC_DRAW);
    glEnableVertexAttribArray(0);
    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+   shader_test1 = ShaderTool_CreateShaderProgram("test1.vert.glsl", NULL, "test1.frag.glsl");
 }
