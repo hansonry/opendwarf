@@ -2,6 +2,7 @@
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_opengl.h"
 #include "CEngine.h"
+#include "FloatWriter.h"
 
 static void gl_init(void);
 
@@ -9,6 +10,7 @@ static void game_setup(CEngine_T * engine);
 static void game_cleanup(CEngine_T * engine);
 static void game_update(CEngine_T * engine, float seconds);
 static void game_render(CEngine_T * engine);
+static void game_input(CEngine_T * engine, SDL_Event * event);
 
 
 int main(int args, char * argc[])
@@ -19,7 +21,7 @@ int main(int args, char * argc[])
                          game_cleanup, 
                          game_update, 
                          game_render, 
-                         NULL,
+                         game_input,
                          CENGINE_FLAG_AUTOCLOSE);
    CEngine_Start(&engine);
       
@@ -27,6 +29,8 @@ int main(int args, char * argc[])
    return 0;
 }
 
+
+GLuint vbo;
 
 static void game_setup(CEngine_T * engine)
 {
@@ -45,16 +49,26 @@ static void game_render(CEngine_T * engine)
 {
    glClear( GL_COLOR_BUFFER_BIT );
 
+   /*
    glBegin( GL_QUADS ); 
    glVertex2f( -0.5f, -0.5f ); 
    glVertex2f( 0.5f, -0.5f ); 
    glVertex2f( 0.5f, 0.5f ); 
    glVertex2f( -0.5f, 0.5f ); 
    glEnd();
+   */
+   glBindBuffer(GL_ARRAY_BUFFER, vbo);
+   glDrawArrays(GL_POINTS, 0, 2);
+}
+
+static void game_input(CEngine_T * engine, SDL_Event * event)
+{
 }
 
 static void gl_init(void)
 {
+   float vdata[6];
+   FloatWriter_T fw;
    //Initialize Projection Matrix 
    glMatrixMode( GL_PROJECTION ); 
    glLoadIdentity(); 
@@ -63,4 +77,16 @@ static void gl_init(void)
    glLoadIdentity(); 
    //Initialize clear color 
    glClearColor( 0.f, 0.f, 0.f, 1.f ); 
+
+   // Init Model Data
+   FloatWriter_Setup(&fw, vdata);
+   FloatWriter_Write3F(&fw, 0, 0,  0);  
+   FloatWriter_Write3F(&fw, 0.1f, 0, 0);  
+
+   glGenBuffers(1, &vbo);
+   glBindBuffer(GL_ARRAY_BUFFER, vbo);
+   glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6, vdata, GL_STATIC_DRAW);
+   glEnableVertexAttribArray(0);
+   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
 }
