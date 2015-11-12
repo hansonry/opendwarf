@@ -53,6 +53,7 @@ void CEngine_Start(CEngine_T * engine)
       engine->setup_callback(engine);
    }
 
+   prevTicks = SDL_GetTicks();
    engine->done = 0;
    while(engine->done == 0)
    {
