@@ -177,23 +177,24 @@ Vector3D_T * Matrix3D_ApplyToVector(const Matrix3D_T * matrix, Vector3D_T * dest
 Matrix3D_T * Matrix3D_SetProjection(Matrix3D_T * matrix, float fov_degrees, int screen_width, int screen_height, float z_near, float z_far)
 {
    const float ar = screen_width / screen_height;
-   const float z_range = z_near - z_far;
-   const float tan_half_fov = tan(ToRad(fov_degrees / 2.0f));
+   const float z_range = z_far - z_near;
+   const float tan_half_fov_x = tan(ToRad(fov_degrees / 2.0f) * ar);
+   const float tan_half_fov_y = tan(ToRad(fov_degrees / 2.0f));
 
-   d(matrix, 0)  = 1.0f / (tan_half_fov * ar); 
+   d(matrix, 0)  = -1.0f / tan_half_fov_x; 
    d(matrix, 1)  = 0.0f; 
    d(matrix, 2)  = 0.0f; 
    d(matrix, 3)  = 0.0f;
 
    d(matrix, 4)  = 0.0f; 
-   d(matrix, 5)  = 1.0f / (tan_half_fov); 
+   d(matrix, 5)  = -1.0f / tan_half_fov_y; 
    d(matrix, 6)  = 0.0f; 
    d(matrix, 7)  = 0.0f;
 
    d(matrix, 8)  = 0.0f; 
    d(matrix, 9)  = 0.0f; 
-   d(matrix, 10) = -(z_near + z_far) / z_range; 
-   d(matrix, 11) = -2.0f * z_far * z_near / z_range;
+   d(matrix, 10) = (z_near + z_far) / z_range; 
+   d(matrix, 11) = 2.0f * z_far * z_near / z_range;
 
    d(matrix, 12) = 0.0f; 
    d(matrix, 13) = 0.0f; 

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <math.h>
 #include "GL/glew.h"
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_opengl.h"
@@ -46,10 +47,16 @@ float angle;
 Matrix3D_T projection;
 MatrixStack_T m_stack;
 
+float px, py;
+float a2;
+
 static void game_setup(CEngine_T * engine)
 {
    gl_init();
    MatrixStack_Init(&m_stack);
+   px = 0;
+   py = 0;
+   a2 = 0;
 }
 
 static void game_cleanup(CEngine_T * engine)
@@ -63,6 +70,9 @@ static void game_cleanup(CEngine_T * engine)
 static void game_update(CEngine_T * engine, float seconds)
 {
    angle = angle + 3.14f / 4.0f * seconds;
+   a2 += seconds;
+   px = cos(a2) * 10;
+   py = sin(a2) * 10;
 }
 
 static void game_render(CEngine_T * engine)
@@ -81,7 +91,7 @@ static void game_render(CEngine_T * engine)
    */
    Matrix3D_SetIdentity(&matrix);
 
-   MatrixStack_ApplyTranslation(&m_stack, 1, 2, -5);
+   MatrixStack_ApplyTranslation(&m_stack, px, py, -10);
    MatrixStack_ApplyYRotation(&m_stack, angle);
    MatrixStack_ApplyMatrixPre(&m_stack, &projection);
 
@@ -154,5 +164,5 @@ static void gl_init(void)
 
    matrix_uniform = glGetUniformLocation(shader_test1, "Matrix");
 
-   Matrix3D_SetProjection(&projection, 30, SCREEN_WIDTH, SCREEN_HEIGHT, 1, 10);
+   Matrix3D_SetProjection(&projection, 30, SCREEN_WIDTH, SCREEN_HEIGHT, 1, 100);
 }
