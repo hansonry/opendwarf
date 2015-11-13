@@ -5,6 +5,7 @@
 
 
 void CEngine_Init(CEngine_T * engine, const char * window_title,
+                  int screen_width, int screen_height,
                   CEngine_Setup_Callback_T    setup_callback,
                   CEngine_Cleanup_Callback_T  cleanup_callback,
                   CEngine_Update_Callback_T   update_callback,
@@ -26,6 +27,8 @@ void CEngine_Init(CEngine_T * engine, const char * window_title,
    {
       engine->window_title = window_title;
    }
+   engine->screen_width = screen_width;
+   engine->screen_height = engine->screen_height;
 
 }
 

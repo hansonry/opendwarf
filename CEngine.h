@@ -17,6 +17,8 @@ struct CEngine_S
    CEngine_Update_Callback_T   update_callback;
    CEngine_Render_Callback_T   render_callback;
    CEngine_SDLInput_Callback_T sdlinput_callback;
+   int screen_width;
+   int screen_height;
    int flags;
    int done;
 };
@@ -25,6 +27,7 @@ struct CEngine_S
 
 
 void CEngine_Init(CEngine_T * engine, const char * window_title,
+                  int screen_width, int screen_height,
                   CEngine_Setup_Callback_T    setup_callback,
                   CEngine_Cleanup_Callback_T  cleanup_callback,
                   CEngine_Update_Callback_T   update_callback,

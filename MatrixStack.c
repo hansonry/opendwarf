@@ -52,7 +52,9 @@ void MatrixStack_Clear(MatrixStack_T * stack)
 
    stack->depth = 0;
    stack->root = NULL;
+   Matrix3D_SetIdentity(&stack->matrix);
 }
+
 int  MatrixStack_GetDepth(const MatrixStack_T * stack)
 {
    return stack->depth;
@@ -128,6 +130,11 @@ void MatrixStack_ApplyRotation(MatrixStack_T * stack, float x, float y, float z,
 void MatrixStack_ApplyMatrix(MatrixStack_T * stack, const Matrix3D_T * matrix)
 {
    Matrix3D_Multiply(&stack->matrix, &stack->matrix, matrix);
+}
+
+void MatrixStack_ApplyMatrixPre(MatrixStack_T * stack, const Matrix3D_T * matrix)
+{
+   Matrix3D_Multiply(&stack->matrix, matrix, &stack->matrix);
 }
 
 void MatrixStack_ApplyMatrixStack(MatrixStack_T * stack, const MatrixStack_T * to_apply)

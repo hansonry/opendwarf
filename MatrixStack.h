@@ -28,6 +28,7 @@ void MatrixStack_ApplyYRotation(MatrixStack_T * stack, float angle);
 void MatrixStack_ApplyZRotation(MatrixStack_T * stack, float angle);
 void MatrixStack_ApplyRotation(MatrixStack_T * stack, float x, float y, float z, float angle);
 void MatrixStack_ApplyMatrix(MatrixStack_T * stack, const Matrix3D_T * matrix);
+void MatrixStack_ApplyMatrixPre(MatrixStack_T * stack, const Matrix3D_T * matrix);
 void MatrixStack_ApplyMatrixStack(MatrixStack_T * stack, const MatrixStack_T * to_apply);
 Vector3D_T * MatrixStack_ApplyToVertex(const MatrixStack_T * stack, Vector3D_T * dest, const Vector3D_T * src);
 
