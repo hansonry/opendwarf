@@ -71,8 +71,8 @@ static void game_update(CEngine_T * engine, float seconds)
 {
    angle = angle + 3.14f / 4.0f * seconds;
    a2 += seconds;
-   px = cos(a2) * 10;
-   py = sin(a2) * 10;
+   px = cos(a2) * 2;
+   py = sin(a2) * 2;
 }
 
 static void game_render(CEngine_T * engine)
@@ -91,7 +91,7 @@ static void game_render(CEngine_T * engine)
    */
    Matrix3D_SetIdentity(&matrix);
 
-   MatrixStack_ApplyTranslation(&m_stack, px, py, -10);
+   MatrixStack_ApplyTranslation(&m_stack, px, py, 10);
    MatrixStack_ApplyYRotation(&m_stack, angle);
    MatrixStack_ApplyMatrixPre(&m_stack, &projection);
 
