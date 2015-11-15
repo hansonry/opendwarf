@@ -178,16 +178,15 @@ Matrix3D_T * Matrix3D_SetProjection(Matrix3D_T * matrix, float fov_degrees, int 
 {
    const float ar = (float)screen_width / (float)screen_height;
    const float z_range = z_near - z_far;
-   const float tan_half_fov_x = tan(ToRad(fov_degrees / 2.0f));
-   const float tan_half_fov_y = tan(ToRad(fov_degrees / 2.0f));
+   const float tan_half_fov = tan(ToRad(fov_degrees / 2.0f));
 
-   d(matrix, 0)  = 1.0f / (tan_half_fov_x * ar); 
+   d(matrix, 0)  = 1.0f / (tan_half_fov * ar); 
    d(matrix, 1)  = 0.0f; 
    d(matrix, 2)  = 0.0f; 
    d(matrix, 3)  = 0.0f;
 
    d(matrix, 4)  = 0.0f; 
-   d(matrix, 5)  = 1.0f / (tan_half_fov_y); 
+   d(matrix, 5)  = 1.0f / (tan_half_fov); 
    d(matrix, 6)  = 0.0f; 
    d(matrix, 7)  = 0.0f;
 

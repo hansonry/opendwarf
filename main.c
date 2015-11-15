@@ -5,6 +5,7 @@
 #include "SDL2/SDL_opengl.h"
 #include "CEngine.h"
 #include "FloatWriter.h"
+#include "UIntWriter.h"
 #include "ShaderTool.h"
 #include "Vector3D.h"
 #include "Matrix3D.h"
@@ -41,6 +42,7 @@ int main(int args, char * argc[])
 
 GLuint tri_vbo;
 GLuint cube_vbo;
+GLuint cube_ibo;
 GLuint shader_test1;
 GLint  matrix_uniform;
 float angle;
@@ -106,7 +108,12 @@ static void game_render(CEngine_T * engine)
 
    glBindBuffer(GL_ARRAY_BUFFER, cube_vbo);
    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-   glDrawArrays(GL_LINE_LOOP, 0, 8);
+   glDrawArrays(GL_POINTS, 0, 8);
+
+   glBindBuffer(GL_ARRAY_BUFFER, cube_vbo);
+   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube_ibo);
+   glDrawElements(GL_TRIANGLES, 3 * 12, GL_UNSIGNED_INT, 0);
+
 }
 
 static void game_input(CEngine_T * engine, SDL_Event * event)
@@ -116,8 +123,10 @@ static void game_input(CEngine_T * engine, SDL_Event * event)
 static void gl_init(void)
 {
    float vdata[8 * 3];
+   unsigned int idata[12 * 3];
    float n;
    FloatWriter_T fw;
+   UIntWriter_T uiw;
 
    glewInit();
    //Initialize clear color 
@@ -157,8 +166,31 @@ static void gl_init(void)
    FloatWriter_Write3F(&fw,  n, -n,  n);  
    FloatWriter_Write3F(&fw, -n, -n,  n);  
 
+
+
    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * 9, vdata, GL_STATIC_DRAW);
    glEnableVertexAttribArray(0);
+
+   glGenBuffers(1, &cube_ibo);
+   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube_ibo);
+
+
+
+   UIntWriter_Setup(&uiw, idata);
+   UIntWriter_Write3UI(&uiw, 0, 1, 3);
+   UIntWriter_Write3UI(&uiw, 3, 1, 2);
+   UIntWriter_Write3UI(&uiw, 0, 0, 0);
+   UIntWriter_Write3UI(&uiw, 0, 0, 0);
+   UIntWriter_Write3UI(&uiw, 0, 0, 0);
+   UIntWriter_Write3UI(&uiw, 0, 0, 0);
+   UIntWriter_Write3UI(&uiw, 0, 0, 0);
+   UIntWriter_Write3UI(&uiw, 0, 0, 0);
+   UIntWriter_Write3UI(&uiw, 0, 0, 0);
+   UIntWriter_Write3UI(&uiw, 0, 0, 0);
+   UIntWriter_Write3UI(&uiw, 0, 0, 0);
+   UIntWriter_Write3UI(&uiw, 0, 0, 0);
+
+   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * 3 * 12, idata, GL_STATIC_DRAW);
 
    shader_test1 = ShaderTool_CreateShaderProgram("test1.vert.glsl", NULL, "test1.frag.glsl");
 
