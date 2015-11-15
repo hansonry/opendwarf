@@ -64,7 +64,7 @@ static void game_setup(CEngine_T * engine)
 static void game_cleanup(CEngine_T * engine)
 {
    glDeleteProgram(shader_test1);
-   glDeleteBuffers(1, &tri_vbo);
+   glDeleteBuffers(1, &cube_ibo);
    glDeleteBuffers(1, &cube_vbo);
    MatrixStack_Destroy(&m_stack);
 }
@@ -102,17 +102,13 @@ static void game_render(CEngine_T * engine)
 
    glUseProgram(shader_test1);
 
-   glBindBuffer(GL_ARRAY_BUFFER, tri_vbo);
-   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-   glDrawArrays(GL_TRIANGLES, 0, 3);
 
-   glBindBuffer(GL_ARRAY_BUFFER, cube_vbo);
-   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-   glDrawArrays(GL_POINTS, 0, 8);
-
+   glEnableVertexAttribArray(0);
    glBindBuffer(GL_ARRAY_BUFFER, cube_vbo);
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube_ibo);
+   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
    glDrawElements(GL_TRIANGLES, 3 * 12, GL_UNSIGNED_INT, 0);
+   glDisableVertexAttribArray(0);
 
 }
 
@@ -129,23 +125,12 @@ static void gl_init(void)
    UIntWriter_T uiw;
 
    glewInit();
+
    //Initialize clear color 
    glClearColor( 0.f, 0.f, 0.f, 1.f ); 
-
-   // Init Model Data
-   // TRI
-
-   FloatWriter_Setup(&fw, vdata);
-   FloatWriter_Write3F(&fw, 0,    0,    0);  
-   FloatWriter_Write3F(&fw, 0.2f, 0,    0);  
-   FloatWriter_Write3F(&fw, 0.2f, 0.2f, 0);  
-
-   glGenBuffers(1, &tri_vbo);
-
-   glBindBuffer(GL_ARRAY_BUFFER, tri_vbo);
-   glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * 3, vdata, GL_STATIC_DRAW);
-   glEnableVertexAttribArray(0);
-   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+   glEnable(GL_CULL_FACE);
+   glCullFace(GL_BACK);
+   glFrontFace(GL_CCW);
 
 
    // CUBE
@@ -169,7 +154,6 @@ static void gl_init(void)
 
 
    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * 9, vdata, GL_STATIC_DRAW);
-   glEnableVertexAttribArray(0);
 
    glGenBuffers(1, &cube_ibo);
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube_ibo);
@@ -177,18 +161,36 @@ static void gl_init(void)
 
 
    UIntWriter_Setup(&uiw, idata);
-   UIntWriter_Write3UI(&uiw, 0, 1, 3);
-   UIntWriter_Write3UI(&uiw, 3, 1, 2);
-   UIntWriter_Write3UI(&uiw, 0, 0, 0);
-   UIntWriter_Write3UI(&uiw, 0, 0, 0);
-   UIntWriter_Write3UI(&uiw, 0, 0, 0);
-   UIntWriter_Write3UI(&uiw, 0, 0, 0);
-   UIntWriter_Write3UI(&uiw, 0, 0, 0);
-   UIntWriter_Write3UI(&uiw, 0, 0, 0);
-   UIntWriter_Write3UI(&uiw, 0, 0, 0);
-   UIntWriter_Write3UI(&uiw, 0, 0, 0);
-   UIntWriter_Write3UI(&uiw, 0, 0, 0);
-   UIntWriter_Write3UI(&uiw, 0, 0, 0);
+   // front
+   // 0 1
+   // 3 2
+   UIntWriter_Write3UI(&uiw, 0, 3, 1);
+   UIntWriter_Write3UI(&uiw, 3, 2, 1);
+   // right
+   // 1 5
+   // 2 6
+   UIntWriter_Write3UI(&uiw, 1, 2, 5);
+   UIntWriter_Write3UI(&uiw, 2, 6, 5);
+   // back
+   // 5 4
+   // 6 7
+   UIntWriter_Write3UI(&uiw, 5, 6, 4);
+   UIntWriter_Write3UI(&uiw, 6, 7, 4);
+   // right
+   // 4 0
+   // 7 3
+   UIntWriter_Write3UI(&uiw, 4, 7, 0);
+   UIntWriter_Write3UI(&uiw, 7, 3, 0);
+   // bottom
+   // 3 2
+   // 7 6
+   UIntWriter_Write3UI(&uiw, 3, 7, 2);
+   UIntWriter_Write3UI(&uiw, 7, 6, 2);
+   // top
+   // 4 5
+   // 0 1
+   UIntWriter_Write3UI(&uiw, 4, 0, 5);
+   UIntWriter_Write3UI(&uiw, 0, 1, 5);
 
    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * 3 * 12, idata, GL_STATIC_DRAW);
 
