@@ -10,6 +10,7 @@
 #include "Vector3D.h"
 #include "Matrix3D.h"
 #include "MatrixStack.h"
+#include "GLMesh.h"
 
 static void gl_init(void);
 
@@ -40,9 +41,8 @@ int main(int args, char * argc[])
 }
 
 
-GLuint tri_vbo;
-GLuint cube_vbo;
-GLuint cube_ibo;
+GLMesh_T m_cube;
+
 GLuint shader_test1;
 GLint  matrix_uniform;
 float angle;
@@ -64,8 +64,7 @@ static void game_setup(CEngine_T * engine)
 static void game_cleanup(CEngine_T * engine)
 {
    glDeleteProgram(shader_test1);
-   glDeleteBuffers(1, &cube_ibo);
-   glDeleteBuffers(1, &cube_vbo);
+   GLMesh_Cleanup(&m_cube);
    MatrixStack_Destroy(&m_stack);
 }
 
@@ -98,16 +97,13 @@ static void game_render(CEngine_T * engine)
    MatrixStack_ApplyMatrixPre(&m_stack, &projection);
 
 
+   glUseProgram(shader_test1);
    glUniformMatrix4fv(matrix_uniform, 1, GL_FALSE, m_stack.matrix.data);
 
-   glUseProgram(shader_test1);
 
 
    glEnableVertexAttribArray(0);
-   glBindBuffer(GL_ARRAY_BUFFER, cube_vbo);
-   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube_ibo);
-   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-   glDrawElements(GL_TRIANGLES, 3 * 12, GL_UNSIGNED_INT, 0);
+   GLMesh_Render(&m_cube, GL_TRIANGLES);
    glDisableVertexAttribArray(0);
 
 }
@@ -120,6 +116,7 @@ static void gl_init(void)
 {
    float vdata[8 * 3];
    unsigned int idata[12 * 3];
+   unsigned int mdata[4];
    float n;
    FloatWriter_T fw;
    UIntWriter_T uiw;
@@ -136,9 +133,6 @@ static void gl_init(void)
    // CUBE
 
    
-   glGenBuffers(1, &cube_vbo);
-
-   glBindBuffer(GL_ARRAY_BUFFER, cube_vbo);
    n = 0.5f;
    FloatWriter_Setup(&fw, vdata);
    FloatWriter_Write3F(&fw, -n,  n, -n);  
@@ -150,15 +144,6 @@ static void gl_init(void)
    FloatWriter_Write3F(&fw,  n,  n,  n);  
    FloatWriter_Write3F(&fw,  n, -n,  n);  
    FloatWriter_Write3F(&fw, -n, -n,  n);  
-
-
-
-   glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * 9, vdata, GL_STATIC_DRAW);
-
-   glGenBuffers(1, &cube_ibo);
-   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube_ibo);
-
-
 
    UIntWriter_Setup(&uiw, idata);
    // front
@@ -192,11 +177,16 @@ static void gl_init(void)
    UIntWriter_Write3UI(&uiw, 4, 0, 5);
    UIntWriter_Write3UI(&uiw, 0, 1, 5);
 
-   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * 3 * 12, idata, GL_STATIC_DRAW);
+   mdata[0] = 3;
+   GLMesh_Init(&m_cube, mdata, 1, vdata, 8, idata, 12 * 3);
+   GLMesh_MoveToGFXCard(&m_cube);
 
+
+   // Shader
    shader_test1 = ShaderTool_CreateShaderProgram("test1.vert.glsl", NULL, "test1.frag.glsl");
 
    matrix_uniform = glGetUniformLocation(shader_test1, "Matrix");
 
+   // Projection Matrix
    Matrix3D_SetProjection(&projection, 30, SCREEN_WIDTH, SCREEN_HEIGHT, 1, 100);
 }
