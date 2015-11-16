@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include "GL/glew.h"
 #include "SDL2/SDL_opengl.h"
 #include "GLMesh.h"

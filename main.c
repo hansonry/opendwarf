@@ -11,6 +11,7 @@
 #include "Matrix3D.h"
 #include "MatrixStack.h"
 #include "GLMesh.h"
+#include "GLMeshBuilder.h"
 
 static void gl_init(void);
 
@@ -114,12 +115,12 @@ static void game_input(CEngine_T * engine, SDL_Event * event)
 
 static void gl_init(void)
 {
-   float vdata[8 * 3];
-   unsigned int idata[12 * 3];
+
+   GLMeshBuilder_T builder;
+
+   float vdata[12];
    unsigned int mdata[4];
    float n;
-   FloatWriter_T fw;
-   UIntWriter_T uiw;
 
    glewInit();
 
@@ -132,54 +133,56 @@ static void gl_init(void)
 
    // CUBE
 
-   
    n = 0.5f;
-   FloatWriter_Setup(&fw, vdata);
-   FloatWriter_Write3F(&fw, -n,  n, -n);  
-   FloatWriter_Write3F(&fw,  n,  n, -n);  
-   FloatWriter_Write3F(&fw,  n, -n, -n);  
-   FloatWriter_Write3F(&fw, -n, -n, -n);  
-   
-   FloatWriter_Write3F(&fw, -n,  n,  n);  
-   FloatWriter_Write3F(&fw,  n,  n,  n);  
-   FloatWriter_Write3F(&fw,  n, -n,  n);  
-   FloatWriter_Write3F(&fw, -n, -n,  n);  
+   mdata[0] = 3;
+   GLMeshBuilder_Init(&builder, mdata, 1);
 
-   UIntWriter_Setup(&uiw, idata);
+
+   GLMeshBuilder_Add1Vertex3f(&builder, -n,  n, -n);
+   GLMeshBuilder_Add1Vertex3f(&builder,  n,  n, -n);
+   GLMeshBuilder_Add1Vertex3f(&builder,  n, -n, -n);
+   GLMeshBuilder_Add1Vertex3f(&builder, -n, -n, -n);
+
+   GLMeshBuilder_Add1Vertex3f(&builder, -n,  n,  n);
+   GLMeshBuilder_Add1Vertex3f(&builder,  n,  n,  n);
+   GLMeshBuilder_Add1Vertex3f(&builder,  n, -n,  n);
+   GLMeshBuilder_Add1Vertex3f(&builder, -n, -n,  n);
+
    // front
    // 0 1
    // 3 2
-   UIntWriter_Write3UI(&uiw, 0, 3, 1);
-   UIntWriter_Write3UI(&uiw, 3, 2, 1);
+   GLMeshBuilder_Add3Element(&builder, 0, 3, 1);
+   GLMeshBuilder_Add3Element(&builder, 3, 2, 1);
    // right
    // 1 5
    // 2 6
-   UIntWriter_Write3UI(&uiw, 1, 2, 5);
-   UIntWriter_Write3UI(&uiw, 2, 6, 5);
+   GLMeshBuilder_Add3Element(&builder, 1, 2, 5);
+   GLMeshBuilder_Add3Element(&builder, 2, 6, 5);
    // back
    // 5 4
    // 6 7
-   UIntWriter_Write3UI(&uiw, 5, 6, 4);
-   UIntWriter_Write3UI(&uiw, 6, 7, 4);
+   GLMeshBuilder_Add3Element(&builder, 5, 6, 4);
+   GLMeshBuilder_Add3Element(&builder, 6, 7, 4);
    // right
    // 4 0
    // 7 3
-   UIntWriter_Write3UI(&uiw, 4, 7, 0);
-   UIntWriter_Write3UI(&uiw, 7, 3, 0);
+   GLMeshBuilder_Add3Element(&builder, 4, 7, 0);
+   GLMeshBuilder_Add3Element(&builder, 7, 3, 0);
    // bottom
    // 3 2
    // 7 6
-   UIntWriter_Write3UI(&uiw, 3, 7, 2);
-   UIntWriter_Write3UI(&uiw, 7, 6, 2);
+   GLMeshBuilder_Add3Element(&builder, 3, 7, 2);
+   GLMeshBuilder_Add3Element(&builder, 7, 6, 2);
    // top
    // 4 5
    // 0 1
-   UIntWriter_Write3UI(&uiw, 4, 0, 5);
-   UIntWriter_Write3UI(&uiw, 0, 1, 5);
+   GLMeshBuilder_Add3Element(&builder, 4, 0, 5);
+   GLMeshBuilder_Add3Element(&builder, 0, 1, 5);
 
-   mdata[0] = 3;
-   GLMesh_Init(&m_cube, mdata, 1, vdata, 8, idata, 12 * 3);
+
+   GLMeshBuilder_CreateGLMesh(&builder, &m_cube);
    GLMesh_MoveToGFXCard(&m_cube);
+   GLMeshBuilder_Destroy(&builder);
 
 
    // Shader
