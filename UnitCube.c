@@ -6,52 +6,63 @@
 #define N 0.5f
 #define U 1.0f
 
-static const float UnitCube_VertexData[48] = 
+static const float UnitCube_VertexData_Front[36] = 
 {
-   -N,  N, -N, U, 0, 0,
-    N,  N, -N, 0, U, 0,
-    N, -N, -N, 0, 0, U,
-   -N, -N, -N, U, U, 0,
-
-   -N,  N,  N, N, 0, 0,
-    N,  N,  N, 0, N, 0,
-    N, -N,  N, 0, 0, N,
-   -N, -N,  N, N, N, 0
+//  Vertex      Color       Normal
+   -N,  N, -N,   U, 0, 0,    0,  0, -U,
+    N,  N, -N,   0, U, 0,    0,  0, -U,
+   -N, -N, -N,   0, 0, U,    0,  0, -U,
+    N, -N, -N,   U, U, 0,    0,  0, -U
 };
 
-static const unsigned int UnitCube_Index[36] = 
+static const float UnitCube_VertexData_Right[36] = 
 {
-   // front
-   // 0 1
-   // 3 2
-   0, 3, 1,
-   3, 2, 1,
-   // right
-   // 1 5
-   // 2 6
-   1, 2, 5,
-   2, 6, 5,
-   // back
-   // 5 4
-   // 6 7
-   5, 6, 4,
-   6, 7, 4,
-   // right
-   // 4 0
-   // 7 3
-   4, 7, 0,
-   7, 3, 0,
-   // bottom
-   // 3 2
-   // 7 6
-   3, 7, 2,
-   7, 6, 2,
-   // top
-   // 4 5
-   // 0 1
-   4, 0, 5,
-   0, 1, 5
+//  Vertex      Color       Normal
+    N,  N, -N,   U, 0, 0,    U,  0,  0,
+    N,  N,  N,   0, U, 0,    U,  0,  0,
+    N, -N, -N,   0, 0, U,    U,  0,  0,
+    N, -N,  N,   U, U, 0,    U,  0,  0
+};
 
+static const float UnitCube_VertexData_Back[36] = 
+{
+//  Vertex      Color       Normal
+    N,  N,  N,   U, 0, 0,    0,  0,  U,
+   -N,  N,  N,   0, U, 0,    0,  0,  U,
+    N, -N,  N,   0, 0, U,    0,  0,  U,
+   -N, -N,  N,   U, U, 0,    0,  0,  U
+};
+
+static const float UnitCube_VertexData_Left[36] = 
+{
+//  Vertex      Color       Normal
+   -N,  N,  N,   U, 0, 0,   -U,  0,  0,
+   -N,  N, -N,   0, U, 0,   -U,  0,  0,
+   -N, -N,  N,   0, 0, U,   -U,  0,  0,
+   -N, -N, -N,   U, U, 0,   -U,  0,  0
+};
+
+static const float UnitCube_VertexData_Top[36] = 
+{
+//  Vertex      Color       Normal
+   -N,  N,  N,   U, 0, 0,    0,  U,  0,
+    N,  N,  N,   0, U, 0,    0,  U,  0,
+   -N,  N, -N,   0, 0, U,    0,  U,  0,
+    N,  N, -N,   U, U, 0,    0,  U,  0
+};
+
+static const float UnitCube_VertexData_Bottom[36] = 
+{
+//  Vertex      Color       Normal
+   -N, -N, -N,   U, 0, 0,    0, -U,  0,
+    N, -N, -N,   0, U, 0,    0, -U,  0,
+   -N, -N,  N,   0, 0, U,    0, -U,  0,
+    N, -N,  N,   U, U, 0,    0, -U,  0
+};
+
+static const unsigned int UnitCube_Index[4] = 
+{
+   0, 2, 1, 3
 };
 
 void UnitCube_Init(UnitCube_T * cube)
@@ -59,18 +70,44 @@ void UnitCube_Init(UnitCube_T * cube)
    unsigned int v_data[3];
    v_data[0] = 3;
    v_data[1] = 3;
-   GLMesh_Init(&cube->cube, v_data, 2, UnitCube_VertexData, 8, UnitCube_Index, 36);
-   GLMesh_MoveToGFXCard(&cube->cube);
+   v_data[2] = 3;
+   GLMesh_Init(&cube->m_front,  v_data, 3, UnitCube_VertexData_Front,  4, UnitCube_Index, 4);
+   GLMesh_MoveToGFXCard(&cube->m_front);
+
+   GLMesh_Init(&cube->m_right,  v_data, 3, UnitCube_VertexData_Right,  4, UnitCube_Index, 4);
+   GLMesh_MoveToGFXCard(&cube->m_right);
+
+   GLMesh_Init(&cube->m_back,   v_data, 3, UnitCube_VertexData_Back,   4, UnitCube_Index, 4);
+   GLMesh_MoveToGFXCard(&cube->m_back);
+
+   GLMesh_Init(&cube->m_left,   v_data, 3, UnitCube_VertexData_Left,   4, UnitCube_Index, 4);
+   GLMesh_MoveToGFXCard(&cube->m_left);
+
+   GLMesh_Init(&cube->m_top,    v_data, 3, UnitCube_VertexData_Top,    4, UnitCube_Index, 4);
+   GLMesh_MoveToGFXCard(&cube->m_top);
+
+   GLMesh_Init(&cube->m_bottom, v_data, 3, UnitCube_VertexData_Bottom, 4, UnitCube_Index, 4);
+   GLMesh_MoveToGFXCard(&cube->m_bottom);
 }
 
 void UnitCube_Cleanup(UnitCube_T * cube)
 {
-   GLMesh_Cleanup(&cube->cube);
+   GLMesh_Cleanup(&cube->m_front);
+   GLMesh_Cleanup(&cube->m_right);
+   GLMesh_Cleanup(&cube->m_back);
+   GLMesh_Cleanup(&cube->m_left);
+   GLMesh_Cleanup(&cube->m_top);
+   GLMesh_Cleanup(&cube->m_bottom);
 }
 
 
 void UnitCube_Render(UnitCube_T * cube)
 {
-   GLMesh_Render(&cube->cube, GL_TRIANGLES);
+   GLMesh_Render(&cube->m_front, GL_TRIANGLE_STRIP);
+   GLMesh_Render(&cube->m_right, GL_TRIANGLE_STRIP);
+   GLMesh_Render(&cube->m_back, GL_TRIANGLE_STRIP);
+   GLMesh_Render(&cube->m_left, GL_TRIANGLE_STRIP);
+   GLMesh_Render(&cube->m_top, GL_TRIANGLE_STRIP);
+   GLMesh_Render(&cube->m_bottom, GL_TRIANGLE_STRIP);
 }
 

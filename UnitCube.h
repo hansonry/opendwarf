@@ -4,7 +4,14 @@
 typedef struct UnitCube_S UnitCube_T;
 struct UnitCube_S
 {
-   GLMesh_T cube;
+   // Each side needs to be a diffrent mesh due
+   // to the normals
+   GLMesh_T m_front;
+   GLMesh_T m_right;
+   GLMesh_T m_back;
+   GLMesh_T m_left;
+   GLMesh_T m_top;
+   GLMesh_T m_bottom;
 };
 
 void UnitCube_Init(UnitCube_T * cube);
