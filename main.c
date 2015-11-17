@@ -116,6 +116,7 @@ static void game_render(CEngine_T * engine)
 
    glUniformMatrix4fv(matrix_uniform, 1, GL_FALSE, m_stack.matrix.data);
    glEnableVertexAttribArray(0);
+   glEnableVertexAttribArray(1);
    UnitCube_Render(&cube);
    glDisableVertexAttribArray(0);
 

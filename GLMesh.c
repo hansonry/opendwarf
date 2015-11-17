@@ -69,7 +69,7 @@ void GLMesh_Render(GLMesh_T * mesh, GLenum mode)
 {
    int i;
    unsigned int l_size;
-   unsigned int offset_so_far;
+   size_t offset_so_far;
    if(mesh->on_gfx_card_flag == 1)
    {
       glBindBuffer(GL_ARRAY_BUFFER, mesh->vbo);
@@ -82,8 +82,8 @@ void GLMesh_Render(GLMesh_T * mesh, GLenum mode)
          //printf("%i == 3\n", l_size);
          if(l_size > 0)
          {
-            glVertexAttribPointer(i, l_size, GL_FLOAT, GL_FALSE, (mesh->vertex_size - l_size) * sizeof(float), (GLvoid *)offset_so_far);
-            //printf("glVAP(%i, %i, GL_FLOAT, GL_FALSE, %i, %i)\n", i, l_size, (mesh->vertex_size - l_size) * sizeof(float), offset_so_far);
+            glVertexAttribPointer(i, l_size, GL_FLOAT, GL_FALSE, mesh->vertex_size * sizeof(float), (GLvoid *)offset_so_far);
+            //printf("glVAP(%i, %i, GL_FLOAT, GL_FALSE, %i, %i)\n", i, l_size, mesh->vertex_size * sizeof(float), offset_so_far);
             offset_so_far += sizeof(float) * l_size;
          }
       }

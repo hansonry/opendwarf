@@ -6,17 +6,17 @@
 #define N 0.5f
 #define U 1.0f
 
-static const float UnitCube_VertexData[24] = 
+static const float UnitCube_VertexData[48] = 
 {
-   -N,  N, -N,
-    N,  N, -N,
-    N, -N, -N,
-   -N, -N, -N,
+   -N,  N, -N, U, 0, 0,
+    N,  N, -N, 0, U, 0,
+    N, -N, -N, 0, 0, U,
+   -N, -N, -N, U, U, 0,
 
-   -N,  N,  N,
-    N,  N,  N,
-    N, -N,  N,
-   -N, -N,  N
+   -N,  N,  N, N, 0, 0,
+    N,  N,  N, 0, N, 0,
+    N, -N,  N, 0, 0, N,
+   -N, -N,  N, N, N, 0
 };
 
 static const unsigned int UnitCube_Index[36] = 
@@ -58,7 +58,8 @@ void UnitCube_Init(UnitCube_T * cube)
 {
    unsigned int v_data[3];
    v_data[0] = 3;
-   GLMesh_Init(&cube->cube, v_data, 1, UnitCube_VertexData, 8, UnitCube_Index, 36);
+   v_data[1] = 3;
+   GLMesh_Init(&cube->cube, v_data, 2, UnitCube_VertexData, 8, UnitCube_Index, 36);
    GLMesh_MoveToGFXCard(&cube->cube);
 }
 
