@@ -46,7 +46,9 @@ int main(int args, char * argc[])
 UnitCube_T cube;
 
 GLuint shader_test1;
-GLint  matrix_uniform;
+GLint  pmatrix_uniform;
+GLint  wmatrix_uniform;
+GLint  light_direction_uniform;
 float angle;
 Matrix3D_T projection;
 MatrixStack_T m_stack;
@@ -66,7 +68,10 @@ static void game_setup(CEngine_T * engine)
    // Shader
    shader_test1 = ShaderTool_CreateShaderProgram("test1.vert.glsl", NULL, "test1.frag.glsl");
 
-   matrix_uniform = glGetUniformLocation(shader_test1, "Matrix");
+   pmatrix_uniform = glGetUniformLocation(shader_test1, "PMatrix");
+   wmatrix_uniform = glGetUniformLocation(shader_test1, "WMatrix");
+   light_direction_uniform = glGetUniformLocation(shader_test1, "LightDirection");
+
 
    // Projection Matrix
    Matrix3D_SetProjection(&projection, 30, SCREEN_WIDTH, SCREEN_HEIGHT, 1, 100);
@@ -107,30 +112,36 @@ static void game_render(CEngine_T * engine)
    glEnd();
    */
    glUseProgram(shader_test1);
-
+   glUniform3f(light_direction_uniform, 0.577f, 0.577f, -0.577f);
 
    Matrix3D_SetIdentity(&matrix);
 
-   MatrixStack_ApplyMatrix(&m_stack, &projection);
    MatrixStack_ApplyTranslation(&m_stack, 0,  0,  10);
 
-   glUniformMatrix4fv(matrix_uniform, 1, GL_FALSE, m_stack.matrix.data);
+   glUniformMatrix4fv(wmatrix_uniform, 1, GL_FALSE, m_stack.matrix.data);
+   MatrixStack_Push(&m_stack);
+   MatrixStack_ApplyMatrixPre(&m_stack, &projection);
+   glUniformMatrix4fv(pmatrix_uniform, 1, GL_FALSE, m_stack.matrix.data);
+   MatrixStack_Pop(&m_stack);
+
    glEnableVertexAttribArray(0);
    glEnableVertexAttribArray(1);
+   glEnableVertexAttribArray(2);
    UnitCube_Render(&cube);
-   glDisableVertexAttribArray(0);
 
 
    MatrixStack_ApplyTranslation(&m_stack, px, py, 0);
    MatrixStack_ApplyYRotation(&m_stack, angle);
-   glUniformMatrix4fv(matrix_uniform, 1, GL_FALSE, m_stack.matrix.data);
+
+   glUniformMatrix4fv(wmatrix_uniform, 1, GL_FALSE, m_stack.matrix.data);
+   MatrixStack_Push(&m_stack);
+   MatrixStack_ApplyMatrixPre(&m_stack, &projection);
+   glUniformMatrix4fv(pmatrix_uniform, 1, GL_FALSE, m_stack.matrix.data);
+   MatrixStack_Pop(&m_stack);
 
 
 
-
-   glEnableVertexAttribArray(0);
    UnitCube_Render(&cube);
-   glDisableVertexAttribArray(0);
 
 }
 

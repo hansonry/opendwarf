@@ -2,12 +2,16 @@
 
 layout (location = 0) in vec3 Position;
 layout (location = 1) in vec3 InColor;
-uniform mat4 Matrix;
+layout (location = 2) in vec3 InNormal;
+uniform mat4 PMatrix;
+uniform mat4 WMatrix;
 out vec4 Color;
+out vec3 Normal;
 
 void main()
 {
-   gl_Position = vec4(Position, 1.0) * Matrix;
+   gl_Position = vec4(Position, 1.0) * PMatrix;
    Color = vec4(InColor, 1.0);
+   Normal = (vec4(InNormal, 0.0) * WMatrix).xyz;
 }
 
