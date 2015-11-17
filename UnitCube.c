@@ -6,58 +6,58 @@
 #define N 0.5f
 #define U 1.0f
 
-static const float UnitCube_VertexData_Front[36] = 
+static const float UnitCube_VertexData_Front[44] = 
 {
-//  Vertex      Color       Normal
-   -N,  N, -N,   U, 0, 0,    0,  0, -U,
-    N,  N, -N,   0, U, 0,    0,  0, -U,
-   -N, -N, -N,   0, 0, U,    0,  0, -U,
-    N, -N, -N,   U, U, 0,    0,  0, -U
+//  Vertex      Color       Normal        UV
+   -N,  N, -N,   U, 0, 0,    0,  0, -U,   0, U,
+    N,  N, -N,   0, U, 0,    0,  0, -U,   U, U,
+   -N, -N, -N,   0, 0, U,    0,  0, -U,   0, 0,
+    N, -N, -N,   U, U, 0,    0,  0, -U,   U, 0
 };
 
-static const float UnitCube_VertexData_Right[36] = 
+static const float UnitCube_VertexData_Right[44] = 
 {
-//  Vertex      Color       Normal
-    N,  N, -N,   U, 0, 0,    U,  0,  0,
-    N,  N,  N,   0, U, 0,    U,  0,  0,
-    N, -N, -N,   0, 0, U,    U,  0,  0,
-    N, -N,  N,   U, U, 0,    U,  0,  0
+//  Vertex      Color       Normal        UV
+    N,  N, -N,   U, 0, 0,    U,  0,  0,   0, U,
+    N,  N,  N,   0, U, 0,    U,  0,  0,   U, U,
+    N, -N, -N,   0, 0, U,    U,  0,  0,   0, 0,
+    N, -N,  N,   U, U, 0,    U,  0,  0,   U, 0
 };
 
-static const float UnitCube_VertexData_Back[36] = 
+static const float UnitCube_VertexData_Back[44] = 
 {
-//  Vertex      Color       Normal
-    N,  N,  N,   U, 0, 0,    0,  0,  U,
-   -N,  N,  N,   0, U, 0,    0,  0,  U,
-    N, -N,  N,   0, 0, U,    0,  0,  U,
-   -N, -N,  N,   U, U, 0,    0,  0,  U
+//  Vertex      Color       Normal        UV
+    N,  N,  N,   U, 0, 0,    0,  0,  U,   0, U,
+   -N,  N,  N,   0, U, 0,    0,  0,  U,   U, U,
+    N, -N,  N,   0, 0, U,    0,  0,  U,   0, 0,
+   -N, -N,  N,   U, U, 0,    0,  0,  U,   U, 0
 };
 
-static const float UnitCube_VertexData_Left[36] = 
+static const float UnitCube_VertexData_Left[44] = 
 {
-//  Vertex      Color       Normal
-   -N,  N,  N,   U, 0, 0,   -U,  0,  0,
-   -N,  N, -N,   0, U, 0,   -U,  0,  0,
-   -N, -N,  N,   0, 0, U,   -U,  0,  0,
-   -N, -N, -N,   U, U, 0,   -U,  0,  0
+//  Vertex      Color       Normal        UV
+   -N,  N,  N,   U, 0, 0,   -U,  0,  0,   0, U,
+   -N,  N, -N,   0, U, 0,   -U,  0,  0,   U, U,
+   -N, -N,  N,   0, 0, U,   -U,  0,  0,   0, 0,
+   -N, -N, -N,   U, U, 0,   -U,  0,  0,   U, 0
 };
 
-static const float UnitCube_VertexData_Top[36] = 
+static const float UnitCube_VertexData_Top[44] = 
 {
-//  Vertex      Color       Normal
-   -N,  N,  N,   U, 0, 0,    0,  U,  0,
-    N,  N,  N,   0, U, 0,    0,  U,  0,
-   -N,  N, -N,   0, 0, U,    0,  U,  0,
-    N,  N, -N,   U, U, 0,    0,  U,  0
+//  Vertex      Color       Normal        UV
+   -N,  N,  N,   U, 0, 0,    0,  U,  0,   0, U,
+    N,  N,  N,   0, U, 0,    0,  U,  0,   U, U,
+   -N,  N, -N,   0, 0, U,    0,  U,  0,   0, 0,
+    N,  N, -N,   U, U, 0,    0,  U,  0,   U, 0
 };
 
-static const float UnitCube_VertexData_Bottom[36] = 
+static const float UnitCube_VertexData_Bottom[44] = 
 {
-//  Vertex      Color       Normal
-   -N, -N, -N,   U, 0, 0,    0, -U,  0,
-    N, -N, -N,   0, U, 0,    0, -U,  0,
-   -N, -N,  N,   0, 0, U,    0, -U,  0,
-    N, -N,  N,   U, U, 0,    0, -U,  0
+//  Vertex      Color       Normal        UV
+   -N, -N, -N,   U, 0, 0,    0, -U,  0,   0, U,
+    N, -N, -N,   0, U, 0,    0, -U,  0,   U, U,
+   -N, -N,  N,   0, 0, U,    0, -U,  0,   0, 0,
+    N, -N,  N,   U, U, 0,    0, -U,  0,   U, 0
 };
 
 static const unsigned int UnitCube_Index[4] = 
@@ -67,26 +67,27 @@ static const unsigned int UnitCube_Index[4] =
 
 void UnitCube_Init(UnitCube_T * cube)
 {
-   unsigned int v_data[3];
+   unsigned int v_data[4];
    v_data[0] = 3;
    v_data[1] = 3;
    v_data[2] = 3;
-   GLMesh_Init(&cube->m_front,  v_data, 3, UnitCube_VertexData_Front,  4, UnitCube_Index, 4);
+   v_data[3] = 2;
+   GLMesh_Init(&cube->m_front,  v_data, 4, UnitCube_VertexData_Front,  4, UnitCube_Index, 4);
    GLMesh_MoveToGFXCard(&cube->m_front);
 
-   GLMesh_Init(&cube->m_right,  v_data, 3, UnitCube_VertexData_Right,  4, UnitCube_Index, 4);
+   GLMesh_Init(&cube->m_right,  v_data, 4, UnitCube_VertexData_Right,  4, UnitCube_Index, 4);
    GLMesh_MoveToGFXCard(&cube->m_right);
 
-   GLMesh_Init(&cube->m_back,   v_data, 3, UnitCube_VertexData_Back,   4, UnitCube_Index, 4);
+   GLMesh_Init(&cube->m_back,   v_data, 4, UnitCube_VertexData_Back,   4, UnitCube_Index, 4);
    GLMesh_MoveToGFXCard(&cube->m_back);
 
-   GLMesh_Init(&cube->m_left,   v_data, 3, UnitCube_VertexData_Left,   4, UnitCube_Index, 4);
+   GLMesh_Init(&cube->m_left,   v_data, 4, UnitCube_VertexData_Left,   4, UnitCube_Index, 4);
    GLMesh_MoveToGFXCard(&cube->m_left);
 
-   GLMesh_Init(&cube->m_top,    v_data, 3, UnitCube_VertexData_Top,    4, UnitCube_Index, 4);
+   GLMesh_Init(&cube->m_top,    v_data, 4, UnitCube_VertexData_Top,    4, UnitCube_Index, 4);
    GLMesh_MoveToGFXCard(&cube->m_top);
 
-   GLMesh_Init(&cube->m_bottom, v_data, 3, UnitCube_VertexData_Bottom, 4, UnitCube_Index, 4);
+   GLMesh_Init(&cube->m_bottom, v_data, 4, UnitCube_VertexData_Bottom, 4, UnitCube_Index, 4);
    GLMesh_MoveToGFXCard(&cube->m_bottom);
 }
 

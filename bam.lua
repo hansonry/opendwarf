@@ -21,7 +21,7 @@ end
 settings.link.libs:Add("SDL2");
 
 
-source = Collect("*.c");
+source = Collect("*.c", "libsoil/*.c");
 
 objects = Compile(settings, source)
 exe = Link(settings, "cengine", objects)

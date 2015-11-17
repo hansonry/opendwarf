@@ -13,6 +13,7 @@
 #include "GLMesh.h"
 #include "GLMeshBuilder.h"
 #include "UnitCube.h"
+#include "libsoil/SOIL.h"
 
 static void gl_init(void);
 
@@ -45,10 +46,12 @@ int main(int args, char * argc[])
 
 UnitCube_T cube;
 
+GLuint tex2d;
 GLuint shader_test1;
 GLint  pmatrix_uniform;
 GLint  wmatrix_uniform;
 GLint  light_direction_uniform;
+GLint  csampler_uniform;
 float angle;
 Matrix3D_T projection;
 MatrixStack_T m_stack;
@@ -71,10 +74,20 @@ static void game_setup(CEngine_T * engine)
    pmatrix_uniform = glGetUniformLocation(shader_test1, "PMatrix");
    wmatrix_uniform = glGetUniformLocation(shader_test1, "WMatrix");
    light_direction_uniform = glGetUniformLocation(shader_test1, "LightDirection");
+   csampler_uniform = glGetUniformLocation(shader_test1, "CSampler");
 
 
    // Projection Matrix
    Matrix3D_SetProjection(&projection, 30, SCREEN_WIDTH, SCREEN_HEIGHT, 1, 100);
+
+   // Textures
+   tex2d = SOIL_load_OGL_texture("testImage1024.png", 
+                                 SOIL_LOAD_AUTO, 
+                                 SOIL_CREATE_NEW_ID, 
+                                 SOIL_FLAG_MIPMAPS | 
+                                 SOIL_FLAG_INVERT_Y | 
+                                 SOIL_FLAG_NTSC_SAFE_RGB | 
+                                 SOIL_FLAG_COMPRESS_TO_DXT);
 
    // Kin
    px = 0;
@@ -87,6 +100,7 @@ static void game_cleanup(CEngine_T * engine)
    glDeleteProgram(shader_test1);
    MatrixStack_Destroy(&m_stack);
    UnitCube_Cleanup(&cube);
+   glDeleteTextures(1, &tex2d);
 }
 
 static void game_update(CEngine_T * engine, float seconds)
@@ -112,7 +126,12 @@ static void game_render(CEngine_T * engine)
    glEnd();
    */
    glUseProgram(shader_test1);
+
+   glActiveTexture(GL_TEXTURE0);
+   glBindTexture(GL_TEXTURE_2D, tex2d);
+
    glUniform3f(light_direction_uniform, 0.577f, 0.577f, -0.577f);
+   glUniform1i(csampler_uniform, 0); // Texture unit number
 
    Matrix3D_SetIdentity(&matrix);
 
@@ -127,6 +146,7 @@ static void game_render(CEngine_T * engine)
    glEnableVertexAttribArray(0);
    glEnableVertexAttribArray(1);
    glEnableVertexAttribArray(2);
+   glEnableVertexAttribArray(3);
    UnitCube_Render(&cube);
 
 
