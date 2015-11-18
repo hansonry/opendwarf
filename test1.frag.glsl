@@ -12,6 +12,7 @@ void main()
    float DiffuseFactor;
    vec4 DiffuseColor;
    vec3 NNormal;
+   vec4 AmbiantColor;
    vec4 t_frag_color;
 
    t_frag_color = Color;
@@ -22,14 +23,16 @@ void main()
    DiffuseFactor = dot(NNormal, LightDirection);
    if(DiffuseFactor > 0)
    {
-      DiffuseColor = vec4(t_frag_color.xyz * DiffuseFactor, 1.0f);
+      DiffuseColor = vec4(vec3(1,1,1) * DiffuseFactor, 1.0f);
    }
    else
    {
       DiffuseColor = vec4(0, 0, 0, 0);
    }
 
+   AmbiantColor = vec4(vec3(1,1,1) *0.2, 1.0);
 
-   FragColor = DiffuseColor;
+
+   FragColor = t_frag_color * (DiffuseColor + AmbiantColor);
 }
 
