@@ -13,7 +13,7 @@
 #include "GLMesh.h"
 #include "GLMeshBuilder.h"
 #include "UnitCube.h"
-#include "libsoil/SOIL.h"
+#include "GLTexture2D.h"
 
 static void gl_init(void);
 
@@ -46,7 +46,7 @@ int main(int args, char * argc[])
 
 UnitCube_T cube;
 
-GLuint tex2d;
+GLTexture2D_T test_text;
 GLuint shader_test1;
 GLint  pmatrix_uniform;
 GLint  wmatrix_uniform;
@@ -81,13 +81,7 @@ static void game_setup(CEngine_T * engine)
    Matrix3D_SetProjection(&projection, 30, SCREEN_WIDTH, SCREEN_HEIGHT, 1, 100);
 
    // Textures
-   tex2d = SOIL_load_OGL_texture("testImage1024.png", 
-                                 SOIL_LOAD_AUTO, 
-                                 SOIL_CREATE_NEW_ID, 
-                                 SOIL_FLAG_MIPMAPS | 
-                                 SOIL_FLAG_INVERT_Y | 
-                                 SOIL_FLAG_NTSC_SAFE_RGB | 
-                                 SOIL_FLAG_COMPRESS_TO_DXT);
+   GLTexture2D_Load(&test_text, "testImage1024.png");
 
    // Kin
    px = 0;
@@ -100,7 +94,7 @@ static void game_cleanup(CEngine_T * engine)
    glDeleteProgram(shader_test1);
    MatrixStack_Destroy(&m_stack);
    UnitCube_Cleanup(&cube);
-   glDeleteTextures(1, &tex2d);
+   GLTexture2D_Destroy(&test_text);
 }
 
 static void game_update(CEngine_T * engine, float seconds)
@@ -139,11 +133,10 @@ static void game_render(CEngine_T * engine)
    */
    glUseProgram(shader_test1);
 
-   glActiveTexture(GL_TEXTURE0);
-   glBindTexture(GL_TEXTURE_2D, tex2d);
+   GLTexture2D_ApplyToUniform(&test_text, csampler_uniform, GL_TEXTURE0);
+
 
    glUniform3f(light_direction_uniform, 0.577f, 0.577f, -0.577f);
-   glUniform1i(csampler_uniform, 0); // Texture unit number
 
    Matrix3D_SetIdentity(&matrix);
 

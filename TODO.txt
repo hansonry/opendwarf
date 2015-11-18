@@ -1,13 +1,13 @@
 ============ TODO ============
 
- * Add ease of use function to ShaderTools to load the view and persective matrix
- * Add Texture Class
  * Find a way to show fonts
  * Add Camera
 
 ============ DONE ============
 
-
+== 11/18/2015 ==
+ * Add ease of use function to ShaderTools to load the view and persective matrix
+ * Add Texture Class
 
 
 
