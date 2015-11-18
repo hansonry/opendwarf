@@ -111,6 +111,18 @@ static void game_update(CEngine_T * engine, float seconds)
    py = sin(a2) * 2;
 }
 
+static void matrix_perspective_set(GLint uniform_world_matrix, 
+                                   GLint uniform_perspective_matrix,
+                                   const Matrix3D_T * world, 
+                                   const Matrix3D_T * camera)
+{
+   Matrix3D_T temp;
+   Matrix3D_Multiply(&temp, camera, world);
+
+   glUniformMatrix4fv(uniform_world_matrix,       1, GL_FALSE, world->data);
+   glUniformMatrix4fv(uniform_perspective_matrix, 1, GL_FALSE, temp.data);
+}
+
 static void game_render(CEngine_T * engine)
 {
    Matrix3D_T matrix;
@@ -137,11 +149,8 @@ static void game_render(CEngine_T * engine)
 
    MatrixStack_ApplyTranslation(&m_stack, 0,  0,  10);
 
-   glUniformMatrix4fv(wmatrix_uniform, 1, GL_FALSE, m_stack.matrix.data);
-   MatrixStack_Push(&m_stack);
-   MatrixStack_ApplyMatrixPre(&m_stack, &projection);
-   glUniformMatrix4fv(pmatrix_uniform, 1, GL_FALSE, m_stack.matrix.data);
-   MatrixStack_Pop(&m_stack);
+   matrix_perspective_set(wmatrix_uniform, pmatrix_uniform, &m_stack.matrix, &projection);
+
 
    glEnableVertexAttribArray(0);
    glEnableVertexAttribArray(1);
@@ -153,14 +162,7 @@ static void game_render(CEngine_T * engine)
    MatrixStack_ApplyTranslation(&m_stack, px, py, 0);
    MatrixStack_ApplyYRotation(&m_stack, angle);
 
-   glUniformMatrix4fv(wmatrix_uniform, 1, GL_FALSE, m_stack.matrix.data);
-   MatrixStack_Push(&m_stack);
-   MatrixStack_ApplyMatrixPre(&m_stack, &projection);
-   glUniformMatrix4fv(pmatrix_uniform, 1, GL_FALSE, m_stack.matrix.data);
-   MatrixStack_Pop(&m_stack);
-
-
-
+   matrix_perspective_set(wmatrix_uniform, pmatrix_uniform, &m_stack.matrix, &projection);
    UnitCube_Render(&cube);
 
 }
