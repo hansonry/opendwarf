@@ -1,6 +1,5 @@
 ============ TODO ============
 
- * Add a Mesh class to show text textures
  * Add Camera
 
 ============ DONE ============

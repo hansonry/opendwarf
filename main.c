@@ -144,16 +144,15 @@ static void game_render(CEngine_T * engine)
    */
    glUseProgram(shader_test1);
 
-   GLTexture2D_ApplyToUniform(&test_text, csampler_uniform, GL_TEXTURE0);
-   GLTexture2D_ApplyToUniform(&font_text, csampler_uniform, GL_TEXTURE0);
-
-
    glUniform3f(light_direction_uniform, 0.577f, 0.577f, -0.577f);
+
+
 
    Matrix3D_SetIdentity(&matrix);
 
    MatrixStack_ApplyTranslation(&m_stack, 0,  0,  10);
 
+   GLTexture2D_ApplyToUniform(&font_text, csampler_uniform, GL_TEXTURE0);
    matrix_perspective_set(wmatrix_uniform, pmatrix_uniform, &m_stack.matrix, &projection);
 
 
@@ -168,6 +167,7 @@ static void game_render(CEngine_T * engine)
    MatrixStack_ApplyYRotation(&m_stack, angle);
 
    matrix_perspective_set(wmatrix_uniform, pmatrix_uniform, &m_stack.matrix, &projection);
+   GLTexture2D_ApplyToUniform(&test_text, csampler_uniform, GL_TEXTURE0);
    UnitCube_Render(&cube);
 
    // Font Test
