@@ -16,6 +16,11 @@ void GLTexture2D_Load(GLTexture2D_T * text, const char * filename)
                                        SOIL_FLAG_COMPRESS_TO_DXT);
 }
 
+void GLTexture2D_LoadID(GLTexture2D_T * text, GLuint gl_id)
+{
+   text->gl_id = gl_id;
+}
+
 void GLTexture2D_Destroy(GLTexture2D_T * text)
 {
    glDeleteTextures(1, &text->gl_id);

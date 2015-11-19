@@ -19,6 +19,7 @@ end
 
 
 settings.link.libs:Add("SDL2");
+settings.link.libs:Add("SDL2_ttf");
 
 
 source = Collect("*.c", "libsoil/*.c");

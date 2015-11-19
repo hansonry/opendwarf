@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "SDL2/SDL.h"
+#include "SDL2/SDL_ttf.h"
 #include "SDL2/SDL_opengl.h"
 #include "CEngine.h"
 
@@ -43,7 +44,9 @@ void CEngine_Start(CEngine_T * engine)
    float seconds;
 
 
-   SDL_Init(SDL_INIT_EVERYTHING);   
+   SDL_Init(SDL_INIT_EVERYTHING); 
+   TTF_Init();  
+
    window = SDL_CreateWindow(engine->window_title, 
                              SDL_WINDOWPOS_CENTERED, 
                              SDL_WINDOWPOS_CENTERED, 

@@ -8,6 +8,7 @@ struct GLTexture2D_S
 };
 
 void GLTexture2D_Load(GLTexture2D_T * text, const char * filename);
+void GLTexture2D_LoadID(GLTexture2D_T * text, GLuint gl_id);
 void GLTexture2D_Destroy(GLTexture2D_T * text);
 
 void GLTexture2D_ApplyToUniform(GLTexture2D_T * text, GLint uniform, GLenum texture_unit);

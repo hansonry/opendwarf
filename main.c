@@ -14,6 +14,8 @@
 #include "GLMeshBuilder.h"
 #include "UnitCube.h"
 #include "GLTexture2D.h"
+#include "SDL2/SDL_ttf.h"
+#include "GLFont.h"
 
 static void gl_init(void);
 
@@ -46,7 +48,8 @@ int main(int args, char * argc[])
 
 UnitCube_T cube;
 
-GLTexture2D_T test_text;
+GLTexture2D_T test_text, font_text;
+GLFont_T font_hanken;
 GLuint shader_test1;
 GLint  pmatrix_uniform;
 GLint  wmatrix_uniform;
@@ -87,6 +90,10 @@ static void game_setup(CEngine_T * engine)
    px = 0;
    py = 0;
    a2 = 0;
+
+   // Font Test
+   GLFont_Init(&font_hanken, "Hanken-Book.ttf", 16);
+   GLFont_CreateGLTexture(&font_hanken, &font_text, "Hello", 1, 0, 0, 1);
 }
 
 static void game_cleanup(CEngine_T * engine)
@@ -95,6 +102,10 @@ static void game_cleanup(CEngine_T * engine)
    MatrixStack_Destroy(&m_stack);
    UnitCube_Cleanup(&cube);
    GLTexture2D_Destroy(&test_text);
+
+   // Font Test
+   GLFont_Destory(&font_hanken);
+   GLTexture2D_Destroy(&font_text);
 }
 
 static void game_update(CEngine_T * engine, float seconds)
@@ -134,6 +145,7 @@ static void game_render(CEngine_T * engine)
    glUseProgram(shader_test1);
 
    GLTexture2D_ApplyToUniform(&test_text, csampler_uniform, GL_TEXTURE0);
+   GLTexture2D_ApplyToUniform(&font_text, csampler_uniform, GL_TEXTURE0);
 
 
    glUniform3f(light_direction_uniform, 0.577f, 0.577f, -0.577f);
@@ -157,6 +169,8 @@ static void game_render(CEngine_T * engine)
 
    matrix_perspective_set(wmatrix_uniform, pmatrix_uniform, &m_stack.matrix, &projection);
    UnitCube_Render(&cube);
+
+   // Font Test
 
 }
 
