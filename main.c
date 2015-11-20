@@ -33,7 +33,7 @@ static void game_input(CEngine_T * engine, SDL_Event * event);
 int main(int args, char * argc[])
 {
    CEngine_T engine;
-   CEngine_Init(&engine, "CEngine", SCREEN_WIDTH, SCREEN_HEIGHT,
+   CEngine_Init(&engine, "opendwarf", SCREEN_WIDTH, SCREEN_HEIGHT,
                          game_setup, 
                          game_cleanup, 
                          game_update, 

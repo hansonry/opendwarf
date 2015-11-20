@@ -25,4 +25,4 @@ settings.link.libs:Add("SDL2_ttf");
 source = Collect("*.c", "libsoil/*.c");
 
 objects = Compile(settings, source)
-exe = Link(settings, "cengine", objects)
+exe = Link(settings, "opendwarf", objects)
