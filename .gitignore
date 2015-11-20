@@ -3,6 +3,6 @@
 *.o
 *.obj
 *.exe
-cengine
+opendwarf
 *.manifest
 

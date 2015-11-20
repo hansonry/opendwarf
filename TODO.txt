@@ -1,7 +1,12 @@
 ============ TODO ============
 
+ * Create 1 block of each terrain type
+
 
 ============ DONE ============
+
+== 11/20/2015 ==
+ * Create terrain requirements (First Pass)
 
 == 11/18/2015 ==
  * Find a way to show fonts

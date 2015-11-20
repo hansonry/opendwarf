@@ -1,0 +1,13 @@
+The dwarfs will fit though a 2 block tall, and 1 block wide opening
+All blocks will be cubes
+
+Block Material Types
+* Grass
+* Dirt
+* Rock
+* Wood
+
+Block Strucure
+* Cube
+* Ramp
+
