@@ -79,7 +79,7 @@ void GLFont_CreateGLTexture(GLFont_T * font, GLTexture2D_T * texture, const char
 
       glGenTextures(1, &text_id);
       glBindTexture(GL_TEXTURE_2D, text_id);
-      printf("w: %i, h: %i\n", surf->w, surf->h);
+      //printf("w: %i, h: %i\n", surf->w, surf->h);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 

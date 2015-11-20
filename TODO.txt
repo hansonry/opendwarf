@@ -1,11 +1,11 @@
 ============ TODO ============
 
- * Add Camera
 
 ============ DONE ============
 
 == 11/18/2015 ==
  * Find a way to show fonts
+ * Add Camera
 
 == 11/18/2015 ==
  * Add ease of use function to ShaderTools to load the view and persective matrix

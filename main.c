@@ -16,6 +16,7 @@
 #include "GLTexture2D.h"
 #include "SDL2/SDL_ttf.h"
 #include "GLFont.h"
+#include "GLCam_FPS.h"
 
 static void gl_init(void);
 
@@ -50,6 +51,8 @@ UnitCube_T cube;
 
 GLTexture2D_T test_text, font_text;
 GLFont_T font_hanken;
+GLCam_FPS_T fps_cam;
+int cam_drag;
 GLuint shader_test1;
 GLint  pmatrix_uniform;
 GLint  wmatrix_uniform;
@@ -94,6 +97,10 @@ static void game_setup(CEngine_T * engine)
    // Font Test
    GLFont_Init(&font_hanken, "Hanken-Book.ttf", 16);
    GLFont_CreateGLTexture(&font_hanken, &font_text, "Hello", 1, 0, 0, 1);
+
+   // FPS Camera
+   GLCam_FPS_Init(&fps_cam);
+   cam_drag = 0;
 }
 
 static void game_cleanup(CEngine_T * engine)
@@ -106,6 +113,9 @@ static void game_cleanup(CEngine_T * engine)
    // Font Test
    GLFont_Destory(&font_hanken);
    GLTexture2D_Destroy(&font_text);
+
+   // Camera
+ 
 }
 
 static void game_update(CEngine_T * engine, float seconds)
@@ -114,6 +124,16 @@ static void game_update(CEngine_T * engine, float seconds)
    a2 += seconds;
    px = cos(a2) * 2;
    py = sin(a2) * 2;
+   if(cam_drag == 1)
+   {
+      int dx, dy;
+      SDL_GetRelativeMouseState(&dx, &dy);
+      //printf("(dx, dy): (%i, %i)\n", dx, dy);
+      GLCam_FPS_Mouse(&fps_cam, dx, dy);
+
+   }
+
+   GLCam_FPS_Update(&fps_cam, seconds);
 }
 
 static void matrix_perspective_set(GLint uniform_world_matrix, 
@@ -131,8 +151,10 @@ static void matrix_perspective_set(GLint uniform_world_matrix,
 static void game_render(CEngine_T * engine)
 {
    Matrix3D_T matrix;
-   glClear( GL_COLOR_BUFFER_BIT );
+   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    MatrixStack_Clear(&m_stack);
+
+   GLCam_FPS_Render(&fps_cam, &m_stack);
 
    /*
    glBegin( GL_QUADS ); 
@@ -176,7 +198,43 @@ static void game_render(CEngine_T * engine)
 
 static void game_input(CEngine_T * engine, SDL_Event * event)
 {
+   int key_state, key_state_change;
+   if(event->type == SDL_KEYDOWN)
+   {
+      key_state        = 1;
+      key_state_change = 1;
+   }
+   else if(event->type == SDL_KEYUP)
+   {
+      key_state        = 0;
+      key_state_change = 1;
+   }
+   else
+   {
+      key_state_change = 0;
+   }
+
+   if(key_state_change == 1)
+   {
+      if(event->key.keysym.sym == SDLK_w)      GLCam_FPS_Keyboard(&fps_cam, e_fck_forward,  key_state);
+      if(event->key.keysym.sym == SDLK_s)      GLCam_FPS_Keyboard(&fps_cam, e_fck_backward, key_state);
+      if(event->key.keysym.sym == SDLK_a)      GLCam_FPS_Keyboard(&fps_cam, e_fck_left,     key_state);
+      if(event->key.keysym.sym == SDLK_d)      GLCam_FPS_Keyboard(&fps_cam, e_fck_right,    key_state);
+      if(event->key.keysym.sym == SDLK_LSHIFT) GLCam_FPS_Keyboard(&fps_cam, e_fck_run,      key_state);
+   }         
+
+
+   if(event->type == SDL_MOUSEBUTTONDOWN)
+   {
+      cam_drag = 1;            
+      SDL_GetRelativeMouseState(NULL, NULL); // Flush previous delta points
+   }
+   else if(event->type == SDL_MOUSEBUTTONUP)
+   {
+      cam_drag = 0;
+   }
 }
+
 
 static void gl_init(void)
 {
@@ -194,6 +252,7 @@ static void gl_init(void)
    glEnable(GL_CULL_FACE);
    glCullFace(GL_BACK);
    glFrontFace(GL_CCW);
+   glEnable(GL_DEPTH_TEST);
 
 
 
