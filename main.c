@@ -17,6 +17,8 @@
 #include "SDL2/SDL_ttf.h"
 #include "GLFont.h"
 #include "GLCam_FPS.h"
+#include "MapChunk.h"
+#include "MapChunkRender.h"
 
 static void gl_init(void);
 
@@ -47,6 +49,13 @@ int main(int args, char * argc[])
 }
 
 
+
+// open dwarf
+MapChunk_T map_chunk;
+MapChunkRender_T map_chunk_render;
+
+
+// other
 UnitCube_T cube;
 
 GLTexture2D_T test_text, font_text;
@@ -101,6 +110,10 @@ static void game_setup(CEngine_T * engine)
    // FPS Camera
    GLCam_FPS_Init(&fps_cam);
    cam_drag = 0;
+
+   // open dwarf
+   MapChunk_Init(&map_chunk, 5, 5, 5);
+   MapChunkRender_Init(&map_chunk_render, &map_chunk);
 }
 
 static void game_cleanup(CEngine_T * engine)
@@ -114,7 +127,9 @@ static void game_cleanup(CEngine_T * engine)
    GLFont_Destory(&font_hanken);
    GLTexture2D_Destroy(&font_text);
 
-   // Camera
+   // open dwarf
+   MapChunkRender_Destroy(&map_chunk_render);
+   MapChunk_Destroy(&map_chunk);
  
 }
 
@@ -164,9 +179,6 @@ static void game_render(CEngine_T * engine)
    glVertex2f( -0.5f, 0.5f ); 
    glEnd();
    */
-   glUseProgram(shader_test1);
-
-   glUniform3f(light_direction_uniform, 0.577f, 0.577f, -0.577f);
 
 
 
@@ -174,16 +186,21 @@ static void game_render(CEngine_T * engine)
 
    MatrixStack_ApplyTranslation(&m_stack, 0,  0,  10);
 
-   GLTexture2D_ApplyToUniform(&font_text, csampler_uniform, GL_TEXTURE0);
    matrix_perspective_set(wmatrix_uniform, pmatrix_uniform, &m_stack.matrix, &projection);
 
+
+   //UnitCube_Render(&cube);
+   MapChunkRender_Render(&map_chunk_render, &m_stack.matrix, &projection, 0.577f, 0.577f, -0.577f);
 
    glEnableVertexAttribArray(0);
    glEnableVertexAttribArray(1);
    glEnableVertexAttribArray(2);
    glEnableVertexAttribArray(3);
-   UnitCube_Render(&cube);
 
+   glUseProgram(shader_test1);
+
+   glUniform3f(light_direction_uniform, 0.577f, 0.577f, -0.577f);
+   GLTexture2D_ApplyToUniform(&font_text, csampler_uniform, GL_TEXTURE0);
 
    MatrixStack_ApplyTranslation(&m_stack, px, py, 0);
    MatrixStack_ApplyYRotation(&m_stack, angle);
@@ -192,7 +209,8 @@ static void game_render(CEngine_T * engine)
    GLTexture2D_ApplyToUniform(&test_text, csampler_uniform, GL_TEXTURE0);
    UnitCube_Render(&cube);
 
-   // Font Test
+   // open dwarf
+
 
 }
 
