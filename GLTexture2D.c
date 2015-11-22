@@ -6,8 +6,7 @@
 
 void GLTexture2D_Load(GLTexture2D_T * text, const char * filename)
 {
-
-   text->gl_id = SOIL_load_OGL_texture("testImage1024.png", 
+   text->gl_id = SOIL_load_OGL_texture(filename, 
                                        SOIL_LOAD_AUTO, 
                                        SOIL_CREATE_NEW_ID, 
                                        SOIL_FLAG_MIPMAPS | 
@@ -25,7 +24,6 @@ void GLTexture2D_Destroy(GLTexture2D_T * text)
 {
    glDeleteTextures(1, &text->gl_id);
 }
-
 
 void GLTexture2D_ApplyToUniform(GLTexture2D_T * text, GLint uniform, GLenum texture_unit)
 {
