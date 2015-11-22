@@ -72,8 +72,8 @@ static const unsigned int UnitCube_Index[4] =
    0, 2, 1, 3
 };
 
-#define IMG_W 1024
-#define IMG_H 2048
+#define IMG_W 1280
+#define IMG_H 1152
 #define TILE_W 128
 #define TILE_H 128
 
@@ -94,7 +94,7 @@ static void MapChunkRender_UVAjust(float * temp, const float * data, int x, int 
    uc[2] = uc[0];
    vc[2] = vc[3];
 
-   printf("%f %f %f %f\n", uc[0], vc[0], uc[3], vc[3]);
+   //printf("%f %f %f %f\n", uc[0], vc[0], uc[3], vc[3]);
 
    memcpy(temp, data, sizeof(float) * 32);
 
@@ -117,22 +117,22 @@ static void MapChunkRender_GenMesh(MapChunkRender_T * rend)
 
    glGenBuffers(6, rend->cube_vbo);
    glBindBuffer(GL_ARRAY_BUFFER, rend->cube_vbo[0]);
-   MapChunkRender_UVAjust(temp, UnitCube_VertexData_Front, 5, 0);
+   MapChunkRender_UVAjust(temp, UnitCube_VertexData_Front, 9, 0);
    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 32, temp, GL_STATIC_DRAW);
    glBindBuffer(GL_ARRAY_BUFFER, rend->cube_vbo[1]);
-   MapChunkRender_UVAjust(temp, UnitCube_VertexData_Right, 5, 0);
+   MapChunkRender_UVAjust(temp, UnitCube_VertexData_Right, 9, 0);
    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 32, temp, GL_STATIC_DRAW);
    glBindBuffer(GL_ARRAY_BUFFER, rend->cube_vbo[2]);
-   MapChunkRender_UVAjust(temp, UnitCube_VertexData_Back, 5, 0);
+   MapChunkRender_UVAjust(temp, UnitCube_VertexData_Back, 9, 0);
    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 32, temp, GL_STATIC_DRAW);
    glBindBuffer(GL_ARRAY_BUFFER, rend->cube_vbo[3]);
-   MapChunkRender_UVAjust(temp, UnitCube_VertexData_Left, 5, 0);
+   MapChunkRender_UVAjust(temp, UnitCube_VertexData_Left, 9, 0);
    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 32, temp, GL_STATIC_DRAW);
    glBindBuffer(GL_ARRAY_BUFFER, rend->cube_vbo[4]);
-   MapChunkRender_UVAjust(temp, UnitCube_VertexData_Top, 4, 6);
+   MapChunkRender_UVAjust(temp, UnitCube_VertexData_Top, 3, 2);
    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 32, temp, GL_STATIC_DRAW);
    glBindBuffer(GL_ARRAY_BUFFER, rend->cube_vbo[5]);
-   MapChunkRender_UVAjust(temp, UnitCube_VertexData_Bottom, 5, 1);
+   MapChunkRender_UVAjust(temp, UnitCube_VertexData_Bottom, 0, 1);
    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 32, temp, GL_STATIC_DRAW);
 
    glGenBuffers(1, &rend->ibo);
@@ -143,7 +143,7 @@ static void MapChunkRender_GenMesh(MapChunkRender_T * rend)
 static void MapChunkRender_LoadResources(MapChunkRender_T * rend)
 {
    //GLTexture2D_Load(&rend->texture, "assets/spritesheet_tiles.png");
-   GLTexture2D_Load(&rend->texture, "assets/spritesheet_tiles.png");
+   GLTexture2D_Load(&rend->texture, "assets/tiles.png");
    rend->shader = ShaderTool_CreateShaderProgram("block.vert.glsl", 
                                                  NULL, 
                                                  "block.frag.glsl");
