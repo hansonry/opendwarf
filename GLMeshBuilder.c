@@ -40,6 +40,37 @@ void GLMeshBuilder_Destroy(GLMeshBuilder_T * builder)
    builder->element_data = NULL;
 }
 
+void GLMeshBuilder_AddNVertex(GLMeshBuilder_T * builder, unsigned int n, const float * vertex_data)
+{
+   unsigned int i, k;
+   unsigned int new_size;
+   float * p;
+   const float * tf;
+   if(builder->vertex_count + n >= builder->vertex_size)
+   {
+      new_size = builder->vertex_count + n + GROW_BY;
+      builder->vertex_data  = realloc(builder->vertex_data, new_size * builder->vertex_chunk_size * sizeof(float));
+      builder->vertex_size  = new_size;
+   }
+
+
+   tf = vertex_data;
+   for(k = 0; k < n; k ++)
+   {
+
+      p = &builder->vertex_data[(builder->vertex_count + k) * builder->vertex_chunk_size];
+
+      for(i = 0; i < builder->vertex_chunk_size; i++)
+      {
+         p[i] = *tf;
+         tf ++;
+      }
+   }
+
+   builder->vertex_count += n;
+
+}
+
 void GLMeshBuilder_Add1Vertex(GLMeshBuilder_T * builder, const float * vertex_data)
 {
    unsigned int i;

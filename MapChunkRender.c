@@ -7,7 +7,11 @@
 #include "Vector3D.h"
 #include "Matrix3D.h"
 #include "MapChunk.h"
+#include "GLMesh.h"
 #include "MapChunkRender.h"
+#include "GLMeshBuilder.h"
+
+
 
 
 
@@ -111,33 +115,45 @@ static void MapChunkRender_UVAjust(float * temp, const float * data, int x, int 
    temp[31] = vc[3];
 };
 
-static void MapChunkRender_GenMesh(MapChunkRender_T * rend)
+static void MapChunkRender_AppendFace(GLMeshBuilder_T * builder, int number, const float * cube_size, int x, int y, int z, int text_x, int text_y)
 {
    float temp[32];
+   unsigned int tris[6];
+   tris[0] = (number * 4) + 0;
+   tris[1] = (number * 4) + 2;
+   tris[2] = (number * 4) + 1;
+   tris[3] = (number * 4) + 2;
+   tris[4] = (number * 4) + 3;
+   tris[5] = (number * 4) + 1;
+   MapChunkRender_UVAjust(temp, cube_size, text_x, text_y);
+   GLMeshBuilder_AddNVertex(builder, 4, temp);
+   GLMeshBuilder_AddElementArray(builder, tris, 6);
+}
 
-   glGenBuffers(6, rend->cube_vbo);
-   glBindBuffer(GL_ARRAY_BUFFER, rend->cube_vbo[0]);
-   MapChunkRender_UVAjust(temp, UnitCube_VertexData_Front, 9, 0);
-   glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 32, temp, GL_STATIC_DRAW);
-   glBindBuffer(GL_ARRAY_BUFFER, rend->cube_vbo[1]);
-   MapChunkRender_UVAjust(temp, UnitCube_VertexData_Right, 9, 0);
-   glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 32, temp, GL_STATIC_DRAW);
-   glBindBuffer(GL_ARRAY_BUFFER, rend->cube_vbo[2]);
-   MapChunkRender_UVAjust(temp, UnitCube_VertexData_Back, 9, 0);
-   glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 32, temp, GL_STATIC_DRAW);
-   glBindBuffer(GL_ARRAY_BUFFER, rend->cube_vbo[3]);
-   MapChunkRender_UVAjust(temp, UnitCube_VertexData_Left, 9, 0);
-   glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 32, temp, GL_STATIC_DRAW);
-   glBindBuffer(GL_ARRAY_BUFFER, rend->cube_vbo[4]);
-   MapChunkRender_UVAjust(temp, UnitCube_VertexData_Top, 3, 2);
-   glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 32, temp, GL_STATIC_DRAW);
-   glBindBuffer(GL_ARRAY_BUFFER, rend->cube_vbo[5]);
-   MapChunkRender_UVAjust(temp, UnitCube_VertexData_Bottom, 0, 1);
-   glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 32, temp, GL_STATIC_DRAW);
+static void MapChunkRender_GenMesh(MapChunkRender_T * rend)
+{
+   unsigned int components[3];
+   GLMeshBuilder_T builder;
 
-   glGenBuffers(1, &rend->ibo);
-   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rend->ibo);
-   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * 4, UnitCube_Index, GL_STATIC_DRAW);
+   components[0] = 3;
+   components[1] = 3;
+   components[2] = 2;
+
+   GLMeshBuilder_Init(&builder, components, 3);
+
+
+   MapChunkRender_AppendFace(&builder, 0, UnitCube_VertexData_Front,  0, 0, 0, 9, 0);
+   MapChunkRender_AppendFace(&builder, 1, UnitCube_VertexData_Right,  0, 0, 0, 9, 0);
+   MapChunkRender_AppendFace(&builder, 2, UnitCube_VertexData_Back,   0, 0, 0, 9, 0);
+   MapChunkRender_AppendFace(&builder, 3, UnitCube_VertexData_Left,   0, 0, 0, 9, 0);
+   MapChunkRender_AppendFace(&builder, 4, UnitCube_VertexData_Top,    0, 0, 0, 3, 2);
+   MapChunkRender_AppendFace(&builder, 5, UnitCube_VertexData_Bottom, 0, 0, 0, 0, 1);
+
+   GLMeshBuilder_CreateGLMesh(&builder, &rend->mesh);
+   GLMesh_MoveToGFXCard(&rend->mesh);
+
+   GLMeshBuilder_Destroy(&builder);
+
 }
 
 static void MapChunkRender_LoadResources(MapChunkRender_T * rend)
@@ -147,16 +163,17 @@ static void MapChunkRender_LoadResources(MapChunkRender_T * rend)
    rend->shader = ShaderTool_CreateShaderProgram("block.vert.glsl", 
                                                  NULL, 
                                                  "block.frag.glsl");
-   rend->uniform_pmatrix = glGetUniformLocation(rend->shader, "PMatrix");
-   rend->uniform_wmatrix = glGetUniformLocation(rend->shader, "WMatrix");
+   rend->uniform_pmatrix         = glGetUniformLocation(rend->shader, "PMatrix");
+   rend->uniform_wmatrix         = glGetUniformLocation(rend->shader, "WMatrix");
    rend->uniform_light_direction = glGetUniformLocation(rend->shader, "LightDirection");
-   rend->uniform_csampler = glGetUniformLocation(rend->shader, "CSampler");
+   rend->uniform_csampler        = glGetUniformLocation(rend->shader, "CSampler");
 }
 
 static void MapChunkRender_FreeResources(MapChunkRender_T * rend)
 {
    GLTexture2D_Destroy(&rend->texture);
    glDeleteProgram(rend->shader);
+
 }
 
 void MapChunkRender_Init(MapChunkRender_T * rend, MapChunk_T * map)
@@ -170,8 +187,7 @@ void MapChunkRender_Init(MapChunkRender_T * rend, MapChunk_T * map)
 
 void MapChunkRender_Destroy(MapChunkRender_T * rend)
 {
-   glDeleteBuffers(6, rend->cube_vbo);
-   glDeleteBuffers(1, &rend->ibo);
+   GLMesh_Cleanup(&rend->mesh);
    MapChunkRender_FreeResources(rend);
 }
 
@@ -194,15 +210,7 @@ void MapChunkRender_Render(MapChunkRender_T * rend, const Matrix3D_T * world, co
    glEnableVertexAttribArray(1);
    glEnableVertexAttribArray(2);
 
-   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rend->ibo);
-   for(i = 0; i < 6; i++)
-   {
-      glBindBuffer(GL_ARRAY_BUFFER, rend->cube_vbo[i]);
-      glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (GLvoid *)(0));
-      glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (GLvoid *)(sizeof(float) * 3));
-      glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (GLvoid *)(sizeof(float) * 6));
-      glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, 0);
-   }
+   GLMesh_Render(&rend->mesh, GL_TRIANGLES);
 
    glDisableVertexAttribArray(0);
    glDisableVertexAttribArray(1);

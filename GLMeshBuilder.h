@@ -21,6 +21,7 @@ void GLMeshBuilder_Init(GLMeshBuilder_T * builder, const unsigned int * vertex_s
 void GLMeshBuilder_Destroy(GLMeshBuilder_T * builder);
 
 void GLMeshBuilder_Add1Vertex(GLMeshBuilder_T * builder, const float * vertex_data);
+void GLMeshBuilder_AddNVertex(GLMeshBuilder_T * builder, unsigned int n, const float * vertex_data);
 void GLMeshBuilder_Add1Vertex3f(GLMeshBuilder_T * builder, float f1, float f2, float f3);
 void GLMeshBuilder_Add1Vertex6f(GLMeshBuilder_T * builder, float f1, float f2, float f3, float f4, float f5, float f6);
 void GLMeshBuilder_Add1Vertex9f(GLMeshBuilder_T * builder, float f1, float f2, float f3, float f4, float f5, float f6, float f7, float f8, float f9);

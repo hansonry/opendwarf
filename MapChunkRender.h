@@ -6,8 +6,7 @@ typedef struct MapChunkRender_S MapChunkRender_T;
 struct MapChunkRender_S
 {
    MapChunk_T * map;
-   GLuint ibo;
-   GLuint cube_vbo[6];
+   GLMesh_T mesh;
    GLTexture2D_T texture;
    GLuint shader;
    GLint  uniform_pmatrix;
