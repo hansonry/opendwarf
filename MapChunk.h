@@ -10,7 +10,8 @@ enum MapChunkTileTopology_E
 {
    e_MCTT_None,
    e_MCTT_Block,
-   e_MCTT_Ramp
+   e_MCTT_Ramp,
+   e_MCTT_Last
 };
 
 enum MapChunkTileMaterial_E
@@ -19,7 +20,8 @@ enum MapChunkTileMaterial_E
    e_MCTM_Grass,
    e_MCTM_Dirt,
    e_MCTM_Rock,
-   e_MCTM_Wood
+   e_MCTM_Wood,
+   e_MCTM_Last
 };
 
 struct MapChunkTile_S

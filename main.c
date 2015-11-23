@@ -74,6 +74,28 @@ MatrixStack_T m_stack;
 float px, py;
 float a2;
 
+static void mapchunk_setup(void)
+{
+   MapChunkTile_T tile_air, tile_grass, tile_rock;
+   tile_air.material = e_MCTM_None;
+   tile_air.topology = e_MCTT_None;
+
+   tile_grass.material = e_MCTM_Grass;
+   tile_grass.topology = e_MCTT_Block;
+   
+   tile_rock.material = e_MCTM_Rock;
+   tile_rock.topology = e_MCTT_Block;
+
+   MapChunk_Init(&map_chunk, 5, 5, 5);
+
+   MapChunk_Fill(&map_chunk, 0, 0, 0, 4, 4, 4, &tile_air);
+   MapChunk_Fill(&map_chunk, 0, 0, 0, 4, 1, 4, &tile_grass);
+   MapChunk_Set(&map_chunk, 2, 2, 2, &tile_rock);
+
+   
+   MapChunkRender_Init(&map_chunk_render, &map_chunk);
+}
+
 static void game_setup(CEngine_T * engine)
 {
    gl_init();
@@ -112,8 +134,7 @@ static void game_setup(CEngine_T * engine)
    cam_drag = 0;
 
    // open dwarf
-   MapChunk_Init(&map_chunk, 5, 5, 5);
-   MapChunkRender_Init(&map_chunk_render, &map_chunk);
+   mapchunk_setup();
 }
 
 static void game_cleanup(CEngine_T * engine)
