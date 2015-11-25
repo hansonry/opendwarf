@@ -19,6 +19,7 @@
 #include "GLCam_FPS.h"
 #include "MapChunk.h"
 #include "MapChunkRender.h"
+#include "WavefrontLoader.h"
 
 static void gl_init(void);
 
@@ -42,8 +43,8 @@ int main(int args, char * argc[])
                          game_render, 
                          game_input,
                          CENGINE_FLAG_AUTOCLOSE);
-   CEngine_Start(&engine);
-      
+   //CEngine_Start(&engine);
+   WavefrontLoader_TEST();
    printf("End\n");
    return 0;
 }
