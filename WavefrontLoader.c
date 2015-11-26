@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "WavefrontLoader.h"
 
 
@@ -21,10 +22,10 @@ static void FileBuffer_Init(FileBuffer_T * buff, FILE * file)
 
 static int FileBuffer_Read(FileBuffer_T * buff)
 {
-   if(index > 0)
+   if(buff->index > 0)
    {
-      index --;
-      return buff->buffer[index];
+      buff->index --;
+      return buff->buffer[buff->index];
    }
    else
    {
@@ -32,18 +33,19 @@ static int FileBuffer_Read(FileBuffer_T * buff)
    }
 }
 
-static void FileBuffer_Push(FileBuffer_T * buffer, int c)
+static void FileBuffer_Push(FileBuffer_T * buff, int c)
 {
-   if(index < FILEBUFFER_SIZE)
+   if(buff->index < FILEBUFFER_SIZE)
    {
-      buff->buffer[index] = c;
-      index ++;
+      buff->buffer[buff->index] = c;
+      buff->index ++;
    }
    else
    {
       printf("Error: FileBuffer_Push buffer is maxed out\n");
    }
 }
+
 
 typedef enum WavefrontLoaderState_E WavefrontLoaderState_T;
 enum WavefrontLoaderState_E
@@ -67,7 +69,7 @@ enum StringMatchState_E
 
 };
 
-static int FILE_StringMatch(FileBuffer * file_buffer, const char * strs[], StringMatchState_T * match_data, int str_count)
+static int FILE_StringMatch(FileBuffer_T * file_buffer, const char * strs[], StringMatchState_T * match_data, int str_count)
 {
    int c;
    int i;
@@ -88,7 +90,7 @@ static int FILE_StringMatch(FileBuffer * file_buffer, const char * strs[], Strin
       c = FileBuffer_Read(file_buffer);
    }
 
-   FileBuffer_Push(buffer, c);
+   FileBuffer_Push(file_buffer, c);
 
    output = -1;
    done = 0;
@@ -194,16 +196,16 @@ static int WavefrontLoader_ReadFloat(FileBuffer_T * file_buffer, float * value)
    }
 }
 
-static int WavefrontLoader_ReadIndex(FileBuffer_T file_buffer, size_t * value)
+static int WavefrontLoader_ReadIndex(FileBuffer_T * file_buffer, size_t * value)
 {
    char buffer[INDEX_BUFFER_SIZE];
    int index;
    int c;
    int v;
-   c = FileBuffer_Read(file_buffer)
+   c = FileBuffer_Read(file_buffer);
    while(c == ' ' || c == '\t')
    {
-      c = FileBuffer_Read(file_buffer)
+      c = FileBuffer_Read(file_buffer);
    }
    FileBuffer_Push(file_buffer, c);
    if(c == EOF)
@@ -212,15 +214,15 @@ static int WavefrontLoader_ReadIndex(FileBuffer_T file_buffer, size_t * value)
    }
 
    index = 0;
-   c = FileBuffer_Read(file_buffer)
+   c = FileBuffer_Read(file_buffer);
    while(IS_INDEX(c) && index < INDEX_BUFFER_SIZE - 1)
    {
       buffer[index] = c;
       index ++;
-      c = FileBuffer_Read(file_buffer)
+      c = FileBuffer_Read(file_buffer);
    }
 
-   if(!IS_INDEX(c) && c != '/')
+   if(!IS_INDEX(c))
    {
       FileBuffer_Push(file_buffer, c);
    }
@@ -281,7 +283,7 @@ static int WavefrontLoader_ParseVertex(WavefrontLoaderData_T * data, FileBuffer_
       WavefrontLoader_ReadFloat(obj_file_buffer, &vert.z) == 1)
    {
       sucess = 1;
-      WavefrontLoader_ReadFloat(obj_file, &vert.w, &end_with_newline);
+      WavefrontLoader_ReadFloat(obj_file_buffer, &vert.w);
    }
    else
    {
@@ -290,7 +292,7 @@ static int WavefrontLoader_ParseVertex(WavefrontLoaderData_T * data, FileBuffer_
 
    if(sucess == 1)
    {
-      Array_Add(&data->vertex_list, sizeof(WavefrontLoaderVertex_T), 
+      Array_Add((void**)&data->vertex_list, sizeof(WavefrontLoaderVertex_T), 
                 &data->vertex_list_count, &data->vertex_list_size, &vert);
    }
    return sucess;
@@ -316,7 +318,7 @@ static int WavefrontLoader_ParseNormal(WavefrontLoaderData_T * data, FileBuffer_
 
    if(sucess == 1)
    {
-      Array_Add(&data->normal_list, sizeof(WavefrontLoaderNormal_T), 
+      Array_Add((void**)&data->normal_list, sizeof(WavefrontLoaderNormal_T), 
                 &data->normal_list_count, &data->normal_list_size, &norm);
    }
    return sucess;
@@ -342,26 +344,51 @@ static int WavefrontLoader_ParseUV(WavefrontLoaderData_T * data, FileBuffer_T * 
 
    if(sucess == 1)
    {
-      Array_Add(&data->uv_list, sizeof(WavefrontLoaderUV_T), 
+      Array_Add((void**)&data->uv_list, sizeof(WavefrontLoaderUV_T), 
                 &data->uv_list_count, &data->uv_list_size, &uv);
    }
    return sucess;
-};
+}
+
+static int WavefrontLoader_NextSlash(FileBuffer_T * obj_file_buffer)
+{
+   int c;
+   int output;
+
+   c = FileBuffer_Read(obj_file_buffer);
+   while(c != EOF && (c == ' ' || c == '\t'))
+   {
+      c = FileBuffer_Read(obj_file_buffer);
+   }
+
+   if(c == '/')
+   {
+      output = 1;
+   }
+   else
+   {
+      FileBuffer_Push(obj_file_buffer, c);
+      output = 0;
+   }
+   return output;
+}
 
 static int WavefrontLoader_ParseFaceVertex(WavefrontLoaderData_T * data, FileBuffer_T * obj_file_buffer)
 {
    WavefrontLoaderFaceVertex_T face_vertex;
    int sucess;
 
+   
+
    if(WavefrontLoader_ReadIndex(obj_file_buffer, &face_vertex.vertex_index) == 1)
    {
       sucess = 1;
-      if(end_with_slash == 1)
+      if(WavefrontLoader_NextSlash(obj_file_buffer) == 1)
       {
-         WavefrontLoader_ReadIndex(obj_file, &face_vertex.uv_index, &end_with_slash);
-         if(end_with_slash == 1)
+         WavefrontLoader_ReadIndex(obj_file_buffer, &face_vertex.uv_index);
+         if(WavefrontLoader_NextSlash(obj_file_buffer) == 1)
          {
-            WavefrontLoader_ReadIndex(obj_file, &face_vertex.normal_index, &end_with_slash);
+            WavefrontLoader_ReadIndex(obj_file_buffer, &face_vertex.normal_index);
          }
       }
    }
@@ -369,33 +396,18 @@ static int WavefrontLoader_ParseFaceVertex(WavefrontLoaderData_T * data, FileBuf
    {
       sucess = 0;
    }
+
    if(sucess == 1)
    {
-      Array_Add(&data->face_vertex_list, sizeof(WavefrontLoaderFaceVertex_T), 
+      Array_Add((void**)&data->face_vertex_list, sizeof(WavefrontLoaderFaceVertex_T), 
                 &data->face_vertex_list_count, &data->face_vertex_list_size, 
                 &face_vertex);
    }
    return sucess;
 }
 
-#define OBJ_CMDS_SIZE 5
-static const char * obj_cmds[OBJ_CMDS_SIZE]                        = {"#",           "v ",         "vn ",       "vt ",     "f "};
-static const WavefrontLoaderState_T obj_cmds_states[OBJ_CMDS_SIZE] = {e_WLS_Comment, e_WLS_Vertex, e_WLS_Normal, e_WLS_UV, e_WLS_Face};
-
-static void WavefrontLoader_LoadFile(WavefrontLoaderData_T * data, FILE * obj_file, const char * material_path)
+static void WavefrontLoader_Blank(WavefrontLoaderData_T * data)
 {
-   StringMatchState_T string_state[OBJ_CMDS_SIZE];
-   WavefrontLoaderState_T state;
-   WavefrontLoaderFace_T face;
-   FileBuffer_T file_buffer;
-   int done;
-   int found_index;
-   int c;
-   face.material_index = 0;
-   face.face_vertex_start_index = 0;
-   face.face_vertex_count = 0;
-
-   // Init WavefrontLoaderState_T
    data->vertex_list            = NULL;
    data->vertex_list_count      = 0;
    data->vertex_list_size       = 0;
@@ -411,11 +423,32 @@ static void WavefrontLoader_LoadFile(WavefrontLoaderData_T * data, FILE * obj_fi
    data->face_list              = NULL;
    data->face_list_count        = 0;
    data->face_list_size         = 0;
+}
+
+#define OBJ_CMDS_SIZE 5
+static const char * obj_cmds[OBJ_CMDS_SIZE]                        = {"#",           "v ",         "vn ",       "vt ",     "f "};
+static const WavefrontLoaderState_T obj_cmds_states[OBJ_CMDS_SIZE] = {e_WLS_Comment, e_WLS_Vertex, e_WLS_Normal, e_WLS_UV, e_WLS_Face};
+
+static void WavefrontLoader_LoadFile(WavefrontLoaderData_T * data, FILE * obj_file, const char * material_path)
+{
+   StringMatchState_T string_state[OBJ_CMDS_SIZE];
+   WavefrontLoaderState_T state;
+   WavefrontLoaderFace_T face;
+   FileBuffer_T obj_file_buffer;
+   int done;
+   int found_index;
+   int c;
+   face.material_index = 0;
+   face.face_vertex_start_index = 0;
+   face.face_vertex_count = 0;
+
+   // Init WavefrontLoaderState_T
+   WavefrontLoader_Blank(data);
 
    state = e_WLS_Init;
 
 
-   FileBuffer_Init(&file_buffer, obj_file);
+   FileBuffer_Init(&obj_file_buffer, obj_file);
 
    done = 0;
    while(done == 0)
@@ -423,7 +456,7 @@ static void WavefrontLoader_LoadFile(WavefrontLoaderData_T * data, FILE * obj_fi
       switch(state)
       {
          case e_WLS_Init:
-            found_index = FILE_StringMatch(obj_file, obj_cmds, string_state, OBJ_CMDS_SIZE);
+            found_index = FILE_StringMatch(&obj_file_buffer, obj_cmds, string_state, OBJ_CMDS_SIZE);
             printf("e_WLS_Init %i\n", found_index);
             if(found_index < 0)
             {
@@ -438,11 +471,11 @@ static void WavefrontLoader_LoadFile(WavefrontLoaderData_T * data, FILE * obj_fi
          case e_WLS_Comment:
          case e_WLS_Unknown:
             printf("e_WLS_Comment\n");
-            c = fgetc(obj_file);            
+            c = FileBuffer_Read(&obj_file_buffer);            
             while(c != '\n' && c != EOF)
             {
                printf("c: %c\n", c);
-               c = fgetc(obj_file);
+               c = FileBuffer_Read(&obj_file_buffer);
             }
             if(c == EOF)
             {
@@ -456,7 +489,7 @@ static void WavefrontLoader_LoadFile(WavefrontLoaderData_T * data, FILE * obj_fi
             break;
          case e_WLS_Vertex:
             printf("e_WLS_Vertex\n");
-            if(WavefrontLoader_ParseVertex(data, obj_file))
+            if(WavefrontLoader_ParseVertex(data, &obj_file_buffer))
             {
                state = e_WLS_Init;
             }
@@ -468,7 +501,7 @@ static void WavefrontLoader_LoadFile(WavefrontLoaderData_T * data, FILE * obj_fi
             break;
          case e_WLS_Normal:
             printf("e_WLS_Normal\n");
-            if(WavefrontLoader_ParseNormal(data, obj_file))
+            if(WavefrontLoader_ParseNormal(data, &obj_file_buffer))
             {
                state = e_WLS_Init;
             }
@@ -479,7 +512,7 @@ static void WavefrontLoader_LoadFile(WavefrontLoaderData_T * data, FILE * obj_fi
             break;
          case e_WLS_UV:
             printf("e_WLS_UV\n");
-            if(WavefrontLoader_ParseUV(data, obj_file))
+            if(WavefrontLoader_ParseUV(data, &obj_file_buffer))
             {
                state = e_WLS_Init;
             }
@@ -496,7 +529,7 @@ static void WavefrontLoader_LoadFile(WavefrontLoaderData_T * data, FILE * obj_fi
             break;
          case e_WLS_FaceVertex:
             printf("e_WLS_FaceVertex\n");
-            if(WavefrontLoader_ParseFaceVertex(data, obj_file))
+            if(WavefrontLoader_ParseFaceVertex(data, &obj_file_buffer))
             {
                state = e_WLS_FaceVertex;
             }
@@ -508,7 +541,7 @@ static void WavefrontLoader_LoadFile(WavefrontLoaderData_T * data, FILE * obj_fi
             break;
          case e_WLS_FaceEnd:
             printf("e_WLS_FaceEnd\n");
-            Array_Add(&data->face_list, sizeof(WavefrontLoaderFace_T), 
+            Array_Add((void**)&data->face_list, sizeof(WavefrontLoaderFace_T), 
                       &data->face_list_count, &data->face_list_size, 
                       &face);
             state = e_WLS_Init;
@@ -533,6 +566,7 @@ void WavefrontLoader_Load(WavefrontLoaderData_T * data, const char * filename, c
 
    obj_file = fopen(filename, "r");
 
+   WavefrontLoader_Blank(data);
    if(obj_file != NULL)
    {
       WavefrontLoader_LoadFile(data, obj_file, material_path);
