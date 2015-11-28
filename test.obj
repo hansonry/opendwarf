@@ -3,6 +3,16 @@
  
 g cube
  
+mtllib log1.mtl
+mtllib log2.mtl
+mtllib log3.mtl
+mtllib log4.mtl
+mtllib log5.mtl
+mtllib log6.mtl
+mtllib l
+
+mtllib log6.mtl dsfd
+
 v  0.0  0.0  0.0
 v  0.0  0.0  1.0
 v  0.0  1.0  0.0

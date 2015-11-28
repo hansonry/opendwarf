@@ -39,7 +39,7 @@ struct WavefrontLoaderFaceVertex_S
 
 struct WavefrontLoaderFace_S
 {
-   size_t material_index;
+   size_t material_string_index;
    size_t face_vertex_start_index;
    size_t face_vertex_count;
 };
@@ -47,21 +47,24 @@ struct WavefrontLoaderFace_S
 
 struct WavefrontLoaderData_S
 {
-   WavefrontLoaderVertex_T     * vertex_list;
-   size_t                        vertex_list_count;
-   size_t                        vertex_list_size;
-   WavefrontLoaderNormal_T     * normal_list;
-   size_t                        normal_list_count;
-   size_t                        normal_list_size;
-   WavefrontLoaderUV_T         * uv_list;
-   size_t                        uv_list_count;
-   size_t                        uv_list_size;
-   WavefrontLoaderFaceVertex_T * face_vertex_list;
-   size_t                        face_vertex_list_count;
-   size_t                        face_vertex_list_size;
-   WavefrontLoaderFace_T       * face_list;
-   size_t                        face_list_count;
-   size_t                        face_list_size;
+   WavefrontLoaderVertex_T     *  vertex_list;
+   size_t                         vertex_list_count;
+   size_t                         vertex_list_size;
+   WavefrontLoaderNormal_T     *  normal_list;
+   size_t                         normal_list_count;
+   size_t                         normal_list_size;
+   WavefrontLoaderUV_T         *  uv_list;
+   size_t                         uv_list_count;
+   size_t                         uv_list_size;
+   WavefrontLoaderFaceVertex_T *  face_vertex_list;
+   size_t                         face_vertex_list_count;
+   size_t                         face_vertex_list_size;
+   WavefrontLoaderFace_T       *  face_list;
+   size_t                         face_list_count;
+   size_t                         face_list_size;
+   char                        ** string_list;
+   size_t                         string_list_count;
+   size_t                         string_list_size;
 };
 
 

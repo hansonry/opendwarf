@@ -58,7 +58,9 @@ enum WavefrontLoaderState_E
    e_WLS_UV,
    e_WLS_Face,
    e_WLS_FaceVertex,
-   e_WLS_FaceEnd
+   e_WLS_FaceEnd,
+   e_WLS_MaterialLib,
+   e_WLS_UseMaterial
 };
 typedef enum StringMatchState_E StringMatchState_T;
 enum StringMatchState_E
@@ -144,6 +146,62 @@ static int FILE_StringMatch(FileBuffer_T * file_buffer, const char * strs[], Str
 
 #define IS_FLOAT(c) ((c) == '-' || (c) == '.' || ((c) >= '0' && (c) <= '9'))
 #define FLOAT_BUFFER_SIZE 32
+
+
+static int WavefrontLoader_ReadString(FileBuffer_T * file_buffer, char * out_str, size_t size)
+{
+   int c;
+   int last_non_white_space;
+   size_t count;
+
+   c = FileBuffer_Read(file_buffer);
+   while(c == ' ' || c == '\t')
+   {
+      c = FileBuffer_Read(file_buffer);
+   }
+   FileBuffer_Push(file_buffer, c);
+
+   if(c == EOF)
+   {
+      return 0;
+   }
+   
+   last_non_white_space = -1;
+   count = 0;
+   c = FileBuffer_Read(file_buffer);
+   while(c != '\n' && count < size)
+   {
+      if(c != ' ' && c != '\t')
+      {
+         last_non_white_space = count;
+      }
+
+
+      out_str[count] = (char)c;
+      count ++;
+      c = FileBuffer_Read(file_buffer);
+   }
+
+   if(count >= size)
+   {
+      FileBuffer_Push(file_buffer, c);
+      out_str[last_non_white_space + 1] = '\0';
+   }
+   else
+   {
+      out_str[last_non_white_space + 1] = '\0';
+   }
+
+   if(last_non_white_space < 0)
+   {
+      return 0;
+   }
+   else
+   {
+      return 1;
+   }
+
+}
 
 static int WavefrontLoader_ReadFloat(FileBuffer_T * file_buffer, float * value)
 {
@@ -268,6 +326,35 @@ static void Array_Add(void ** buffer, size_t element_size, size_t *count, size_t
    p = &((unsigned char *)(*buffer))[(*count) * element_size];
    memcpy(p, data, element_size);
    (*count) ++;
+
+}
+
+static void StringArray_Add(char *** str_buffer, size_t * count, size_t * size, char * str)
+{
+   size_t new_size;
+   size_t str_len;
+   char ** p;
+   str_len = strlen(str);
+
+   if((*count) >= (*size))
+   {
+      new_size = (*count) + GROW_BY;
+      if((*str_buffer) == NULL)
+      {
+         (*str_buffer) = malloc(new_size * sizeof(char *));
+      }
+      else
+      {
+         (*str_buffer) = realloc(*str_buffer, new_size * sizeof(char *));
+      }
+      (*size) = new_size;
+   }
+   p = &(*str_buffer)[(*count)];
+
+   (*p) = malloc(sizeof(char) * (str_len + 1));
+   
+   memcpy(*p, str, str_len + 1);
+   (*count) ++; 
 
 }
 
@@ -405,6 +492,20 @@ static int WavefrontLoader_ParseFaceVertex(WavefrontLoaderData_T * data, FileBuf
    }
    return sucess;
 }
+#define FILENAME_MAX_SIZE 128
+
+static void WavefrontLoader_ParseMaterialLib(WavefrontLoaderData_T * data, FileBuffer_T * obj_file_buffer)
+{
+   char filename[FILENAME_MAX_SIZE];
+
+   if(WavefrontLoader_ReadString(obj_file_buffer, filename, FILENAME_MAX_SIZE) == 1)
+   {
+      printf("ParseMaterial: %s\n", filename);
+      StringArray_Add(&data->string_list, &data->string_list_count, &data->string_list_size, filename);
+   }
+
+
+}
 
 static void WavefrontLoader_Blank(WavefrontLoaderData_T * data)
 {
@@ -423,11 +524,14 @@ static void WavefrontLoader_Blank(WavefrontLoaderData_T * data)
    data->face_list              = NULL;
    data->face_list_count        = 0;
    data->face_list_size         = 0;
+   data->string_list            = NULL;
+   data->string_list_count      = 0;
+   data->string_list_size       = 0;
 }
 
-#define OBJ_CMDS_SIZE 5
-static const char * obj_cmds[OBJ_CMDS_SIZE]                        = {"#",           "v ",         "vn ",       "vt ",     "f "};
-static const WavefrontLoaderState_T obj_cmds_states[OBJ_CMDS_SIZE] = {e_WLS_Comment, e_WLS_Vertex, e_WLS_Normal, e_WLS_UV, e_WLS_Face};
+#define OBJ_CMDS_SIZE  7
+static const char * obj_cmds[OBJ_CMDS_SIZE]                        = {"#",           "v ",         "vn ",       "vt ",     "f ",       "mtllib ",         "usemtl "};
+static const WavefrontLoaderState_T obj_cmds_states[OBJ_CMDS_SIZE] = {e_WLS_Comment, e_WLS_Vertex, e_WLS_Normal, e_WLS_UV, e_WLS_Face, e_WLS_MaterialLib, e_WLS_UseMaterial};
 
 static void WavefrontLoader_LoadFile(WavefrontLoaderData_T * data, FILE * obj_file, const char * material_path)
 {
@@ -438,9 +542,9 @@ static void WavefrontLoader_LoadFile(WavefrontLoaderData_T * data, FILE * obj_fi
    int done;
    int found_index;
    int c;
-   face.material_index = 0;
+   face.material_string_index   = 0;
    face.face_vertex_start_index = 0;
-   face.face_vertex_count = 0;
+   face.face_vertex_count       = 0;
 
    // Init WavefrontLoaderState_T
    WavefrontLoader_Blank(data);
@@ -546,6 +650,12 @@ static void WavefrontLoader_LoadFile(WavefrontLoaderData_T * data, FILE * obj_fi
                       &face);
             state = e_WLS_Init;
             break;
+         case e_WLS_MaterialLib:
+            WavefrontLoader_ParseMaterialLib(data, &obj_file_buffer);
+            state = e_WLS_Init;
+            break;
+         case e_WLS_UseMaterial:
+            break;
          default:
             //printf("default:\n");
             state = e_WLS_Unknown;
@@ -582,6 +692,7 @@ void WavefrontLoader_Load(WavefrontLoaderData_T * data, const char * filename, c
 
 void WavefrontLoader_Delete(WavefrontLoaderData_T * data)
 {
+   size_t i;
    if(data->vertex_list != NULL)
    {
       free(data->vertex_list);
@@ -605,6 +716,15 @@ void WavefrontLoader_Delete(WavefrontLoaderData_T * data)
    if(data->face_list != NULL)
    {
       free(data->face_list);
+   }
+
+   if(data->string_list != NULL)
+   {
+      for(i = 0; i < data->string_list_count; i++)
+      {
+         free(data->string_list[i]);
+      }
+      free(data->string_list);
    }
 }
 
@@ -639,7 +759,12 @@ void WavefrontLoader_TEST(void)
    {
       printf("F (%i, %i)\n", (int)data.face_list[i].face_vertex_start_index, (int)data.face_list[i].face_vertex_count);
    }
-   
+
+   printf("\n");
+   for(i = 0; i < data.string_list_count; i++)
+   {
+      printf("String: %s\n", data.string_list[i]);
+   }
 
    WavefrontLoader_Delete(&data);
    printf("</WavefrontLoader_TEST>\n");
