@@ -53,6 +53,7 @@ struct WavefrontLoaderFaceVertex_S
 
 struct WavefrontLoaderFace_S
 {
+   size_t material_index;
    size_t material_string_index;
    size_t face_vertex_start_index;
    size_t face_vertex_count;
@@ -87,12 +88,16 @@ struct WavefrontLoaderData_S
    size_t                          material_list_size;
 };
 
-
+// Load the obj data file
 void WavefrontLoader_Load(WavefrontLoaderData_T * data, const char * filename);
 
+// Load all the mtl files refreced in obj file
 void WavefrontLoader_LoadMaterialLibs(WavefrontLoaderData_T * data, const char * material_prefix_path);
 
+// Refrences face material index to actual materials
+void WavefrontLoader_LookupMaterial(WavefrontLoaderData_T * data);
 
+// cleanup
 void WavefrontLoader_Delete(WavefrontLoaderData_T * data);
 
 

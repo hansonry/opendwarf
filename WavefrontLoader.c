@@ -590,6 +590,7 @@ static void WavefrontLoader_LoadFile(WavefrontLoaderData_T * data, FILE * obj_fi
    int done;
    int found_index;
    int c;
+   face.material_index          = 0;
    face.material_string_index   = 0;
    face.face_vertex_start_index = 0;
    face.face_vertex_count       = 0;
@@ -887,6 +888,21 @@ void WavefrontLoader_LoadMaterialLibs(WavefrontLoaderData_T * data, const char *
 
 }
 
+void WavefrontLoader_LookupMaterial(WavefrontLoaderData_T * data)
+{
+   size_t i, k;
+   for(i = 0; i < data->face_list_count; i++)
+   {
+      for(k = 0; k < data->material_list_count; k++)
+      {
+         if(data->face_list[i].material_string_index == data->material_list[k].name_string_index)
+         {
+            data->face_list[i].material_index = k;
+            break;
+         }
+      }
+   }
+}
 
 void WavefrontLoader_Delete(WavefrontLoaderData_T * data)
 {
@@ -945,6 +961,7 @@ void WavefrontLoader_TEST(void)
    printf("<WavefrontLoader_TEST>\n");
    WavefrontLoader_Load(&data, "assets/log.obj");
    WavefrontLoader_LoadMaterialLibs(&data, "assets/");
+   WavefrontLoader_LookupMaterial(&data);
 
    for(i = 0; i < data.vertex_list_count; i++)
    {
