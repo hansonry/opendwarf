@@ -8,6 +8,14 @@ typedef struct WavefrontLoaderUV_S           WavefrontLoaderUV_T;
 typedef struct WavefrontLoaderFaceVertex_S   WavefrontLoaderFaceVertex_T;
 typedef struct WavefrontLoaderFace_S         WavefrontLoaderFace_T;
 typedef struct WavefrontLoaderMaterialLib_S  WavefrontLoaderMaterialLib_T;
+typedef struct WavefrontLoaderMaterial_S     WavefrontLoaderMaterial_T;
+
+
+struct WavefrontLoaderMaterial_S
+{
+   size_t name_string_index;
+   size_t mapKd_string_index;
+};
 
 struct WavefrontLoaderMaterialLib_S
 {
@@ -74,10 +82,15 @@ struct WavefrontLoaderData_S
    WavefrontLoaderMaterialLib_T *  materiallib_list;
    size_t                          materiallib_list_count;
    size_t                          materiallib_list_size;
+   WavefrontLoaderMaterial_T    *  material_list;
+   size_t                          material_list_count;
+   size_t                          material_list_size;
 };
 
 
-void WavefrontLoader_Load(WavefrontLoaderData_T * data, const char * filename, const char * material_path);
+void WavefrontLoader_Load(WavefrontLoaderData_T * data, const char * filename);
+
+void WavefrontLoader_LoadMaterialLibs(WavefrontLoaderData_T * data, const char * material_prefix_path);
 
 
 void WavefrontLoader_Delete(WavefrontLoaderData_T * data);

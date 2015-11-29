@@ -60,7 +60,9 @@ enum WavefrontLoaderState_E
    e_WLS_FaceVertex,
    e_WLS_FaceEnd,
    e_WLS_MaterialLib,
-   e_WLS_UseMaterial
+   e_WLS_UseMaterial,
+   e_WLS_NewMaterial,
+   e_WLS_MapKD
 };
 typedef enum StringMatchState_E StringMatchState_T;
 enum StringMatchState_E
@@ -329,12 +331,23 @@ static void Array_Add(void ** buffer, size_t element_size, size_t *count, size_t
 
 }
 
-static void StringArray_Add(char *** str_buffer, size_t * count, size_t * size, char * str)
+static size_t StringArray_Add(char *** str_buffer, size_t * count, size_t * size, char * str)
 {
    size_t new_size;
    size_t str_len;
+   size_t out_index;
+   size_t i;
    char ** p;
    str_len = strlen(str);
+
+   for(i = 0; i < (*count); i++)
+   {
+      if(strcmp((*str_buffer)[i], str) == 0)
+      {
+         return i;
+      }
+
+   }
 
    if((*count) >= (*size))
    {
@@ -354,8 +367,9 @@ static void StringArray_Add(char *** str_buffer, size_t * count, size_t * size, 
    (*p) = malloc(sizeof(char) * (str_len + 1));
    
    memcpy(*p, str, str_len + 1);
+   out_index = (*count);
    (*count) ++; 
-
+   return out_index;
 }
 
 static int WavefrontLoader_ParseVertex(WavefrontLoaderData_T * data, FileBuffer_T * obj_file_buffer)
@@ -492,37 +506,39 @@ static int WavefrontLoader_ParseFaceVertex(WavefrontLoaderData_T * data, FileBuf
    }
    return sucess;
 }
-#define FILENAME_MAX_SIZE 128
 
-static void WavefrontLoader_ParseMaterialLib(WavefrontLoaderData_T * data, FileBuffer_T * obj_file_buffer)
+#define FILENAME_MAX_SIZE 128
+static size_t WavefrontLoader_ParseMaterialLib(WavefrontLoaderData_T * data, FileBuffer_T * file_buffer)
 {
    char filename[FILENAME_MAX_SIZE];
    WavefrontLoaderMaterialLib_T matlib;
+   size_t string_index;
+   string_index = 0;
 
-   if(WavefrontLoader_ReadString(obj_file_buffer, filename, FILENAME_MAX_SIZE) == 1)
+   if(WavefrontLoader_ReadString(file_buffer, filename, FILENAME_MAX_SIZE) == 1)
    {
       //printf("ParseMaterial: %s\n", filename);
-      matlib.filename_string_index = data->string_list_count;
 
+      string_index = StringArray_Add(&data->string_list, &data->string_list_count, &data->string_list_size, filename);
+      matlib.filename_string_index = string_index;
       Array_Add((void**)&data->materiallib_list, sizeof(WavefrontLoaderMaterialLib_T),
                 &data->materiallib_list_count, &data->materiallib_list_size,
                 &matlib);
-      StringArray_Add(&data->string_list, &data->string_list_count, &data->string_list_size, filename);
    }
 
-
+   return string_index;
 }
 
 #define MATERIALNAME_MAX_SIZE  64
-static size_t WavefrontLoader_ParseUseMaterial(WavefrontLoaderData_T * data, FileBuffer_T * obj_file_buffer)
+static size_t WavefrontLoader_ParseMaterialName(WavefrontLoaderData_T * data, FileBuffer_T * file_buffer)
 {
    char material_name[MATERIALNAME_MAX_SIZE];
    size_t index;
+   size_t string_index;
 
-   if(WavefrontLoader_ReadString(obj_file_buffer, material_name, MATERIALNAME_MAX_SIZE) == 1)
+   if(WavefrontLoader_ReadString(file_buffer, material_name, MATERIALNAME_MAX_SIZE) == 1)
    {
-      index = data->string_list_count;
-      StringArray_Add(&data->string_list, &data->string_list_count, &data->string_list_size, material_name);
+      index = StringArray_Add(&data->string_list, &data->string_list_count, &data->string_list_size, material_name);
    }
    else
    {
@@ -556,13 +572,16 @@ static void WavefrontLoader_Blank(WavefrontLoaderData_T * data)
    data->materiallib_list       = NULL;
    data->materiallib_list_count = 0;
    data->materiallib_list_size  = 0;
+   data->material_list          = NULL;
+   data->material_list_count    = 0;
+   data->material_list_size     = 0;
 }
 
 #define OBJ_CMDS_SIZE  7
 static const char * obj_cmds[OBJ_CMDS_SIZE]                        = {"#",           "v ",         "vn ",       "vt ",     "f ",       "mtllib ",         "usemtl "};
 static const WavefrontLoaderState_T obj_cmds_states[OBJ_CMDS_SIZE] = {e_WLS_Comment, e_WLS_Vertex, e_WLS_Normal, e_WLS_UV, e_WLS_Face, e_WLS_MaterialLib, e_WLS_UseMaterial};
 
-static void WavefrontLoader_LoadFile(WavefrontLoaderData_T * data, FILE * obj_file, const char * material_path)
+static void WavefrontLoader_LoadFile(WavefrontLoaderData_T * data, FILE * obj_file)
 {
    StringMatchState_T string_state[OBJ_CMDS_SIZE];
    WavefrontLoaderState_T state;
@@ -684,24 +703,19 @@ static void WavefrontLoader_LoadFile(WavefrontLoaderData_T * data, FILE * obj_fi
             state = e_WLS_Init;
             break;
          case e_WLS_UseMaterial:
-            face.material_string_index = WavefrontLoader_ParseUseMaterial(data, &obj_file_buffer);
+            face.material_string_index = WavefrontLoader_ParseMaterialName(data, &obj_file_buffer);
             state = e_WLS_Init;
             break;
          default:
             //printf("default:\n");
             state = e_WLS_Unknown;
             break;
-
-           
       }
    }
-
-
-
 }
 
 
-void WavefrontLoader_Load(WavefrontLoaderData_T * data, const char * filename, const char * material_path)
+void WavefrontLoader_Load(WavefrontLoaderData_T * data, const char * filename)
 {
    FILE * obj_file;
 
@@ -710,7 +724,7 @@ void WavefrontLoader_Load(WavefrontLoaderData_T * data, const char * filename, c
    WavefrontLoader_Blank(data);
    if(obj_file != NULL)
    {
-      WavefrontLoader_LoadFile(data, obj_file, material_path);
+      WavefrontLoader_LoadFile(data, obj_file);
       fclose(obj_file);
    }
    else
@@ -719,6 +733,159 @@ void WavefrontLoader_Load(WavefrontLoaderData_T * data, const char * filename, c
    }
 }
 
+static size_t WavefrontLoader_ParseFilename(WavefrontLoaderData_T * data, FileBuffer_T * file_buffer)
+{
+   char filename[FILENAME_MAX_SIZE];
+   size_t string_index;
+   string_index = 0;
+
+   if(WavefrontLoader_ReadString(file_buffer, filename, FILENAME_MAX_SIZE) == 1)
+   {
+
+      string_index = StringArray_Add(&data->string_list, &data->string_list_count, &data->string_list_size, filename);
+   }
+   //printf("Parse Filename Index: %i\n", (int)string_index);
+
+   return string_index;
+}
+
+
+#define MTL_CMDS_SIZE  3
+static const char * mtl_cmds[MTL_CMDS_SIZE]                        = {"#",           "newmtl ",         "map_Kd "};
+static const WavefrontLoaderState_T mtl_cmds_states[MTL_CMDS_SIZE] = {e_WLS_Comment, e_WLS_NewMaterial, e_WLS_MapKD};
+static void WavefrontLoader_LoadMaterialFile(WavefrontLoaderData_T * data, FILE * mtl_file)
+{
+   StringMatchState_T string_state[MTL_CMDS_SIZE];
+   WavefrontLoaderState_T state;
+   FileBuffer_T mtl_file_buffer;
+   int c;
+   int done;
+   int found_index;
+   int material_started;
+   WavefrontLoaderMaterial_T material;
+   
+   material.name_string_index  = 0;
+   material.mapKd_string_index = 0;
+   material_started = 0;
+
+   FileBuffer_Init(&mtl_file_buffer, mtl_file);
+
+   state = e_WLS_Init;
+   done = 0;
+   while(done == 0)
+   {
+      switch(state)
+      {
+         case e_WLS_Init:
+            found_index = FILE_StringMatch(&mtl_file_buffer, mtl_cmds, string_state, MTL_CMDS_SIZE);
+            //printf("e_WLS_Init: %i\n", found_index);
+            if(found_index < 0)
+            {
+               state = e_WLS_Unknown;
+            }
+            else
+            {
+               state = mtl_cmds_states[found_index];
+               
+            }
+            break;
+         case e_WLS_Comment:
+         case e_WLS_Unknown:
+            c = FileBuffer_Read(&mtl_file_buffer);            
+            while(c != '\n' && c != EOF)
+            {
+               //printf("c: %c\n", c);
+               c = FileBuffer_Read(&mtl_file_buffer);
+            }
+            if(c == EOF)
+            {
+               done = 1;
+            }
+            else
+            {
+               state = e_WLS_Init;
+            }
+            break;
+         case e_WLS_NewMaterial:
+            if(material_started == 1)
+            {
+               Array_Add((void**)&data->material_list, sizeof(WavefrontLoaderMaterial_T), 
+                         &data->material_list_count, &data->material_list_size, 
+                         &material);
+            }
+            else
+            {
+               material_started = 1;
+            }
+            material.name_string_index = WavefrontLoader_ParseMaterialName(data, &mtl_file_buffer);
+
+            state = e_WLS_Init;
+            break;
+         case e_WLS_MapKD:
+            material.mapKd_string_index = WavefrontLoader_ParseFilename(data, &mtl_file_buffer);
+            state = e_WLS_Init;
+            break;
+         default:
+            state = e_WLS_Unknown;
+            break;
+      }
+   }
+
+   if(material_started == 1)
+   {
+      Array_Add((void**)&data->material_list, sizeof(WavefrontLoaderMaterial_T), 
+            &data->material_list_count, &data->material_list_size, 
+            &material);
+   }
+}
+
+static void WavefrontLoader_LoadMaterialLibFile(WavefrontLoaderData_T * data, const char * filename)
+{
+
+   FILE * mtl_file;
+
+   mtl_file = fopen(filename, "r");
+
+   if(mtl_file != NULL)
+   {
+      WavefrontLoader_LoadMaterialFile(data, mtl_file);
+      fclose(mtl_file);
+   }
+   else
+   {
+      printf("Error: WavefrontLoader_Load can't open file: %s\n", filename);
+   }
+}
+
+void WavefrontLoader_LoadMaterialLibs(WavefrontLoaderData_T * data, const char * material_prefix_path)
+{
+   size_t i;
+   size_t prefix_size, filename_size;
+   const char * filename;
+   char * full_filename;
+
+   prefix_size = strlen(material_prefix_path);
+
+
+   for(i = 0; i < data->materiallib_list_count; i++)
+   {
+      filename = data->string_list[data->materiallib_list[i].filename_string_index];
+      filename_size = strlen(filename);
+      
+      full_filename = malloc(sizeof(char) * (filename_size + prefix_size + 1));
+      memcpy(full_filename, material_prefix_path, prefix_size);
+      memcpy(&full_filename[prefix_size], filename, filename_size);
+      full_filename[prefix_size + filename_size] = '\0';
+
+
+      WavefrontLoader_LoadMaterialLibFile(data, full_filename);
+
+      
+      free(full_filename); 
+
+   }
+
+}
 
 
 void WavefrontLoader_Delete(WavefrontLoaderData_T * data)
@@ -762,6 +929,12 @@ void WavefrontLoader_Delete(WavefrontLoaderData_T * data)
    {
       free(data->materiallib_list);
    }
+
+   if(data->material_list != NULL)
+   {
+      free(data->material_list);
+   }
+
 }
 
 
@@ -770,7 +943,8 @@ void WavefrontLoader_TEST(void)
    WavefrontLoaderData_T data;
    int i;
    printf("<WavefrontLoader_TEST>\n");
-   WavefrontLoader_Load(&data, "assets/log.obj", "");
+   WavefrontLoader_Load(&data, "assets/log.obj");
+   WavefrontLoader_LoadMaterialLibs(&data, "assets/");
 
    for(i = 0; i < data.vertex_list_count; i++)
    {
