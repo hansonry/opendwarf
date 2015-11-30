@@ -1,8 +1,6 @@
-#include <stdlib.h>
-#include "GL/glew.h"
-#include "SDL2/SDL_opengl.h"
-#include "GLMesh.h"
 #include "GLMeshBuilder.h"
+
+#include <stdlib.h>
 
 #define GROW_BY 0x10
 

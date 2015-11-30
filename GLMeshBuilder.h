@@ -1,5 +1,6 @@
 #ifndef __GLMESHBUILDER_H__
 #define __GLMESHBUILDER_H__
+#include "GLMesh.h"
 
 typedef struct GLMeshBuilder_S GLMeshBuilder_T;
 struct GLMeshBuilder_S
