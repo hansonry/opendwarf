@@ -1,6 +1,9 @@
 #ifndef __GLTEXTURE2D_H__
 #define __GLTEXTURE2D_H__
 
+#include "GL/glew.h"
+#include "SDL2/SDL_opengl.h"
+
 typedef struct GLTexture2D_S GLTexture2D_T;
 struct GLTexture2D_S
 {

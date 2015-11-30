@@ -1,6 +1,8 @@
 #ifndef __GLMESH_H__
 #define __GLMESH_H__
 
+#include "GL/glew.h"
+#include "SDL2/SDL_opengl.h"
 
 typedef struct GLMesh_S GLMesh_T;
 struct GLMesh_S

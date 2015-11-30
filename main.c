@@ -20,6 +20,7 @@
 #include "MapChunk.h"
 #include "MapChunkRender.h"
 #include "WavefrontLoader.h"
+#include "Resources.h"
 
 static void gl_init(void);
 
@@ -99,6 +100,7 @@ static void mapchunk_setup(void)
 
 static void game_setup(CEngine_T * engine)
 {
+   Resources_Init();
    gl_init();
    MatrixStack_Init(&m_stack);
 
@@ -153,6 +155,7 @@ static void game_cleanup(CEngine_T * engine)
    MapChunkRender_Destroy(&map_chunk_render);
    MapChunk_Destroy(&map_chunk);
  
+   Resources_Cleanup();
 }
 
 static void game_update(CEngine_T * engine, float seconds)

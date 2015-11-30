@@ -1,7 +1,5 @@
-#include "GL/glew.h"
-#include "SDL2/SDL_opengl.h"
-#include "libsoil/SOIL.h"
 #include "GLTexture2D.h"
+#include "libsoil/SOIL.h"
 
 
 void GLTexture2D_Load(GLTexture2D_T * text, const char * filename)
