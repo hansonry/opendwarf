@@ -131,7 +131,7 @@ void WavefrontMesh_Destroy(WavefrontMesh_T * wmesh)
 
 }
 
-void WavefrontMesh_Render(WavefrontMesh_T * wmesh)
+void WavefrontMesh_Render(WavefrontMesh_T * wmesh, GLint texture_uniform)
 {
    WMMeshTexture_T ** mt_list;
    size_t i, count;
@@ -139,7 +139,7 @@ void WavefrontMesh_Render(WavefrontMesh_T * wmesh)
    mt_list = ObjectList_Get(&wmesh->mesh_texture_list, &count);
    for(i = 0; i < count; i ++)
    {
-      GLTexture2D_ApplyToUniform(mt_list[i]->texture);
+      GLTexture2D_ApplyToUniform(mt_list[i]->texture, texture_uniform, GL_TEXTURE0);
       GLMesh_Render(&mt_list[i]->mesh, GL_TRIANGLES);
    }
 
