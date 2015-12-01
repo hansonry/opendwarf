@@ -250,9 +250,9 @@ static void game_render(CEngine_T * engine)
    glEnableVertexAttribArray(0);
    glEnableVertexAttribArray(1);
    glEnableVertexAttribArray(2);
-   glEnableVertexAttribArray(3);
+   //glEnableVertexAttribArray(3);
 
-/*
+
    glUseProgram(shader_test1);
 
    glUniform3f(light_direction_uniform, 0.577f, 0.577f, -0.577f);
@@ -261,15 +261,15 @@ static void game_render(CEngine_T * engine)
    MatrixStack_ApplyTranslation(&m_stack, px, py, 0);
    MatrixStack_ApplyYRotation(&m_stack, angle);
 
-   //matrix_perspective_set(wmatrix_uniform, pmatrix_uniform, &m_stack.matrix, &projection);
-   //GLTexture2D_ApplyToUniform(&test_text, csampler_uniform, GL_TEXTURE0);
+   matrix_perspective_set(wmatrix_uniform, pmatrix_uniform, &m_stack.matrix, &projection);
+   GLTexture2D_ApplyToUniform(&test_text, csampler_uniform, GL_TEXTURE0);
    //UnitCube_Render(&cube);
    // Mesh Test
-*/
-   //glUseProgram(shader_wavefront);
-   //glUniform3f(wavefront_uniform_light_direction, 0.577f, 0.577f, -0.577f);
-   //matrix_perspective_set(wavefront_uniform_wmatrix, wavefront_uniform_pmatrix, &m_stack.matrix, &projection);
-   //WavefrontMesh_Render(&log_mesh, wavefront_uniform_csampler);
+
+   glUseProgram(shader_wavefront);
+   glUniform3f(wavefront_uniform_light_direction, 0.577f, 0.577f, -0.577f);
+   matrix_perspective_set(wavefront_uniform_wmatrix, wavefront_uniform_pmatrix, &m_stack.matrix, &projection);
+   WavefrontMesh_Render(&log_mesh, wavefront_uniform_csampler);
 
    // open dwarf
 
