@@ -484,12 +484,15 @@ static int WavefrontLoader_ParseFaceVertex(WavefrontLoaderData_T * data, FileBuf
    if(WavefrontLoader_ReadIndex(obj_file_buffer, &face_vertex.vertex_index) == 1)
    {
       sucess = 1;
+      face_vertex.vertex_index --; // 1 based to 0 based
       if(WavefrontLoader_NextSlash(obj_file_buffer) == 1)
       {
          WavefrontLoader_ReadIndex(obj_file_buffer, &face_vertex.uv_index);
+         face_vertex.uv_index --;
          if(WavefrontLoader_NextSlash(obj_file_buffer) == 1)
          {
             WavefrontLoader_ReadIndex(obj_file_buffer, &face_vertex.normal_index);
+            face_vertex.normal_index --;
          }
       }
    }

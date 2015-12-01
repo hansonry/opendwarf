@@ -86,6 +86,8 @@ static void WavefrontMesh_Convert(WavefrontMesh_T * wmesh, WavefrontLoaderData_T
          vertex[6] = obj_data->uv_list[vert->uv_index].u;
          vertex[7] = obj_data->uv_list[vert->uv_index].v;
 
+         //printf("%i %i %i [%f, %f, %f, %f, %f, %f, %f, %f]\n", k,i, face_vertex_index, vertex[0], vertex[1], vertex[2], vertex[3], vertex[4], vertex[5], vertex[6], vertex[7]);
+
          GLMeshBuilder_Add1Vertex(&mesh_texture->mesh_builder, vertex);
 
          GLMeshBuilder_Add1Element(&mesh_texture->mesh_builder, vertex_count);

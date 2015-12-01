@@ -86,7 +86,6 @@ void GLMesh_Render(GLMesh_T * mesh, GLenum mode)
          }
       }
       
-      //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
       glDrawElements(mode, mesh->element_count, GL_UNSIGNED_INT, 0);
    }
    else

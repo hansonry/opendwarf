@@ -1,9 +1,14 @@
 ============ TODO ============
-
- * Create 1 block of each terrain type
+ * Use WavefrontMesh to load a log into the scene (Test only)
+ * Create ManagerShader (use an array of structs to specifiy data)
+ * Create ManagerWavefrontMesh (use an array of structs to specify data)
 
 
 ============ DONE ============
+
+
+== Unknown ==
+ * Create 1 block of each terrain type
 
 == 11/20/2015 ==
  * Create terrain requirements (First Pass)
