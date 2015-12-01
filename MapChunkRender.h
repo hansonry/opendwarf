@@ -7,7 +7,7 @@ struct MapChunkRender_S
 {
    MapChunk_T * map;
    GLMesh_T mesh;
-   GLTexture2D_T texture;
+   GLTexture2D_T * texture;
    GLuint shader;
    GLint  uniform_pmatrix;
    GLint  uniform_wmatrix;

@@ -10,6 +10,7 @@
 #include "GLMesh.h"
 #include "MapChunkRender.h"
 #include "GLMeshBuilder.h"
+#include "Resources.h"
 
 
 
@@ -219,11 +220,16 @@ static void MapChunkRender_GenMesh(MapChunkRender_T * rend)
 
 static void MapChunkRender_LoadResources(MapChunkRender_T * rend)
 {
-   //GLTexture2D_Load(&rend->texture, "assets/spritesheet_tiles.png");
-   GLTexture2D_Load(&rend->texture, "assets/tiles.png");
-   rend->shader = ShaderTool_CreateShaderProgram("block.vert.glsl", 
-                                                 NULL, 
-                                                 "block.frag.glsl");
+   ManagerShader_T * shader_manager;
+   ManagerGLTexture2D_T * texture_manager;
+
+   shader_manager = Resource_GetShaderManager();
+   texture_manager = Resources_GetTextureManager();
+
+
+   rend->texture = ManagerGLTexture2D_Get(texture_manager, "assets/tiles.png");
+
+   rend->shader = ManagerShader_Get(shader_manager, "block");
    rend->uniform_pmatrix         = glGetUniformLocation(rend->shader, "PMatrix");
    rend->uniform_wmatrix         = glGetUniformLocation(rend->shader, "WMatrix");
    rend->uniform_light_direction = glGetUniformLocation(rend->shader, "LightDirection");
@@ -232,8 +238,6 @@ static void MapChunkRender_LoadResources(MapChunkRender_T * rend)
 
 static void MapChunkRender_FreeResources(MapChunkRender_T * rend)
 {
-   GLTexture2D_Destroy(&rend->texture);
-   glDeleteProgram(rend->shader);
 
 }
 
@@ -264,7 +268,7 @@ void MapChunkRender_Render(MapChunkRender_T * rend, const Matrix3D_T * world, co
    glUniform3f(rend->uniform_light_direction, lx, ly, lz);   
    glUniformMatrix4fv(rend->uniform_wmatrix,  1, GL_FALSE, world->data);
    glUniformMatrix4fv(rend->uniform_pmatrix,  1, GL_FALSE, camera.data);
-   GLTexture2D_ApplyToUniform(&rend->texture, rend->uniform_csampler, GL_TEXTURE0);
+   GLTexture2D_ApplyToUniform(rend->texture, rend->uniform_csampler, GL_TEXTURE0);
    
 
    glEnableVertexAttribArray(0);

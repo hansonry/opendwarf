@@ -81,7 +81,7 @@ static StringMapElement_T * StringMap_Lookup(const StringMap_T * map, const char
    size_t i;
    ele = NULL;
 
-   for(i = 0; i < map->list_size; i++)
+   for(i = 0; i < map->list_count; i++)
    {
       if(strcmp(key, map->list[i].str) == 0)
       {

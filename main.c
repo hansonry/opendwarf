@@ -62,7 +62,7 @@ MapChunkRender_T map_chunk_render;
 WavefrontMesh_T log_mesh;
 UnitCube_T cube;
 
-GLTexture2D_T test_text, font_text;
+GLTexture2D_T * test_text, font_text;
 GLFont_T font_hanken;
 GLCam_FPS_T fps_cam;
 int cam_drag;
@@ -110,7 +110,11 @@ static void mapchunk_setup(void)
 static void game_setup(CEngine_T * engine)
 {
    WavefrontLoaderData_T log_data;
+   ManagerShader_T * shader_manager;
+   ManagerGLTexture2D_T * texture_manager;
    Resources_Init();
+   shader_manager = Resource_GetShaderManager();
+   texture_manager = Resources_GetTextureManager();
    gl_init();
    MatrixStack_Init(&m_stack);
 
@@ -119,14 +123,14 @@ static void game_setup(CEngine_T * engine)
    UnitCube_Init(&cube);
 
    // Shader
-   shader_test1 = ShaderTool_CreateShaderProgram("test1.vert.glsl", NULL, "test1.frag.glsl");
+   shader_test1 = ManagerShader_Get(shader_manager, "test1");
 
    pmatrix_uniform = glGetUniformLocation(shader_test1, "PMatrix");
    wmatrix_uniform = glGetUniformLocation(shader_test1, "WMatrix");
    light_direction_uniform = glGetUniformLocation(shader_test1, "LightDirection");
    csampler_uniform = glGetUniformLocation(shader_test1, "CSampler");
 
-   shader_wavefront = ShaderTool_CreateShaderProgram("wavefront.vert.glsl", NULL, "wavefront.frag.glsl");
+   shader_wavefront = ManagerShader_Get(shader_manager, "wavefront");
 
    wavefront_uniform_pmatrix = glGetUniformLocation(shader_wavefront, "PMatrix");
    wavefront_uniform_wmatrix = glGetUniformLocation(shader_wavefront, "WMatrix");
@@ -138,7 +142,7 @@ static void game_setup(CEngine_T * engine)
    Matrix3D_SetProjection(&projection, 30, SCREEN_WIDTH, SCREEN_HEIGHT, 1, 100);
 
    // Textures
-   GLTexture2D_Load(&test_text, "testImage1024.png");
+   test_text = ManagerGLTexture2D_Get(texture_manager, "testImage1024.png");
 
    // Kin
    px = 0;
@@ -168,11 +172,8 @@ static void game_setup(CEngine_T * engine)
 
 static void game_cleanup(CEngine_T * engine)
 {
-   glDeleteProgram(shader_test1);
-   glDeleteProgram(shader_wavefront);
    MatrixStack_Destroy(&m_stack);
    UnitCube_Cleanup(&cube);
-   GLTexture2D_Destroy(&test_text);
 
    // Font Test
    GLFont_Destory(&font_hanken);
@@ -262,7 +263,7 @@ static void game_render(CEngine_T * engine)
    MatrixStack_ApplyYRotation(&m_stack, angle);
 
    matrix_perspective_set(wmatrix_uniform, pmatrix_uniform, &m_stack.matrix, &projection);
-   GLTexture2D_ApplyToUniform(&test_text, csampler_uniform, GL_TEXTURE0);
+   GLTexture2D_ApplyToUniform(test_text, csampler_uniform, GL_TEXTURE0);
    //UnitCube_Render(&cube);
    // Mesh Test
 
