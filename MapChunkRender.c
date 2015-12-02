@@ -1,14 +1,8 @@
+#include "MapChunkRender.h"
+
 #include <stdlib.h>
 #include <string.h>
-#include "GL/glew.h"
-#include "SDL2/SDL_opengl.h"
-#include "GLTexture2D.h"
 #include "ShaderTool.h"
-#include "Vector3D.h"
-#include "Matrix3D.h"
-#include "MapChunk.h"
-#include "GLMesh.h"
-#include "MapChunkRender.h"
 #include "GLMeshBuilder.h"
 #include "Resources.h"
 

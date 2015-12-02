@@ -1,6 +1,8 @@
 #ifndef __MATRIX3D_H__
 #define __MATRIX3D_H__
 
+#include "Vector3D.h"
+
 #define MATRIX3D_ARRAY_SIZE 16
 typedef struct Matrix3D_S Matrix3D_T;
 

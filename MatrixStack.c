@@ -1,8 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include "Vector3D.h"
-#include "Matrix3D.h"
 #include "MatrixStack.h"
+#include <stdlib.h>
+#include <stdio.h>
 
 
 struct MatrixStackLink_S

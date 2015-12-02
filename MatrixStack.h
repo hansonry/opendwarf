@@ -1,6 +1,8 @@
 #ifndef __MATRIXSTACK_H__
 #define __MATRIXSTACK_H__
 
+#include "Matrix3D.h"
+
 typedef struct MatrixStack_S     MatrixStack_T;
 typedef struct MatrixStackLink_S MatrixStackLink_T;
 

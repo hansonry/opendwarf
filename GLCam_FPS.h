@@ -1,6 +1,7 @@
 #ifndef __GLCAM_FPS_H__
 #define __GLCAM_FPS_H__
 
+#include "MatrixStack.h"
 
 typedef enum GLCam_FPS_Key_E GLCam_FPS_Key_T;
 typedef struct GLCam_FPS_S GLCam_FPS_T;

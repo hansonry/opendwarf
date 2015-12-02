@@ -1,6 +1,7 @@
+#include "MapChunk.h"
+
 #include <stdlib.h>
 #include <string.h>
-#include "MapChunk.h"
 
 
 void MapChunk_Init(MapChunk_T * chunk, int width, int height, int depth)

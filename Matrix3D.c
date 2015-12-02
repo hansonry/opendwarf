@@ -1,5 +1,4 @@
 #include <math.h>
-#include "Vector3D.h"
 #include "Matrix3D.h"
 
 

@@ -1,6 +1,12 @@
 #ifndef __MAPCHUNKRENDER_H__
 #define __MAPCHUNKRENDER_H__
 
+#include "MapChunk.h"
+#include "GL/glew.h"
+#include "SDL2/SDL_opengl.h"
+#include "GLTexture2D.h"
+#include "Matrix3D.h"
+#include "GLMesh.h"
 typedef struct MapChunkRender_S MapChunkRender_T;
 
 struct MapChunkRender_S

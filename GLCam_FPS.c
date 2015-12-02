@@ -1,10 +1,9 @@
+#include "GLCam_FPS.h"
+
+
 #include <math.h>
 #include "GL/glew.h"
 #include "SDL2/SDL_opengl.h"
-#include "Vector3D.h"
-#include "Matrix3D.h"
-#include "MatrixStack.h"
-#include "GLCam_FPS.h"
 
 #define TO_RAD(x) ((x) * 3.14f / 180.0f )
 
