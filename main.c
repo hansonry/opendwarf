@@ -21,6 +21,9 @@
 #include "MapChunkRender.h"
 #include "WavefrontLoader.h"
 #include "WavefrontMesh.h"
+#include "MapItemListRenderer.h"
+#include "MapItemList.h"
+#include "Item.h"
 #include "Resources.h"
 
 static void gl_init(void);
@@ -56,6 +59,8 @@ int main(int args, char * argc[])
 // open dwarf
 MapChunk_T map_chunk;
 MapChunkRender_T map_chunk_render;
+MapItemList_T map_item_list;
+MapItemListRenderer_T map_item_list_renderer;
 
 
 // other
@@ -105,6 +110,25 @@ static void mapchunk_setup(void)
 
    
    MapChunkRender_Init(&map_chunk_render, &map_chunk);
+}
+
+static void Item_Setup(void)
+{
+   Item_T * item;
+   MapItem_T map_item;
+
+   MapItemList_Init(&map_item_list);
+   MapItemListRenderer_Init(&map_item_list_renderer, &map_item_list);
+
+   item = Item_Create(e_IT_Log);
+
+   map_item.item = item;
+   map_item.x = 0;
+   map_item.y = 2;
+   map_item.z = 0;
+
+  MapItemList_Add(&map_item_list, &map_item);
+
 }
 
 static void game_setup(CEngine_T * engine)
@@ -168,6 +192,7 @@ static void game_setup(CEngine_T * engine)
 
    // open dwarf
    mapchunk_setup();
+   Item_Setup();
 }
 
 static void game_cleanup(CEngine_T * engine)
@@ -185,6 +210,9 @@ static void game_cleanup(CEngine_T * engine)
    // open dwarf
    MapChunkRender_Destroy(&map_chunk_render);
    MapChunk_Destroy(&map_chunk);
+
+   MapItemListRenderer_Destroy(&map_item_list_renderer);
+   MapItemList_Destory(&map_item_list);
  
    Resources_Cleanup();
 }
@@ -247,6 +275,8 @@ static void game_render(CEngine_T * engine)
 
    //UnitCube_Render(&cube);
    MapChunkRender_Render(&map_chunk_render, &m_stack.matrix, &projection, 0.577f, 0.577f, -0.577f);
+   MapItemListRenderer_Render(&map_item_list_renderer, &m_stack.matrix, &projection, 0.577f, 0.577f, -0.577f);
+
 
    glEnableVertexAttribArray(0);
    glEnableVertexAttribArray(1);
