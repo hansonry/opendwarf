@@ -3,6 +3,7 @@
 #include "ShaderTool.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 typedef struct ShaderTable_S ShaderTable_T;
 struct ShaderTable_S

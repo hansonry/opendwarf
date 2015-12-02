@@ -73,7 +73,7 @@ static void WavefrontMesh_Convert(WavefrontMesh_T * wmesh, WavefrontLoaderData_T
       }
 
       // Add Face
-      for(k = 0; k < 3; k ++)
+      for(k = 2; k < 3; k --)
       {
          face_vertex_index = obj_data->face_list[i].face_vertex_start_index + k;
          vert = &obj_data->face_vertex_list[face_vertex_index];
