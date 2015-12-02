@@ -82,12 +82,14 @@ static void MapChunkRender_CubeSideAjust(float * temp, const float * data, int x
    float vc[4];
    float pw = 1.0f / (float)IMG_W;
    float ph = 1.0f / (float)IMG_H;
+   float hpw = pw / 2.0f;
+   float hph = ph / 2.0f;
 
-   uc[0] = (text_x * TILE_W * pw);
-   vc[0] = (1.0f - (text_y * TILE_H * ph));
+   uc[0] = (text_x * TILE_W * pw + hpw);
+   vc[0] = (1.0f - (text_y * TILE_H * ph + hph));
 
-   uc[3] = uc[0] + (TILE_W * pw);
-   vc[3] = vc[0] - (TILE_H * ph);
+   uc[3] = uc[0] + (TILE_W * pw - pw);
+   vc[3] = vc[0] - (TILE_H * ph - ph);
 
    uc[1] = uc[3];
    vc[1] = vc[0];
@@ -265,6 +267,8 @@ void MapChunkRender_Render(MapChunkRender_T * rend, const Matrix3D_T * world, co
    glUniformMatrix4fv(rend->uniform_wmatrix,  1, GL_FALSE, world->data);
    glUniformMatrix4fv(rend->uniform_pmatrix,  1, GL_FALSE, camera.data);
    GLTexture2D_ApplyToUniform(rend->texture, rend->uniform_csampler, GL_TEXTURE0);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
    
 
    glEnableVertexAttribArray(0);
