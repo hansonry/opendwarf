@@ -1,11 +1,14 @@
 ============ TODO ============
- * Use WavefrontMesh to load a log into the scene (Test only)
- * Create ManagerShader (use an array of structs to specifiy data)
- * Create ManagerWavefrontMesh (use an array of structs to specify data)
 
+ * Make some kind of chunk Item List class
+ * Make some kind of chunk Item List renderer class
 
 ============ DONE ============
 
+== 12/01/2015 ==
+ * Use WavefrontMesh to load a log into the scene (Test only)
+ * Create ManagerShader (use an array of structs to specifiy data)
+ * Create ManagerWavefrontMesh (use an array of structs to specify data)
 
 == Unknown ==
  * Create 1 block of each terrain type
