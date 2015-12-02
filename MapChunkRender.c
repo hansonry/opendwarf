@@ -80,12 +80,14 @@ static void MapChunkRender_CubeSideAjust(float * temp, const float * data, int x
 {
    float uc[4];
    float vc[4];
+   float pw = 1.0f / (float)IMG_W;
+   float ph = 1.0f / (float)IMG_H;
 
-   uc[0] = (text_x * TILE_W) / (float)IMG_W;
-   vc[0] = (IMG_H - (text_y * TILE_H)) / (float)IMG_H;
+   uc[0] = (text_x * TILE_W * pw);
+   vc[0] = (1.0f - (text_y * TILE_H * ph));
 
-   uc[3] = uc[0] + (TILE_W / (float)IMG_W);
-   vc[3] = vc[0] - (TILE_H / (float)IMG_H);
+   uc[3] = uc[0] + (TILE_W * pw);
+   vc[3] = vc[0] - (TILE_H * ph);
 
    uc[1] = uc[3];
    vc[1] = vc[0];

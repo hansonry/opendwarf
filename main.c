@@ -127,7 +127,8 @@ static void Item_Setup(void)
    map_item.y = 2;
    map_item.z = 0;
 
-  MapItemList_Add(&map_item_list, &map_item);
+   MapItemList_Add(&map_item_list, &map_item);
+
 
 }
 
