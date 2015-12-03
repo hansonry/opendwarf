@@ -183,7 +183,7 @@ static void game_setup(CEngine_T * engine)
    cam_drag = 0;
 
    // Mesh Test
-   WavefrontLoader_Load(&log_data, "assets/log.obj");
+   WavefrontLoader_Load(&log_data, "assets/pawn1.obj");
    WavefrontLoader_LoadMaterialLibs(&log_data, "assets/");
    WavefrontLoader_LookupMaterial(&log_data);
    WavefrontMesh_Init(&log_mesh, &log_data, "assets/");
