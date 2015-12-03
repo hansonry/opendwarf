@@ -3,6 +3,7 @@
 
 #include "GL/glew.h"
 #include "SDL2/SDL_opengl.h"
+#include "Shader.h"
 #include "ObjectList.h"
 #include "StringMap.h"
 
@@ -16,7 +17,7 @@ struct ManagerShader_S
 void ManagerShader_Init(ManagerShader_T * manager);
 void ManagerShader_Destroy(ManagerShader_T * manager);
 
-GLuint ManagerShader_Get(ManagerShader_T * manager, const char * shader_id);
+Shader_T * ManagerShader_Get(ManagerShader_T * manager, const char * shader_id);
 
 #endif // __MANAGERSHADER_H__
 

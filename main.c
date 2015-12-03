@@ -71,21 +71,11 @@ GLTexture2D_T * test_text, font_text;
 GLFont_T font_hanken;
 GLCam_FPS_T fps_cam;
 int cam_drag;
-GLuint shader_test1;
-GLint  pmatrix_uniform;
-GLint  wmatrix_uniform;
-GLint  light_direction_uniform;
-GLint  csampler_uniform;
+Shader_T *shader_test1, *shader_wavefront;
 float angle;
 Matrix3D_T projection;
 MatrixStack_T m_stack;
 
-// Wavefront shader
-GLuint shader_wavefront;
-GLint  wavefront_uniform_pmatrix;
-GLint  wavefront_uniform_wmatrix;
-GLint  wavefront_uniform_light_direction;
-GLint  wavefront_uniform_csampler;
 
 float px, py;
 float a2;
@@ -149,18 +139,8 @@ static void game_setup(CEngine_T * engine)
 
    // Shader
    shader_test1 = ManagerShader_Get(shader_manager, "test1");
-
-   pmatrix_uniform = glGetUniformLocation(shader_test1, "PMatrix");
-   wmatrix_uniform = glGetUniformLocation(shader_test1, "WMatrix");
-   light_direction_uniform = glGetUniformLocation(shader_test1, "LightDirection");
-   csampler_uniform = glGetUniformLocation(shader_test1, "CSampler");
-
    shader_wavefront = ManagerShader_Get(shader_manager, "wavefront");
 
-   wavefront_uniform_pmatrix = glGetUniformLocation(shader_wavefront, "PMatrix");
-   wavefront_uniform_wmatrix = glGetUniformLocation(shader_wavefront, "WMatrix");
-   wavefront_uniform_light_direction = glGetUniformLocation(shader_wavefront, "LightDirection");
-   wavefront_uniform_csampler = glGetUniformLocation(shader_wavefront, "CSampler");
 
 
    // Projection Matrix
@@ -236,18 +216,6 @@ static void game_update(CEngine_T * engine, float seconds)
    GLCam_FPS_Update(&fps_cam, seconds);
 }
 
-static void matrix_perspective_set(GLint uniform_world_matrix, 
-                                   GLint uniform_perspective_matrix,
-                                   const Matrix3D_T * world, 
-                                   const Matrix3D_T * camera)
-{
-   Matrix3D_T temp;
-   Matrix3D_Multiply(&temp, camera, world);
-
-   glUniformMatrix4fv(uniform_world_matrix,       1, GL_FALSE, world->data);
-   glUniformMatrix4fv(uniform_perspective_matrix, 1, GL_FALSE, temp.data);
-}
-
 static void game_render(CEngine_T * engine)
 {
    Matrix3D_T matrix;
@@ -271,8 +239,6 @@ static void game_render(CEngine_T * engine)
 
    MatrixStack_ApplyTranslation(&m_stack, 0,  0,  10);
 
-   matrix_perspective_set(wmatrix_uniform, pmatrix_uniform, &m_stack.matrix, &projection);
-
 
    //UnitCube_Render(&cube);
    MapChunkRender_Render(&map_chunk_render, &m_stack.matrix, &projection, 0.577f, 0.577f, -0.577f);
@@ -285,23 +251,19 @@ static void game_render(CEngine_T * engine)
    //glEnableVertexAttribArray(3);
 
 
-   glUseProgram(shader_test1);
 
-   glUniform3f(light_direction_uniform, 0.577f, 0.577f, -0.577f);
-   GLTexture2D_ApplyToUniform(&font_text, csampler_uniform, GL_TEXTURE0);
+
 
    MatrixStack_ApplyTranslation(&m_stack, px, py, 0);
    MatrixStack_ApplyYRotation(&m_stack, angle);
 
-   matrix_perspective_set(wmatrix_uniform, pmatrix_uniform, &m_stack.matrix, &projection);
-   GLTexture2D_ApplyToUniform(test_text, csampler_uniform, GL_TEXTURE0);
-   //UnitCube_Render(&cube);
    // Mesh Test
 
-   glUseProgram(shader_wavefront);
-   glUniform3f(wavefront_uniform_light_direction, 0.577f, 0.577f, -0.577f);
-   matrix_perspective_set(wavefront_uniform_wmatrix, wavefront_uniform_pmatrix, &m_stack.matrix, &projection);
-   WavefrontMesh_Render(&log_mesh, wavefront_uniform_csampler);
+   Shader_Begin(shader_wavefront);
+      Shader_SetLightDirection(shader_wavefront, 0.577f, 0.577f, -0.577f);
+      Shader_SetPositionPerspective(shader_wavefront, &m_stack.matrix, &projection);
+      WavefrontMesh_Render(&log_mesh, shader_wavefront->uniforms[e_SU_Samp2D_Texture0]);
+   Shader_End(shader_wavefront);
 
    // open dwarf
 

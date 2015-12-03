@@ -227,7 +227,7 @@ static void MapChunkRender_LoadResources(MapChunkRender_T * rend)
 
    rend->texture = ManagerGLTexture2D_Get(texture_manager, "assets/tiles.png");
 
-   rend->shader = ManagerShader_Get(shader_manager, "block");
+   rend->shader = ManagerShader_Get(shader_manager, "block")->shader_id;
    rend->uniform_pmatrix         = glGetUniformLocation(rend->shader, "PMatrix");
    rend->uniform_wmatrix         = glGetUniformLocation(rend->shader, "WMatrix");
    rend->uniform_light_direction = glGetUniformLocation(rend->shader, "LightDirection");

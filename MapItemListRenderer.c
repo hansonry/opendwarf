@@ -12,7 +12,7 @@ static MapItemListRender_LoadResources(MapItemListRenderer_T * rend)
    shader_manager = Resource_GetShaderManager();
 
    // Load Shader
-   rend->shader = ManagerShader_Get(shader_manager, "wavefront");
+   rend->shader = ManagerShader_Get(shader_manager, "wavefront")->shader_id;
    rend->uniform_pmatrix         = glGetUniformLocation(rend->shader, "PMatrix");
    rend->uniform_wmatrix         = glGetUniformLocation(rend->shader, "WMatrix");
    rend->uniform_light_direction = glGetUniformLocation(rend->shader, "LightDirection");

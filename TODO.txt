@@ -1,9 +1,12 @@
 ============ TODO ============
 
- * Make some kind of chunk Item List class
- * Make some kind of chunk Item List renderer class
+ * Create Pawn class and renderer
 
 ============ DONE ============
+
+== 12/02/2015 ==
+ * Make some kind of chunk Item List class
+ * Make some kind of chunk Item List renderer class
 
 == 12/01/2015 ==
  * Use WavefrontMesh to load a log into the scene (Test only)
