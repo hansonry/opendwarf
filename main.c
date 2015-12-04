@@ -25,6 +25,7 @@
 #include "MapItemList.h"
 #include "Item.h"
 #include "Resources.h"
+#include "PawnListRenderer.h"
 
 static void gl_init(void);
 
@@ -61,6 +62,8 @@ MapChunk_T map_chunk;
 MapChunkRender_T map_chunk_render;
 MapItemList_T map_item_list;
 MapItemListRenderer_T map_item_list_renderer;
+PawnList_T pawn_list;
+PawnListRenderer_T pawn_list_renderer;
 
 
 // other
@@ -122,6 +125,17 @@ static void Item_Setup(void)
 
 }
 
+static void Pawn_Setup(void)
+{
+   Pawn_T * pawn;
+   PawnList_Init(&pawn_list);
+   PawnListRenderer_Init(&pawn_list_renderer, &pawn_list);
+
+   pawn = Pawn_Create();
+
+   PawnList_Add(&pawn_list, pawn);
+}
+
 static void game_setup(CEngine_T * engine)
 {
    WavefrontLoaderData_T log_data;
@@ -174,6 +188,7 @@ static void game_setup(CEngine_T * engine)
    // open dwarf
    mapchunk_setup();
    Item_Setup();
+   Pawn_Setup();
 }
 
 static void game_cleanup(CEngine_T * engine)
@@ -194,6 +209,9 @@ static void game_cleanup(CEngine_T * engine)
 
    MapItemListRenderer_Destroy(&map_item_list_renderer);
    MapItemList_Destory(&map_item_list);
+
+   PawnListRenderer_Destroy(&pawn_list_renderer);
+   PawnList_Destroy(&pawn_list);
  
    Resources_Cleanup();
 }
@@ -243,6 +261,7 @@ static void game_render(CEngine_T * engine)
    //UnitCube_Render(&cube);
    MapChunkRender_Render(&map_chunk_render, &m_stack.matrix, &projection, 0.577f, 0.577f, -0.577f);
    MapItemListRenderer_Render(&map_item_list_renderer, &m_stack.matrix, &projection, 0.577f, 0.577f, -0.577f);
+   PawnListRenderer_Render(&pawn_list_renderer, &m_stack.matrix, &projection, 0.577f, 0.577f, -0.577f);
 
 
    glEnableVertexAttribArray(0);

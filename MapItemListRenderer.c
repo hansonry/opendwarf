@@ -4,7 +4,7 @@
 #include "Resources.h"
 
 
-static MapItemListRender_LoadResources(MapItemListRenderer_T * rend)
+static void MapItemListRender_LoadResources(MapItemListRenderer_T * rend)
 {
    ManagerShader_T * shader_manager;
    WavefrontLoaderData_T log_data;
@@ -29,7 +29,7 @@ void MapItemListRenderer_Init(MapItemListRenderer_T * rend, MapItemList_T * list
    MapItemListRender_LoadResources(rend);
 }
 
-static MapItemListRender_FreeResources(MapItemListRenderer_T * rend)
+static void MapItemListRender_FreeResources(MapItemListRenderer_T * rend)
 {
    WavefrontMesh_Destroy(&rend->log_mesh);
 }
