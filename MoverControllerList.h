@@ -14,7 +14,10 @@ struct MoverControllerList_S
    int loop;
 };
 
-void MoverControllerList_Init(MoverControllerList_T * ctrl, Mover_T * mover, const Position_T * pos_list, size_t pos_list_size, int loop);
+void MoverControllerList_Init(MoverControllerList_T * ctrl, Mover_T * mover, int loop);
+
+
+void MoverControllerList_SetPath(MoverControllerList_T * ctrl, const Position_T * pos_list, size_t pos_list_size);
 
 void MoverControllerList_Check(MoverControllerList_T * ctrl);
 

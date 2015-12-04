@@ -16,7 +16,8 @@ Pawn_T * Pawn_Create(void)
    pawn = malloc(sizeof(Pawn_T));
    Position_Set(&pawn->pos, 1, 2, 1);
    Mover_Init(&pawn->mover, &pawn->pos, 1.0f);
-   MoverControllerList_Init(&pawn->mover_ctrl, &pawn->mover, plist,4 , 0);
+   MoverControllerList_Init(&pawn->mover_ctrl, &pawn->mover, 1);
+   MoverControllerList_SetPath(&pawn->mover_ctrl, plist, 4);
    return pawn;
 }
 
