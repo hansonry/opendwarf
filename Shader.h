@@ -27,7 +27,7 @@ void Shader_Load(Shader_T * shader, const char * shader_name);
 void Shader_Free(Shader_T * shader);
 
 void Shader_SetTexutre(Shader_T * shader, GLTexture2D_T * texture, GLenum slot);
-void Shader_SetPositionPerspective(Shader_T * shader, Matrix3D_T * position, Matrix3D_T * perspective);
+void Shader_SetPositionPerspective(Shader_T * shader, const Matrix3D_T * position, const Matrix3D_T * perspective);
 void Shader_SetLightDirection(Shader_T * shader, float lx, float ly, float lz);
 
 void Shader_Begin(Shader_T * shader);

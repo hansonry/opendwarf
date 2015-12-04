@@ -227,11 +227,7 @@ static void MapChunkRender_LoadResources(MapChunkRender_T * rend)
 
    rend->texture = ManagerGLTexture2D_Get(texture_manager, "assets/tiles.png");
 
-   rend->shader = ManagerShader_Get(shader_manager, "block")->shader_id;
-   rend->uniform_pmatrix         = glGetUniformLocation(rend->shader, "PMatrix");
-   rend->uniform_wmatrix         = glGetUniformLocation(rend->shader, "WMatrix");
-   rend->uniform_light_direction = glGetUniformLocation(rend->shader, "LightDirection");
-   rend->uniform_csampler        = glGetUniformLocation(rend->shader, "CSampler");
+   rend->shader = ManagerShader_Get(shader_manager, "block");
 }
 
 static void MapChunkRender_FreeResources(MapChunkRender_T * rend)
@@ -256,30 +252,23 @@ void MapChunkRender_Destroy(MapChunkRender_T * rend)
 
 void MapChunkRender_Render(MapChunkRender_T * rend, const Matrix3D_T * world, const Matrix3D_T * pers, float lx, float ly, float lz)
 {
-   int i;
-   Matrix3D_T camera;
 
-   Matrix3D_Multiply(&camera, pers, world);
 
-   glUseProgram(rend->shader);
+   Shader_Begin(rend->shader);
+   Shader_SetLightDirection(rend->shader, lx, ly, lz);
+   Shader_SetPositionPerspective(rend->shader, world, pers);
+   Shader_SetTexutre(rend->shader, rend->texture, GL_TEXTURE0);
 
-   glUniform3f(rend->uniform_light_direction, lx, ly, lz);   
-   glUniformMatrix4fv(rend->uniform_wmatrix,  1, GL_FALSE, world->data);
-   glUniformMatrix4fv(rend->uniform_pmatrix,  1, GL_FALSE, camera.data);
-   GLTexture2D_ApplyToUniform(rend->texture, rend->uniform_csampler, GL_TEXTURE0);
+
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
    
 
-   glEnableVertexAttribArray(0);
-   glEnableVertexAttribArray(1);
-   glEnableVertexAttribArray(2);
 
    GLMesh_Render(&rend->mesh, GL_TRIANGLES);
 
-   glDisableVertexAttribArray(0);
-   glDisableVertexAttribArray(1);
-   glDisableVertexAttribArray(2);
+   Shader_End(rend->shader);
+
 }
 
 

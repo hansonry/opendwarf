@@ -2,11 +2,11 @@
 #define __MAPCHUNKRENDER_H__
 
 #include "MapChunk.h"
-#include "GL/glew.h"
-#include "SDL2/SDL_opengl.h"
+#include "Shader.h"
 #include "GLTexture2D.h"
 #include "Matrix3D.h"
 #include "GLMesh.h"
+
 typedef struct MapChunkRender_S MapChunkRender_T;
 
 struct MapChunkRender_S
@@ -14,11 +14,7 @@ struct MapChunkRender_S
    MapChunk_T * map;
    GLMesh_T mesh;
    GLTexture2D_T * texture;
-   GLuint shader;
-   GLint  uniform_pmatrix;
-   GLint  uniform_wmatrix;
-   GLint  uniform_light_direction;
-   GLint  uniform_csampler;
+   Shader_T * shader;
 };
 
 void MapChunkRender_Init(MapChunkRender_T * rend, MapChunk_T * map);

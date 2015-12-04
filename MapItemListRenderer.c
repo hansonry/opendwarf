@@ -12,11 +12,7 @@ static MapItemListRender_LoadResources(MapItemListRenderer_T * rend)
    shader_manager = Resource_GetShaderManager();
 
    // Load Shader
-   rend->shader = ManagerShader_Get(shader_manager, "wavefront")->shader_id;
-   rend->uniform_pmatrix         = glGetUniformLocation(rend->shader, "PMatrix");
-   rend->uniform_wmatrix         = glGetUniformLocation(rend->shader, "WMatrix");
-   rend->uniform_light_direction = glGetUniformLocation(rend->shader, "LightDirection");
-   rend->uniform_csampler        = glGetUniformLocation(rend->shader, "CSampler");
+   rend->shader = ManagerShader_Get(shader_manager, "wavefront");
 
    // Load Models
 
@@ -49,17 +45,12 @@ void MapItemListRenderer_Render(MapItemListRenderer_T * rend, const Matrix3D_T *
 {
    MapItem_T * list;
    size_t count, i;
-   Matrix3D_T camera, translater, temp;
+   Matrix3D_T temp, translater;
 
 
-   glUseProgram(rend->shader);
+   Shader_Begin(rend->shader);
+   Shader_SetLightDirection(rend->shader, lx, ly, lz);
 
-   glUniform3f(rend->uniform_light_direction, lx, ly, lz);   
-   
-
-   glEnableVertexAttribArray(0);
-   glEnableVertexAttribArray(1);
-   glEnableVertexAttribArray(2);
 
    list = ListMemory_Get(&rend->list->mapitem_list, &count, NULL);
    for(i = 0; i < count; i++)
@@ -68,18 +59,13 @@ void MapItemListRenderer_Render(MapItemListRenderer_T * rend, const Matrix3D_T *
       {
          Matrix3D_SetTranslation(&translater, list[i].x, list[i].y, list[i].z);
          Matrix3D_Multiply(&temp, world, &translater);
-         Matrix3D_Multiply(&camera, pers, &temp);
+         Shader_SetPositionPerspective(rend->shader, &temp, pers);
 
-         glUniformMatrix4fv(rend->uniform_wmatrix,  1, GL_FALSE, temp.data);
-         glUniformMatrix4fv(rend->uniform_pmatrix,  1, GL_FALSE, camera.data);
 
-         WavefrontMesh_Render(&rend->log_mesh, rend->uniform_csampler);
+         WavefrontMesh_Render(&rend->log_mesh, rend->shader->uniforms[e_SU_Samp2D_Texture0]);
       }
    }
 
-
-   glDisableVertexAttribArray(0);
-   glDisableVertexAttribArray(1);
-   glDisableVertexAttribArray(2);
+   Shader_End(rend->shader);
 }
 

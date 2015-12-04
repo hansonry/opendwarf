@@ -3,21 +3,16 @@
 
 #include "MapItemList.h"
 #include "Matrix3D.h"
-#include "GL/glew.h"
-#include "SDL2/SDL_opengl.h"
 #include "GLTexture2D.h"
 #include "WavefrontMesh.h"
+#include "Shader.h"
 
 typedef struct MapItemListRenderer_S MapItemListRenderer_T;
 struct MapItemListRenderer_S
 {
    MapItemList_T * list;
    WavefrontMesh_T log_mesh;
-   GLuint shader;
-   GLint  uniform_pmatrix;
-   GLint  uniform_wmatrix;
-   GLint  uniform_light_direction;
-   GLint  uniform_csampler;
+   Shader_T * shader;
 };
 
 void MapItemListRenderer_Init(MapItemListRenderer_T * rend, MapItemList_T * list);

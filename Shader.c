@@ -55,7 +55,7 @@ void Shader_Load(Shader_T * shader, const char * shader_name)
                                                        data->uniform_names[i]);
             if(shader->uniforms[i] == -1)
             {
-               printf("Error: Shader_Load using shader \"%s\" couldn't find uniform location for %s\n", data->uniform_names[i]);
+               printf("Error: Shader_Load using shader \"%s\" couldn't find uniform location for %s\n", shader_name,  data->uniform_names[i]);
             }
          }
       }
@@ -75,7 +75,7 @@ void Shader_SetTexutre(Shader_T * shader, GLTexture2D_T * texture, GLenum slot)
    GLTexture2D_ApplyToUniform(texture, shader->uniforms[e_SU_Samp2D_Texture0], slot);
 }
 
-void Shader_SetPositionPerspective(Shader_T * shader, Matrix3D_T * world, Matrix3D_T * perspective)
+void Shader_SetPositionPerspective(Shader_T * shader, const Matrix3D_T * world, const Matrix3D_T * perspective)
 {
    Matrix3D_T temp;
    Matrix3D_Multiply(&temp, perspective, world);
