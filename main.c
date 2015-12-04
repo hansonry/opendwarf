@@ -128,12 +128,15 @@ static void Item_Setup(void)
 static void Pawn_Setup(void)
 {
    Pawn_T * pawn;
+   Position_T  pos;
    PawnList_Init(&pawn_list);
    PawnListRenderer_Init(&pawn_list_renderer, &pawn_list);
 
    pawn = Pawn_Create();
 
    PawnList_Add(&pawn_list, pawn);
+   Position_Set(&pos, 0, 2, 0);
+   Mover_MoveTo(&pawn->mover, &pos);
 }
 
 static void game_setup(CEngine_T * engine)
@@ -232,6 +235,7 @@ static void game_update(CEngine_T * engine, float seconds)
    }
 
    GLCam_FPS_Update(&fps_cam, seconds);
+   PawnList_Update(&pawn_list, seconds);
 }
 
 static void game_render(CEngine_T * engine)

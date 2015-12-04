@@ -12,6 +12,8 @@ struct PawnList_S
 void PawnList_Init(PawnList_T * list);
 void PawnList_Destroy(PawnList_T * list);
 
+void PawnList_Update(PawnList_T * list, float seconds);
+
 void PawnList_Add(PawnList_T * list, Pawn_T * pawn);
 
 
