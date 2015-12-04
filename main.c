@@ -136,7 +136,7 @@ static void Pawn_Setup(void)
 
    PawnList_Add(&pawn_list, pawn);
    Position_Set(&pos, 0, 2, 0);
-   Mover_MoveTo(&pawn->mover, &pos);
+   //Mover_MoveTo(&pawn->mover, &pos);
 }
 
 static void game_setup(CEngine_T * engine)
