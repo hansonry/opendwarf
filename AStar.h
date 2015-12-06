@@ -17,12 +17,13 @@ struct AStar_S
 
 };
 
-void               AStar_Init(AStar_T * as, MapChunk_T * map, const Position_T * root);
-void               AStar_Destroy(AStar_T * as);
-const Position_T * AStar_GetPathFromRoot(AStar_T * as, const Position_T * dest, size_t * count);
-const Position_T * AStar_GetPathToRoot(AStar_T * as, const Position_T * src, size_t * count);
+void         AStar_Init(AStar_T * as, MapChunk_T * map, const Position_T * root);
+void         AStar_Destroy(AStar_T * as);
+Position_T * AStar_GetPathFromRoot(AStar_T * as, const Position_T * dest, size_t * count);
+Position_T * AStar_GetPathToRoot(AStar_T * as, const Position_T * src, size_t * count);
+void         AStar_FreePath(Position_T * path);
 
-void               AStar_Step(AStar_T * as);
+void         AStar_Step(AStar_T * as);
 
 
 

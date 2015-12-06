@@ -45,6 +45,8 @@ void MapChunk_Destroy(MapChunk_T * chunk);
 void MapChunk_Set(MapChunk_T * chunk, int x, int y, int z, const MapChunkTile_T * tile);
 void MapChunk_Get(MapChunk_T * chunk, int x, int y, int z, MapChunkTile_T * tile);
 
+int  MapChunk_InBounds(MapChunk_T * chunk, int x, int y, int z);
+
 void MapChunk_Fill(MapChunk_T * chunk, int x1, int y1, int z1, int x2, int y2, int z2, const MapChunkTile_T * tile);
 
 void MapChunk_GetDimensions(MapChunk_T * chunk, int * width, int * height, int * depth);

@@ -44,12 +44,89 @@ void AStar_Destroy(AStar_T * as)
    ListMemory_Destory(&as->path_list);
 }
 
-const Position_T * AStar_GetPathFromRoot(AStar_T * as, const Position_T * dest, size_t * count)
+Position_T * AStar_GetPathFromRoot(AStar_T * as, const Position_T * dest, size_t * count)
 {
+   Position_T * pos_list;
+   size_t lcount;
+   
+   pos_list = AStar_GetPathToRoot(as, dest, &lcount);
+
+   // TODO: Switch Around Ends
+
+   if(count != NULL)
+   {
+      (*count) = lcount;
+   }
+
+   return pos_list;
 }
 
-const Position_T * AStar_GetPathToRoot(AStar_T * as, const Position_T * src, size_t * count)
+Position_T * AStar_GetPathToRoot(AStar_T * as, const Position_T * src, size_t * count)
 {
+   size_t lcount, i;
+   AStarPath_T * path_list;
+   size_t path_list_count;
+   size_t path_target_index, loop_index;;
+   int found_pos;
+   Position_T * pos_list;
+
+   found_pos = 0;
+
+   path_list = ListMemory_Get(&as->path_list, &path_list_count, NULL);
+   
+   for(i = 0; i < path_list_count; i++)
+   {
+      if(Position_IsEqual(&path_list[i].pos, src))
+      {
+         path_target_index = i;
+         found_pos = 1;
+         break;
+      }
+   }
+
+   if(found_pos == 1)
+   {
+      lcount = 0;
+      loop_index = path_target_index;
+      while(loop_index > 0)
+      {
+         lcount ++;
+         loop_index = loop_index - path_list[loop_index].next_index_diff;
+      }
+
+      lcount ++;
+
+      pos_list = malloc(sizeof(Position_T) * lcount);
+      if(count != NULL)
+      {
+         (*count) = lcount;
+      }
+
+
+      i = 0;
+      loop_index = path_target_index;
+      while(loop_index > 0)
+      {
+         loop_index = loop_index - path_list[loop_index].next_index_diff;
+         Position_Copy(&pos_list[i], &path_list[loop_index].pos);
+         i ++;
+      }
+      Position_Copy(&pos_list[i], &path_list[0].pos);
+
+
+
+   }
+   else
+   {
+      pos_list = NULL;
+   }
+
+   return pos_list;
+}
+
+void AStar_FreePath(Position_T * path)
+{
+   free(path);
 }
 
 static size_t AStar_ComputeDifficulty(AStarPath_T * from, AStarPath_T * to)
@@ -59,10 +136,45 @@ static size_t AStar_ComputeDifficulty(AStarPath_T * from, AStarPath_T * to)
 
 static int AStar_IsValidPosition(AStar_T *as, const Position_T * pos)
 {
-   int width, height, depth;
-   MapChunk_GetDimensions(as->map, &width, &height, &depth);
-   return pos->x >= 0 && pos->y >= 0 && pos->z >= 0 &&
-          pos->x < width && pos->y < height && pos->z < depth;
+   MapChunkTile_T map_tile;
+   int output;
+
+   if(MapChunk_InBounds(as->map, pos->x, pos->y, pos->z))
+   {
+      MapChunk_Get(as->map, pos->x, pos->y, pos->z, &map_tile);
+      if(map_tile.topology == e_MCTT_None)
+      {
+         if(MapChunk_InBounds(as->map, pos->x, pos->y - 1, pos->z))
+         {
+            MapChunk_Get(as->map, pos->x, pos->y - 1, pos->z, &map_tile);
+
+            if(map_tile.topology == e_MCTT_Block || 
+               map_tile.topology == e_MCTT_Ramp)
+            {
+               output = 1;
+            }
+            else
+            {
+               output = 0;
+            }
+         }
+         else
+         {
+            output = 0;
+         }
+      }
+      else
+      {
+         output = 0;
+      }
+   }
+   else
+   {
+      output = 0;
+   }
+
+
+   return output;
 }
 
 #define OFFSET_COUNT 6
@@ -146,14 +258,13 @@ void AStar_Step(AStar_T * as)
       parent = ListMemory_GetIndex(&as->path_list, p_index);
       if(parent->is_open == 1)
       {
+         parent->is_open = 0;
 
-      for(o_index = 0; o_index < OFFSET_COUNT; o_index ++)
-      {
-         AStar_ComputeOffset(as, o_index, p_index);
-      }
+         for(o_index = 0; o_index < OFFSET_COUNT; o_index ++)
+         {
+            AStar_ComputeOffset(as, o_index, p_index);
+         }
 
-      parent = ListMemory_GetIndex(&as->path_list, p_index);
-      parent->is_open = 0;
       }
 
 

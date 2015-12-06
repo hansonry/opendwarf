@@ -35,6 +35,12 @@ void MapChunk_Get(MapChunk_T * chunk, int x, int y, int z, MapChunkTile_T * tile
    memcpy(tile, &chunk->map[index], sizeof(MapChunkTile_T)); 
 }
 
+int  MapChunk_InBounds(MapChunk_T * chunk, int x, int y, int z)
+{
+   return x >= 0           && y >= 0            && z >= 0           &&
+          x < chunk->width && y < chunk->height && z < chunk->depth;
+}
+
 
 void MapChunk_Fill(MapChunk_T * chunk, int x1, int y1, int z1, int x2, int y2, int z2, const MapChunkTile_T * tile)
 {
