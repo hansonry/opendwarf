@@ -50,7 +50,7 @@ void ListMemory_Destory(ListMemory_T * list)
 
 
 
-void * ListMemory_Allocate(ListMemory_T * list)
+void * ListMemory_Allocate(ListMemory_T * list, size_t * index)
 {
    byte_t * mem;
    size_t new_size;
@@ -62,16 +62,26 @@ void * ListMemory_Allocate(ListMemory_T * list)
       list->memory_size = new_size;
    }
 
+   if(index != NULL)
+   {
+      (*index) = list->element_count;
+   }
+
    mem = ADDY(list, list->element_count);
    list->element_count++;
 
    return mem;
 }
-void ListMemory_CopyAlloc(ListMemory_T * list, const void * mem)
+void ListMemory_CopyAlloc(ListMemory_T * list, const void * mem, size_t * index)
 {
    void * new_mem;
-   new_mem = ListMemory_Allocate(list);
+   new_mem = ListMemory_Allocate(list, index);
    memcpy(new_mem, mem, list->element_size);
+}
+
+void * ListMemory_GetIndex(ListMemory_T * list, size_t index)
+{
+   return ADDY(list, index);
 }
 
 static void ListMemory_RemoveIndex(ListMemory_T * list, size_t index)

@@ -21,8 +21,9 @@ void ListMemory_Init(ListMemory_T * list, size_t element_size, size_t grow_by);
 void ListMemory_Destory(ListMemory_T * list);
 
 
-void * ListMemory_Allocate(ListMemory_T * list);
-void ListMemory_CopyAlloc(ListMemory_T * list, const void * mem);
+void * ListMemory_Allocate(ListMemory_T * list, size_t * index);
+void ListMemory_CopyAlloc(ListMemory_T * list, const void * mem, size_t * index);
+void * ListMemory_GetIndex(ListMemory_T * list, size_t index);
 void ListMemory_FreeNow(ListMemory_T * list, size_t index);
 void ListMemory_FreeLater(ListMemory_T * list, size_t index);
 void ListMemory_FlushFree(ListMemory_T * list);

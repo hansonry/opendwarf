@@ -14,7 +14,7 @@ void MapItemList_Destory(MapItemList_T * list)
 void MapItemList_Add(MapItemList_T * list, const MapItem_T * item)
 {
    MapItem_T * mem;
-   ListMemory_CopyAlloc(&list->mapitem_list, item);
+   ListMemory_CopyAlloc(&list->mapitem_list, item, NULL);
 }
 
 
