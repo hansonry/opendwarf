@@ -66,7 +66,7 @@ Position_T * AStar_GetPathToRoot(AStar_T * as, const Position_T * src, size_t * 
    size_t lcount, i;
    AStarPath_T * path_list;
    size_t path_list_count;
-   size_t path_target_index, loop_index;;
+   size_t path_target_index, loop_index;
    int found_pos;
    Position_T * pos_list;
 
@@ -189,7 +189,7 @@ static const Position_T OFFSET[OFFSET_COUNT] =
    {  0,  0, -1 }
 };
 
-static AStarPath_T * AStar_ComputeOffset(AStar_T * as, size_t offset_index,  size_t parent_index)
+static void AStar_ComputeOffset(AStar_T * as, size_t offset_index,  size_t parent_index)
 {
    AStarPath_T * out;
    AStarPath_T * parent;
