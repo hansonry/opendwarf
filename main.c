@@ -100,6 +100,9 @@ static void mapchunk_setup(void)
    MapChunk_Fill(&map_chunk, 0, 0, 0, 4, 4, 4, &tile_air);
    MapChunk_Fill(&map_chunk, 0, 0, 0, 4, 1, 4, &tile_grass);
    MapChunk_Set(&map_chunk, 2, 2, 2, &tile_rock);
+   MapChunk_Set(&map_chunk, 0, 2, 4, &tile_rock);
+   MapChunk_Set(&map_chunk, 2, 2, 3, &tile_rock);
+
 
    
    MapChunkRender_Init(&map_chunk_render, &map_chunk);
@@ -132,7 +135,7 @@ static void Pawn_Setup(void)
    PawnList_Init(&pawn_list);
    PawnListRenderer_Init(&pawn_list_renderer, &pawn_list);
 
-   pawn = Pawn_Create();
+   pawn = Pawn_Create(&map_chunk);
 
    PawnList_Add(&pawn_list, pawn);
    Position_Set(&pos, 0, 2, 0);

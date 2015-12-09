@@ -1,5 +1,6 @@
 #include "Pawn.h"
 
+#include "AStar.h"
 #include <stdlib.h>
 
 static const Position_T plist[4] =
@@ -10,19 +11,40 @@ static const Position_T plist[4] =
    { 2, 2, 1 },
 };
 
-Pawn_T * Pawn_Create(void)
+Pawn_T * Pawn_Create(MapChunk_T * map)
 {
    Pawn_T * pawn;
+   AStar_T astar;
+   Position_T end;
+   int count;
    pawn = malloc(sizeof(Pawn_T));
-   Position_Set(&pawn->pos, 1, 2, 1);
+   pawn->map = map;
+   Position_Set(&pawn->pos, 0, 2, 0);
    Mover_Init(&pawn->mover, &pawn->pos, 1.0f);
    MoverControllerList_Init(&pawn->mover_ctrl, &pawn->mover, 1);
-   MoverControllerList_SetPath(&pawn->mover_ctrl, plist, 4);
+   Position_Set(&end, 4, 2, 4);
+   AStar_Init(&astar, pawn->map, &pawn->pos, &end);
+   if(AStar_Run(&astar))
+   {
+      pawn->path_list = AStar_CreatePositionList(&astar, &count);
+      MoverControllerList_SetPath(&pawn->mover_ctrl, pawn->path_list, count);
+   }
+   else
+   {
+      MoverControllerList_SetPath(&pawn->mover_ctrl, plist, 4);
+
+   }
+
+   AStar_Destroy(&astar);
    return pawn;
 }
 
 void Pawn_Destroy(Pawn_T * pawn)
 {
+   if(pawn->path_list != NULL)
+   {
+      free(pawn->path_list);
+   }
    free(pawn);
 }
 
