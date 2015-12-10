@@ -16,7 +16,7 @@ Pawn_T * Pawn_Create(MapChunk_T * map)
    Pawn_T * pawn;
    AStar_T astar;
    Position_T end;
-   int count;
+   size_t count;
    pawn = malloc(sizeof(Pawn_T));
    pawn->map = map;
    Position_Set(&pawn->pos, 0, 2, 0);
