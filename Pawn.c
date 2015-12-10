@@ -19,10 +19,10 @@ Pawn_T * Pawn_Create(MapChunk_T * map)
    size_t count;
    pawn = malloc(sizeof(Pawn_T));
    pawn->map = map;
-   Position_Set(&pawn->pos, 0, 2, 0);
+   Position_Set(&pawn->pos, 4, 2, 4);
    Mover_Init(&pawn->mover, &pawn->pos, 1.0f);
    MoverControllerList_Init(&pawn->mover_ctrl, &pawn->mover, 1);
-   Position_Set(&end, 4, 2, 4);
+   Position_Set(&end, 0, 2, 0);
    AStar_Init(&astar, pawn->map, &pawn->pos, &end);
    if(AStar_Run(&astar))
    {
