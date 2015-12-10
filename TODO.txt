@@ -1,8 +1,15 @@
 ============ TODO ============
 
- * Create Pawn class and renderer
+ * Make The Pawn Walk To the Log
+ * Make The Pawn Walk To the Log and Pick up the Log
+ * Make The Pawn Walk To the Log, Pick up the Log, Walk To 4,4,4
+ * Make The Pawn Walk To the Log, Pick up the Log, Walk To 4,4,4, and Drop the log
+
 
 ============ DONE ============
+
+== Unknown ==
+ * Create Pawn class and renderer
 
 == 12/02/2015 ==
  * Make some kind of chunk Item List class
