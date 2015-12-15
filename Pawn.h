@@ -12,7 +12,7 @@ typedef enum   PawnCmdState_E  PawnCmdState_T;
 
 enum PawnCmdState_E
 {
-   e_PCS_NoCommand,
+   e_PCS_CommandLoaded,
    e_PCS_RunningCommand,
    e_PCS_FinishedCommand
 };

@@ -23,7 +23,7 @@ Pawn_T * Pawn_Create(MapChunk_T * map)
    pawn->cmd_list = NULL;
    pawn->cmd_list_count = 0;
    pawn->cmd_index = 0;
-   pawn->cmd_state = e_PCS_NoCommand;
+   pawn->cmd_state = e_PCS_FinishedCommand;
    Position_Set(&pawn->pos, 4, 2, 4);
    Mover_Init(&pawn->mover, &pawn->pos, 1.0f);
    MoverControllerList_Init(&pawn->mover_ctrl, &pawn->mover, 1);
@@ -52,17 +52,17 @@ void Pawn_Destroy(Pawn_T * pawn)
    }
    free(pawn);
 }
+static void Pawn_SetCurrentCommand(Pawn_T * pawn, const PawnCmd_T * cmd)
+{
+   memcpy(&pawn->current_command, cmd, sizeof(PawnCmd_T));
+   pawn->cmd_state = e_PCS_CommandLoaded;
+}
 
 void Pawn_SetComandList(Pawn_T * pawn, PawnCmd_T * cmd_list, size_t cmd_list_count)
 {
    pawn->cmd_list = cmd_list;
    pawn->cmd_list_count = cmd_list_count;
    pawn->cmd_index = 0;
-  
-   if(pawn->cmd_state == e_PCS_NoCommand)
-   {
-      pawn->cmd_state == e_PCS_FinishedCommand;
-   }
 
 }
 
@@ -72,26 +72,62 @@ static void Pawn_InitCurrentCommand(Pawn_T * pawn)
 
 }
 
-static Pawn_UpdateCurrentCommand(Pawn_T * pawn)
+static Pawn_UpdateCurrentCommand(Pawn_T * pawn, float seconds)
 {
+   if(pawn->cmd_state == e_PCS_CommandLoaded)
+   {
+      switch(pawn->current_command.type)
+      {
+      case e_PCT_MoveTo:
+         break;
+      case e_PCT_PickUp:
+         break;
+      case e_PCT_Drop:
+         break;
+      case e_PCT_Wait:
+      default:
+         break;
+      }
+      // INITS
+      pawn->cmd_state = e_PCS_RunningCommand;
+   }
+
+   if(pawn->cmd_state == e_PCS_RunningCommand)
+   {
+      switch(pawn->current_command.type)
+      {
+      case e_PCT_MoveTo:
+         break;
+      case e_PCT_PickUp:
+         break;
+      case e_PCT_Drop:
+         break;
+      case e_PCT_Wait:
+      default:
+         break;
+      }
+      // RUNNINGS
+   }
+
 }
 
 
 static void Pawn_UpdateCommand(Pawn_T * pawn, float seconds)
 {
-   if(pawn->cmd_state == e_PCS_NoCommand && 
-      pawn->cmd_list != NULL && 
-      pawn->cmd_index < pawn->cmd_list_count)
-   {
-      memcpy(&pawn->current_command, &pawn->cmd_list[pawn->cmd_index], sizeof(PawnCmd_T));
-      Pawn_InitCurrentCommand(pawn);
-   }
 
-   if(pawn->cmd_index == e_PCS_RunningCommand)
+   if(pawn->cmd_state == e_PCS_FinishedCommand)
    {
-      Pawn_UpdateCurrentCommand(pawn);
+      if(pawn->cmd_list != NULL && 
+         pawn->cmd_index < pawn->cmd_list_count)
+      {
+         Pawn_SetCurrentCommand(pawn, &pawn->cmd_list[pawn->cmd_index]);
+         pawn->cmd_index ++;
+      }
    }
-
+   else
+   {
+      Pawn_UpdateCurrentCommand(pawn, seconds);
+   }
 }
 
 void Pawn_Update(Pawn_T * pawn, float seconds)
