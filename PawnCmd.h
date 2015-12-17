@@ -3,6 +3,7 @@
 
 #include "Position.h"
 #include "Item.h"
+#include "MapItemList.h"
 
 typedef enum   PawnCmdType_E        PawnCmdType_T;
 typedef enum   PawnCmdState_E       PawnCmdState_T;
@@ -63,6 +64,7 @@ struct PawnCmd_S
 
 struct PawnCmdSystem_S
 {
+   MapItemList_T * map_item_list;
    PawnCmd_T current;
    PawnCmdState_T state;
    Item_T * held_item;
@@ -75,7 +77,7 @@ struct PawnCmdSystem_S
    float vispos_z;
 };
 
-void PawnCmdSystem_Init(PawnCmdSystem_T * sys, int x, int y, int z, float move_speed);
+void PawnCmdSystem_Init(PawnCmdSystem_T * sys, MapItemList_T * map_item_list, int x, int y, int z, float move_speed);
 
 
 void PawnCmdSystem_Update(PawnCmdSystem_T * sys, float seconds);

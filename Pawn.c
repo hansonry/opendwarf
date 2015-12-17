@@ -26,7 +26,7 @@ static PawnCmd_T * Pawn_CreateMoveCmdList(const Position_T * pos_list, size_t co
    return cmd_list;
 }
 
-Pawn_T * Pawn_Create(MapChunk_T * map)
+Pawn_T * Pawn_Create(MapChunk_T * map, MapItemList_T * map_item_list)
 {
    Pawn_T * pawn;
    AStar_T astar;
@@ -40,7 +40,7 @@ Pawn_T * Pawn_Create(MapChunk_T * map)
    pawn->cmd_list = NULL;
    pawn->cmd_list_count = 0;
    pawn->cmd_index = 0;
-   PawnCmdSystem_Init(&pawn->cmd_sys, 4, 2, 4, 1.0f);
+   PawnCmdSystem_Init(&pawn->cmd_sys, map_item_list, 4, 2, 4, 1.0f);
    Position_Set(&end, 0, 2, 0);
    AStar_Init(&astar, pawn->map, &pawn->cmd_sys.position, &end);
    if(AStar_Run(&astar))

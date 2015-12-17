@@ -135,7 +135,7 @@ static void Pawn_Setup(void)
    PawnList_Init(&pawn_list);
    PawnListRenderer_Init(&pawn_list_renderer, &pawn_list);
 
-   pawn = Pawn_Create(&map_chunk);
+   pawn = Pawn_Create(&map_chunk, &map_item_list);
 
    PawnList_Add(&pawn_list, pawn);
 }

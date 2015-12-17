@@ -17,4 +17,20 @@ void MapItemList_Add(MapItemList_T * list, const MapItem_T * item)
    ListMemory_CopyAlloc(&list->mapitem_list, item, NULL);
 }
 
+void MapItemList_Remove(MapItemList_T * list, Item_T * item)
+{
+   size_t i, count;
+   MapItem_T * item_list;
+
+   item_list = ListMemory_Get(&list->mapitem_list, &count, NULL);
+   for(i = 0; i < count; i++)
+   {
+      if(item_list[i].item == item)
+      {
+         ListMemory_FreeNow(&list->mapitem_list, i);
+         break;
+      }
+   }
+}
+
 

@@ -16,7 +16,7 @@ struct Pawn_S
    PawnCmdSystem_T cmd_sys;
 };
 
-Pawn_T * Pawn_Create(MapChunk_T * map);
+Pawn_T * Pawn_Create(MapChunk_T * map, MapItemList_T * map_item_list);
 void Pawn_Destroy(Pawn_T * pawn);
 
 void Pawn_SetComandList(Pawn_T * pawn, PawnCmd_T * cmd_list, size_t cmd_list_count);

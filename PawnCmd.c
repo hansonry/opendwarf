@@ -19,7 +19,7 @@ static float interpolate(float a, float b, float p)
    return a * (1 - p) + b * p;
 }
 
-void PawnCmdSystem_Init(PawnCmdSystem_T * sys, int x, int y, int z, float move_speed)
+void PawnCmdSystem_Init(PawnCmdSystem_T * sys, MapItemList_T * map_item_list, int x, int y, int z, float move_speed)
 {
    sys->current.type = e_PCT_NULL;
    sys->state = e_PCS_Finished;
@@ -29,6 +29,7 @@ void PawnCmdSystem_Init(PawnCmdSystem_T * sys, int x, int y, int z, float move_s
    sys->vispos_x = x;
    sys->vispos_y = y;
    sys->vispos_z = z;
+   sys->map_item_list = map_item_list;
 
 }
 
@@ -202,12 +203,23 @@ void PawnCmd_InitPickup(PawnCmd_T * cmd, Item_T * item)
 
 static void PawnCmdSystem_InitPickup(PawnCmdSystem_T * sys, PawnCmdData_Pickup_T * cmd)
 {
+   sys->flags = 0;
 }
 
 static int PawnCmdSystem_UpdatePickup(PawnCmdSystem_T * sys, PawnCmdData_Pickup_T * cmd, float seconds)
 {
    int result;
-   result = 0;
+   if(sys->flags == 1)
+   {
+      result = 0;
+   }
+   else
+   {
+      sys->flags = 1;
+      MapItemList_Remove(sys->map_item_list, cmd->item);
+      sys->held_item = cmd->item;
+      result = 0;
+   }
    return result;
 }
 

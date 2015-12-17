@@ -27,8 +27,7 @@ void MapItemList_Destory(MapItemList_T * list);
 
 void MapItemList_Add(MapItemList_T * list, const MapItem_T * item);
 
-
-
+void MapItemList_Remove(MapItemList_T * list, Item_T * item);
 
 
 
