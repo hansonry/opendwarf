@@ -53,6 +53,7 @@ void AStar_Destroy(AStar_T * as)
    ListMemory_Destory(&as->path_list);
 }
 
+// You are responisble for freeing the result
 Position_T * AStar_CreatePositionList(AStar_T * as, size_t * count)
 {
    size_t lcount, i;

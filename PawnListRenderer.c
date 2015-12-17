@@ -47,7 +47,9 @@ void PawnListRenderer_Render(PawnListRenderer_T * rend, const Matrix3D_T * world
    for(i = 0; i < count; i++)
    {
       pawn = plist[i];
-      Matrix3D_SetTranslation(&offset, pawn->mover.lx, pawn->mover.ly, pawn->mover.lz);
+      Matrix3D_SetTranslation(&offset, pawn->cmd_sys.vispos_x, 
+                                       pawn->cmd_sys.vispos_y, 
+                                       pawn->cmd_sys.vispos_z);
       Matrix3D_Multiply(&temp, world, &offset);
       Shader_SetPositionPerspective(rend->shader, &temp, pers);
       WavefrontMesh_Render(&rend->pawn_mesh, rend->shader->uniforms[e_SU_Samp2D_Texture0]);
