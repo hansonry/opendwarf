@@ -1,6 +1,6 @@
 #include "PawnCmd.h"
 
-#include <String.h>
+#include <string.h>
 
 static void PawnCmdSystem_InitWait(PawnCmdSystem_T * sys, PawnCmdData_Wait_T * cmd);
 static int PawnCmdSystem_UpdateWait(PawnCmdSystem_T * sys, PawnCmdData_Wait_T * cmd, float seconds);
@@ -38,16 +38,16 @@ static void PawnCmdSystem_InitCmd(PawnCmdSystem_T * sys, PawnCmd_T * cmd)
    switch(cmd->type)
    {
    case e_PCT_Wait:
-      PawnCmdSystem_InitWait(sys, &cmd->data.wait);
+      PawnCmdSystem_InitWait(sys,   &cmd->data.wait);
       break;
    case e_PCT_Move:
-      PawnCmdSystem_InitMove(sys, &cmd->data.move);
+      PawnCmdSystem_InitMove(sys,   &cmd->data.move);
       break;
    case e_PCT_Pickup:
       PawnCmdSystem_InitPickup(sys, &cmd->data.pickup);
       break;
    case e_PCT_Drop:
-      PawnCmdSystem_InitDrop(sys, &cmd->data.drop);
+      PawnCmdSystem_InitDrop(sys,   &cmd->data.drop);
       break;
    case e_PCT_NULL:
    default:
@@ -63,16 +63,16 @@ static int PawnCmdSystem_UpdateCmd(PawnCmdSystem_T * sys, PawnCmd_T * cmd, float
    switch(cmd->type)
    {
    case e_PCT_Wait:
-      result = PawnCmdSystem_UpdateWait(sys, &cmd->data.wait, seconds);
+      result = PawnCmdSystem_UpdateWait(sys,   &cmd->data.wait,   seconds);
       break;
    case e_PCT_Move:
-      result = PawnCmdSystem_UpdateMove(sys, &cmd->data.move, seconds);
+      result = PawnCmdSystem_UpdateMove(sys,   &cmd->data.move,   seconds);
       break;
    case e_PCT_Pickup:
       result = PawnCmdSystem_UpdatePickup(sys, &cmd->data.pickup, seconds);
       break;
    case e_PCT_Drop:
-      result = PawnCmdSystem_UpdateDrop(sys, &cmd->data.drop, seconds);
+      result = PawnCmdSystem_UpdateDrop(sys,   &cmd->data.drop,   seconds);
       break;
    case e_PCT_NULL:
    default:
