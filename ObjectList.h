@@ -16,6 +16,8 @@ void ObjectList_Destory(ObjectList_T * list);
 
 void ObjectList_Add(ObjectList_T * list, void * obj);
 
+void ObjectList_Remove(ObjectList_T * list, void * obj);
+
 void * ObjectList_Get(ObjectList_T * list, size_t * count);
 
 void ObjectList_RemoveAll(ObjectList_T * list);

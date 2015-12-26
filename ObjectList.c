@@ -44,6 +44,29 @@ void ObjectList_Add(ObjectList_T * list, void * obj)
 }
 
 
+void ObjectList_Remove(ObjectList_T * list, void * obj)
+{
+   size_t index;
+   int found;
+
+   found = 0;
+
+   for(index = 0; index < list->count; index ++)
+   {
+      if(list->list[index] == obj)
+      {
+         found = 1;
+         break;
+      }
+   }
+
+   if(found == 1)
+   {
+      list->count --;
+      list->list[index] = list->list[list->count];
+   }
+}
+
 void * ObjectList_Get(ObjectList_T * list, size_t * count)
 {
    if(count != NULL)
