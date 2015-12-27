@@ -30,6 +30,8 @@ void ListMemory_FlushFree(ListMemory_T * list);
 
 void * ListMemory_Get(ListMemory_T * list, size_t * count, size_t * element_size);
 
+void * ListMemory_GetCopy(ListMemory_T * list, size_t * count, size_t * element_size);
+
 
 
 #endif // __LISTMEMORY_H__

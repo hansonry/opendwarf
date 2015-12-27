@@ -189,3 +189,22 @@ void * ListMemory_Get(ListMemory_T * list, size_t * count, size_t * element_size
    return list->memory;
 }
 
+void * ListMemory_GetCopy(ListMemory_T * list, size_t * count, size_t * element_size)
+{
+   void * mem;
+   size_t size;
+   if(count != NULL)
+   {
+      (*count) = list->element_count;
+   }
+   if(element_size != NULL)
+   {
+      (*element_size) = list->element_size;
+   }
+   size = list->element_count * list->element_size;
+
+   mem = malloc(size);
+   memcpy(mem, list->memory, size);
+   return mem;
+}
+

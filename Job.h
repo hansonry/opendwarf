@@ -4,6 +4,7 @@
 #include "Item.h"
 #include "Position.h"
 #include "PawnCmd.h"
+#include "MapChunk.h"
 
 typedef enum   JobType_E        JobType_T;
 typedef struct Job_S            Job_T;
@@ -49,7 +50,7 @@ void Job_None_Init(Job_T * job);
 void Job_PickupItem_Init(Job_T * job, Item_T * item, const Position_T * item_pos);
 void Job_MoveItem_Init(Job_T * job, Item_T * item, const Position_T * item_pos, const Position_T * drop_pos);
 
-PawnCmd_T * Job_CreateCmdList(Job_T * job, PawnCmdSystem_T * sys);
+PawnCmd_T * Job_CreateCmdList(Job_T * job, PawnCmdSystem_T * sys, MapChunk_T * map, size_t * count);
 
 
 
