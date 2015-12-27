@@ -67,6 +67,7 @@ PawnListRenderer_T pawn_list_renderer;
 
 
 // other
+Job_T test_job;
 WavefrontMesh_T log_mesh;
 UnitCube_T cube;
 
@@ -112,6 +113,7 @@ static void Item_Setup(void)
 {
    Item_T * item;
    MapItem_T map_item;
+   Position_T pos;
 
    MapItemList_Init(&map_item_list);
    MapItemListRenderer_Init(&map_item_list_renderer, &map_item_list);
@@ -124,6 +126,10 @@ static void Item_Setup(void)
    map_item.z = 0;
 
    MapItemList_Add(&map_item_list, &map_item);
+
+   Position_Set(&pos, map_item.x, map_item.y, map_item.z);
+
+   Job_PickupItem_Init(&test_job, item, &pos);
 
 
 }
@@ -138,6 +144,8 @@ static void Pawn_Setup(void)
    pawn = Pawn_Create(&map_chunk, &map_item_list);
 
    PawnList_Add(&pawn_list, pawn);
+
+   Pawn_SetJob(pawn, &test_job);
 }
 
 static void game_setup(CEngine_T * engine)

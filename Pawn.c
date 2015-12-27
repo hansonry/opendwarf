@@ -4,13 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-static const Position_T plist[4] =
-{
-   { 0, 2, 0 },
-   { 1, 2, 0 },
-   { 2, 2, 0 },
-   { 2, 2, 1 },
-};
 
 static PawnCmd_T * Pawn_CreateMoveCmdList(const Position_T * pos_list, size_t count)
 {
@@ -29,11 +22,6 @@ static PawnCmd_T * Pawn_CreateMoveCmdList(const Position_T * pos_list, size_t co
 Pawn_T * Pawn_Create(MapChunk_T * map, MapItemList_T * map_item_list)
 {
    Pawn_T * pawn;
-   AStar_T astar;
-   Position_T end;   
-   size_t count;
-   Position_T * path_list;
-   PawnCmd_T * cmd_list;
 
    pawn = malloc(sizeof(Pawn_T));
    pawn->map = map;
@@ -41,23 +29,8 @@ Pawn_T * Pawn_Create(MapChunk_T * map, MapItemList_T * map_item_list)
    pawn->cmd_list_count = 0;
    pawn->cmd_index = 0;
    PawnCmdSystem_Init(&pawn->cmd_sys, map_item_list, 4, 2, 4, 1.0f);
-   Position_Set(&end, 0, 2, 0);
-   AStar_Init(&astar, pawn->map, &pawn->cmd_sys.position, &end);
-   if(AStar_Run(&astar))
-   {
-      path_list = AStar_CreatePositionList(&astar, &count);
-      cmd_list = Pawn_CreateMoveCmdList(path_list, count);
-      free(path_list);
-   }
-   else
-   {
-      count = 4;
-      cmd_list = Pawn_CreateMoveCmdList(plist, count);
-   }
    
-   Pawn_SetComandList(pawn, cmd_list, count);
 
-   AStar_Destroy(&astar);
    return pawn;
 }
 
@@ -72,6 +45,10 @@ void Pawn_Destroy(Pawn_T * pawn)
 
 void Pawn_SetComandList(Pawn_T * pawn, PawnCmd_T * cmd_list, size_t cmd_list_count)
 {
+   if(pawn->cmd_list != NULL)
+   {
+      free(pawn->cmd_list);
+   }
    pawn->cmd_list = cmd_list;
    pawn->cmd_list_count = cmd_list_count;
    pawn->cmd_index = 0;
@@ -95,5 +72,9 @@ void Pawn_Update(Pawn_T * pawn, float seconds)
 
 void Pawn_SetJob(Pawn_T * pawn, Job_T * job)
 {
+   PawnCmd_T * cmd_list;
+   size_t count;
+   cmd_list = Job_CreateCmdList(job, &pawn->cmd_sys, pawn->map, &count);
+   Pawn_SetComandList(pawn, cmd_list, count);
 }
 
