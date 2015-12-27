@@ -20,7 +20,7 @@ static PawnCmd_T * Pawn_CreateMoveCmdList(const Position_T * pos_list, size_t co
 
    for(i = 0; i < count; i ++)
    {
-      PawnCmd_InitMove(&cmd_list[i], &pos_list[i]); 
+      PawnCmd_Move_Init(&cmd_list[i], &pos_list[i]); 
    }
 
    return cmd_list;
@@ -91,5 +91,9 @@ void Pawn_Update(Pawn_T * pawn, float seconds)
    }
 
    PawnCmdSystem_Update(&pawn->cmd_sys, seconds);
+}
+
+void Pawn_SetJob(Pawn_T * pawn, Job_T * job)
+{
 }
 

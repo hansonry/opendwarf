@@ -86,11 +86,11 @@ int PawnCmdSystem_IsFinished(PawnCmdSystem_T * sys);
 int PawnCmdSystem_AttemptToSet(PawnCmdSystem_T * sys, const PawnCmd_T * new_command);
 
 
-void PawnCmd_InitNULL(PawnCmd_T * cmd);
-void PawnCmd_InitWait(PawnCmd_T * cmd, float time);
-void PawnCmd_InitMove(PawnCmd_T * cmd, const Position_T * target);
-void PawnCmd_InitPickup(PawnCmd_T * cmd, Item_T * item);
-void PawnCmd_InitDrop(PawnCmd_T * cmd);
+void PawnCmd_NULL_Init(PawnCmd_T * cmd);
+void PawnCmd_Wait_Init(PawnCmd_T * cmd, float time);
+void PawnCmd_Move_Init(PawnCmd_T * cmd, const Position_T * target);
+void PawnCmd_Pickup_Init(PawnCmd_T * cmd, Item_T * item);
+void PawnCmd_Drop_Init(PawnCmd_T * cmd);
 
 
 #endif // __PAWNCMD_H__
