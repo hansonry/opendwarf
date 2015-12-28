@@ -231,12 +231,32 @@ void PawnCmd_Drop_Init(PawnCmd_T * cmd)
 
 static void PawnCmdSystem_Drop_Init(PawnCmdSystem_T * sys, PawnCmdData_Drop_T * cmd)
 {
+   sys->flags = 0;
 }
 
 static int PawnCmdSystem_Drop_Update(PawnCmdSystem_T * sys, PawnCmdData_Drop_T * cmd, float seconds)
 {
    int result;
-   result = 0;
+   MapItem_T map_item;
+   
+   if(sys->flags == 1)
+   {
+      result = 0; 
+   }
+   else
+   {
+      sys->flags     = 1;
+      map_item.x     = sys->position.x;
+      map_item.y     = sys->position.y;
+      map_item.z     = sys->position.z;
+      map_item.item  = sys->held_item;
+      sys->held_item = NULL;
+
+      MapItemList_Add(sys->map_item_list, &map_item);
+
+      result = 0;
+   }
+
    return result;
 }
 

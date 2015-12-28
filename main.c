@@ -114,6 +114,7 @@ static void Item_Setup(void)
    Item_T * item;
    MapItem_T map_item;
    Position_T pos;
+   Position_T d_pos;
 
    MapItemList_Init(&map_item_list);
    MapItemListRenderer_Init(&map_item_list_renderer, &map_item_list);
@@ -128,8 +129,9 @@ static void Item_Setup(void)
    MapItemList_Add(&map_item_list, &map_item);
 
    Position_Set(&pos, map_item.x, map_item.y, map_item.z);
+   Position_Set(&d_pos, 4, 2, 4);
 
-   Job_PickupItem_Init(&test_job, item, &pos);
+   Job_MoveItem_Init(&test_job, item, &pos, &d_pos);
 
 
 }
