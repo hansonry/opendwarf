@@ -18,6 +18,7 @@ static const ShaderData_T SHADER_DATA_TABLE[] =
    { "test1",     "test1.vert.glsl",     NULL,            "test1.frag.glsl",     3,        {"WMatrix",     "PMatrix",                "LightDirection", "CSampler" }},
    { "block",     "block.vert.glsl",     NULL,            "block.frag.glsl",     3,        {"WMatrix",     "PMatrix",                "LightDirection", "CSampler" }},
    { "wavefront", "wavefront.vert.glsl", NULL,            "wavefront.frag.glsl", 3,        {"WMatrix",     "PMatrix",                "LightDirection", "CSampler" }},
+   { "decal",     "decal.vert.glsl",     NULL,            "decal.frag.glsl",     2,        {NULL,          "PMatrix",                NULL,             "CSampler" }},
    { NULL,        NULL,                  NULL,            NULL,                  0,        {NULL,          NULL,                     NULL,             NULL       }}
 };
 

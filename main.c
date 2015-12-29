@@ -217,6 +217,7 @@ static void game_setup(CEngine_T * engine)
    mapchunk_setup();
    Item_Setup();
    Pawn_Setup();
+   StockPile_Setup();
 
 }
 
@@ -295,6 +296,7 @@ static void game_render(CEngine_T * engine)
    MapChunkRender_Render(&map_chunk_render, &m_stack.matrix, &projection, 0.577f, 0.577f, -0.577f);
    MapItemListRenderer_Render(&map_item_list_renderer, &m_stack.matrix, &projection, 0.577f, 0.577f, -0.577f);
    PawnListRenderer_Render(&pawn_list_renderer, &m_stack.matrix, &projection, 0.577f, 0.577f, -0.577f);
+   StockPileListRenderer_Render(&stockpile_list_renderer, &m_stack.matrix, &projection, 0.577f, 0.577f, -0.577f);
 
 
    glEnableVertexAttribArray(0);

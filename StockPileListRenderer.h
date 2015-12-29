@@ -3,7 +3,8 @@
 #include "StockPileList.h"
 #include "Matrix3D.h"
 #include "GLTexture2D.h"
-
+#include "Shader.h"
+#include "GLMesh.h"
 
 typedef struct StockPileListRenderer_S StockPileListRenderer_T;
 
@@ -11,7 +12,8 @@ struct StockPileListRenderer_S
 {
    StockPileList_T * list;
    GLTexture2D_T * text;
-   
+   Shader_T * shader;
+   GLMesh_T mesh;
 };
 
 

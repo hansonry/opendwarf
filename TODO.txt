@@ -1,10 +1,13 @@
 ============ TODO ============
 
+
+
+============ DONE ============
+
+== 12/29/2015 ==
  * Draw the StockPile locations
     * Create a square with transparent rendering
     * Create a new shader
-
-============ DONE ============
 
 == Unknown ==
  * Create Pawn class and renderer
