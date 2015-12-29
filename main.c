@@ -26,6 +26,7 @@
 #include "Item.h"
 #include "Resources.h"
 #include "PawnListRenderer.h"
+#include "StockPileListRenderer.h"
 
 static void gl_init(void);
 
@@ -64,6 +65,8 @@ MapItemList_T map_item_list;
 MapItemListRenderer_T map_item_list_renderer;
 PawnList_T pawn_list;
 PawnListRenderer_T pawn_list_renderer;
+StockPileList_T stockpile_list;
+StockPileListRenderer_T stockpile_list_renderer;
 
 
 // other
@@ -150,6 +153,17 @@ static void Pawn_Setup(void)
    Pawn_SetJob(pawn, &test_job);
 }
 
+static void StockPile_Setup(void)
+{
+   Position_T  pos;
+   Position_Set(&pos, 4, 2, 4);
+
+   StockPileList_Init(&stockpile_list);
+   StockPileListRenderer_Init(&stockpile_list_renderer, &stockpile_list);
+
+   StockPileList_AddPosition(&stockpile_list, &pos);
+}
+
 static void game_setup(CEngine_T * engine)
 {
    WavefrontLoaderData_T log_data;
@@ -203,6 +217,7 @@ static void game_setup(CEngine_T * engine)
    mapchunk_setup();
    Item_Setup();
    Pawn_Setup();
+
 }
 
 static void game_cleanup(CEngine_T * engine)
@@ -226,6 +241,9 @@ static void game_cleanup(CEngine_T * engine)
 
    PawnListRenderer_Destroy(&pawn_list_renderer);
    PawnList_Destroy(&pawn_list);
+
+   StockPileListRenderer_Destroy(&stockpile_list_renderer);
+   StockPileList_Destroy(&stockpile_list);
  
    Resources_Cleanup();
 }
