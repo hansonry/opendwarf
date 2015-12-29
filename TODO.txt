@@ -1,15 +1,17 @@
 ============ TODO ============
 
- * Make The Pawn Walk To the Log
- * Make The Pawn Walk To the Log and Pick up the Log
- * Make The Pawn Walk To the Log, Pick up the Log, Walk To 4,4,4
- * Make The Pawn Walk To the Log, Pick up the Log, Walk To 4,4,4, and Drop the log
-
+ * Draw the StockPile locations
+    * Create a square with transparent rendering
+    * Create a new shader
 
 ============ DONE ============
 
 == Unknown ==
  * Create Pawn class and renderer
+ * Make The Pawn Walk To the Log
+ * Make The Pawn Walk To the Log and Pick up the Log
+ * Make The Pawn Walk To the Log, Pick up the Log, Walk To 4,4,4
+ * Make The Pawn Walk To the Log, Pick up the Log, Walk To 4,4,4, and Drop the log
 
 == 12/02/2015 ==
  * Make some kind of chunk Item List class
