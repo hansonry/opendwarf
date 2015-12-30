@@ -193,7 +193,7 @@ static void MapChunkRender_GenMesh(MapChunkRender_T * rend)
          for(z = 0; z < depth; z++)
          {
             MapChunk_Get(rend->map, x, y, z, &tile);
-            if(tile.topology != e_MCTT_None)
+            if(tile.topology != e_MCTT_None && tile.topology != e_MCTT_Unknown)
             {
                text = &block_texutre_data[tile.material];
                MapChunkRender_AppendFace(&builder, t, UnitCube_VertexData_Front,  x, y, z, text->side_x,   text->side_y);   t++;
@@ -270,5 +270,6 @@ void MapChunkRender_Render(MapChunkRender_T * rend, const Matrix3D_T * world, co
    Shader_End(rend->shader);
 
 }
+
 
 

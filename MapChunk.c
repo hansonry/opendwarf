@@ -58,6 +58,25 @@ void MapChunk_Fill(MapChunk_T * chunk, int x1, int y1, int z1, int x2, int y2, i
    }
 }
 
+void MapChunk_FillAllUnknown(MapChunk_T * chunk)
+{
+   MapChunkTile_T tile;
+   int a, b, c;
+   tile.topology = e_MCTT_Unknown;
+   tile.material = e_MCTM_None;
+
+   for(a = 0; a < chunk->width; a ++)
+   {
+      for(b = 0; b < chunk->height; b ++)
+      {
+         for(c = 0; c < chunk->depth; c ++)
+         {
+            MapChunk_Set(chunk, a, b, c, &tile);
+         }
+      }
+   }
+
+}
 
 void MapChunk_GetDimensions(MapChunk_T * chunk, int * width, int * height, int * depth)
 {
@@ -77,4 +96,16 @@ void MapChunk_GetDimensions(MapChunk_T * chunk, int * width, int * height, int *
    }
 }
 
+void MapChunk_CopyData(MapChunk_T * dest, MapChunk_T * src, const Position_T * pos_list, size_t count)
+{
+   size_t i;
+   MapChunkTile_T tile;
+
+   for(i = 0; i < count; i++)
+   {
+      MapChunk_Get(src,  pos_list[i].x, pos_list[i].y, pos_list[i].z, &tile);
+      MapChunk_Set(dest, pos_list[i].x, pos_list[i].y, pos_list[i].z, &tile);
+   }
+
+}
 
