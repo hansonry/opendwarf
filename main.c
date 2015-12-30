@@ -130,6 +130,15 @@ static void Item_Setup(void)
    map_item.z = 0;
 
    MapItemList_Add(&map_item_list, &map_item);
+   
+   item = Item_Create(e_IT_Log);
+
+   map_item.item = item;
+   map_item.x = 1;
+   map_item.y = 2;
+   map_item.z = 0;
+
+   MapItemList_Add(&map_item_list, &map_item);
 
    Position_Set(&pos, map_item.x, map_item.y, map_item.z);
    Position_Set(&d_pos, 4, 2, 4);
@@ -161,6 +170,9 @@ static void StockPile_Setup(void)
    StockPileList_Init(&stockpile_list);
    StockPileListRenderer_Init(&stockpile_list_renderer, &stockpile_list);
 
+   StockPileList_AddPosition(&stockpile_list, &pos);
+   
+   Position_Set(&pos, 4, 2, 3);
    StockPileList_AddPosition(&stockpile_list, &pos);
 }
 
