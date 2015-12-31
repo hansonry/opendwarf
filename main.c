@@ -150,16 +150,16 @@ static void Item_Setup(void)
 
 static void Pawn_Setup(void)
 {
-   Pawn_T * pawn;
+   Pawn_T  pawn;
    Position_T  pos;
    PawnList_Init(&pawn_list);
    PawnListRenderer_Init(&pawn_list_renderer, &pawn_list);
 
-   pawn = Pawn_Create(&map_chunk, &map_item_list);
+   Pawn_Init(&pawn, &map_chunk, &map_item_list);
+   Pawn_SetJob(&pawn, &test_job);
 
-   PawnList_Add(&pawn_list, pawn);
+   PawnList_Add(&pawn_list, &pawn);
 
-   Pawn_SetJob(pawn, &test_job);
 }
 
 static void StockPile_Setup(void)

@@ -1,6 +1,5 @@
 #include "Pawn.h"
 
-#include "AStar.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -19,19 +18,15 @@ static PawnCmd_T * Pawn_CreateMoveCmdList(const Position_T * pos_list, size_t co
    return cmd_list;
 }
 
-Pawn_T * Pawn_Create(MapChunk_T * map, MapItemList_T * map_item_list)
-{
-   Pawn_T * pawn;
 
-   pawn = malloc(sizeof(Pawn_T));
+void Pawn_Init(Pawn_T * pawn, MapChunk_T * map, MapItemList_T * map_item_list)
+{
+
    pawn->map = map;
    pawn->cmd_list = NULL;
    pawn->cmd_list_count = 0;
    pawn->cmd_index = 0;
    PawnCmdSystem_Init(&pawn->cmd_sys, map_item_list, 4, 2, 4, 1.0f);
-   
-
-   return pawn;
 }
 
 void Pawn_Destroy(Pawn_T * pawn)
@@ -40,7 +35,6 @@ void Pawn_Destroy(Pawn_T * pawn)
    {
       free(pawn->cmd_list);
    }
-   free(pawn);
 }
 
 void Pawn_SetComandList(Pawn_T * pawn, PawnCmd_T * cmd_list, size_t cmd_list_count)
