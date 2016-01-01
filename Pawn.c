@@ -64,6 +64,15 @@ void Pawn_Update(Pawn_T * pawn, float seconds)
    PawnCmdSystem_Update(&pawn->cmd_sys, seconds);
 }
 
+void Pawn_AddVisibility(Pawn_T * pawn, PositionSet_T * set)
+{
+   Position_T pos;
+   const Position_T * current_pos;
+   current_pos = &pawn->cmd_sys.position;
+
+   PositionSet_Add(set, current_pos);
+}
+
 void Pawn_SetJob(Pawn_T * pawn, Job_T * job)
 {
    PawnCmd_T * cmd_list;

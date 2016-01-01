@@ -1,18 +1,16 @@
 #ifndef __PAWNLIST_H__
 #define __PAWNLIST_H__
-#include <stddef.h>
 #include "Pawn.h"
-#include "Position.h"
-#include "ListMemory.h"
 #include "ObjectList.h"
 #include "MemoryRefSet.h"
+#include "PositionSet.h"
 
 typedef struct PawnList_S PawnList_T;
 struct PawnList_S
 {
    ObjectList_T   pawn_list;
    MemoryRefSet_T pawn_mem;
-   ListMemory_T   visibility_list;
+   PositionSet_T  visibility_set;
 };
 
 void PawnList_Init(PawnList_T * list);

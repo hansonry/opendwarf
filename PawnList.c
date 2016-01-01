@@ -5,14 +5,14 @@ void PawnList_Init(PawnList_T * list)
 {
    ObjectList_Init(&list->pawn_list);
    MemoryRefSet_Init(&list->pawn_mem, sizeof(Pawn_T), (MemoryRefSet_Freeer_T)Pawn_Destroy);
-   ListMemory_Init(&list->visibility_list, sizeof(Position_T), 0);
+   PositionSet_Init(&list->visibility_set);
 }
 
 void PawnList_Destroy(PawnList_T * list)
 {
    ObjectList_Destory(&list->pawn_list);
    MemoryRefSet_Destroy(&list->pawn_mem);
-   ListMemory_Destory(&list->visibility_list);
+   PositionSet_Desstroy(&list->visibility_set);
 }
 
 void PawnList_Update(PawnList_T * list, float seconds)
@@ -21,13 +21,14 @@ void PawnList_Update(PawnList_T * list, float seconds)
    size_t i, count;
 
    MemoryRefSet_CheckCounts(&list->pawn_mem);
-   ListMemory_Clear(&list->visibility_list);
+   PositionSet_Clear(&list->visibility_set);
 
    pawn_list = ObjectList_Get(&list->pawn_list, &count);
 
    for(i = 0; i < count; i++)
    {
       Pawn_Update(pawn_list[i], seconds);
+      Pawn_AddVisibility(pawn_list[i], &list->visibility_set);
    }
 
 }
@@ -52,6 +53,6 @@ Pawn_T * PawnList_Add(PawnList_T * list)
 
 Position_T * PawnList_GetVisibilityList(PawnList_T * list, size_t * count)
 {
-   return ListMemory_Get(&list->visibility_list, count, NULL);
+   return PositionSet_Get(&list->visibility_set, count);
 }
 
