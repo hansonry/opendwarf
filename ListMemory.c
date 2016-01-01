@@ -175,6 +175,10 @@ void ListMemory_FlushFree(ListMemory_T * list)
    }
 }
 
+void ListMemory_Clear(ListMemory_T * list)
+{
+   list->element_count = 0;
+}
 
 void * ListMemory_Get(ListMemory_T * list, size_t * count, size_t * element_size)
 {

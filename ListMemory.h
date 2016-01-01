@@ -27,6 +27,7 @@ void * ListMemory_GetIndex(ListMemory_T * list, size_t index);
 void ListMemory_FreeNow(ListMemory_T * list, size_t index);
 void ListMemory_FreeLater(ListMemory_T * list, size_t index);
 void ListMemory_FlushFree(ListMemory_T * list);
+void ListMemory_Clear(ListMemory_T * list);
 
 void * ListMemory_Get(ListMemory_T * list, size_t * count, size_t * element_size);
 
