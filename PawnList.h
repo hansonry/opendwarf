@@ -16,7 +16,8 @@ void PawnList_Destroy(PawnList_T * list);
 
 void PawnList_Update(PawnList_T * list, float seconds);
 
-void PawnList_Add(PawnList_T * list, const Pawn_T * pawn);
+void PawnList_AddCopy(PawnList_T * list, const Pawn_T * pawn);
+Pawn_T * PawnList_Add(PawnList_T * list);
 
 
 #endif // __PAWNLIST_H__

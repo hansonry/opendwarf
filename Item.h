@@ -15,7 +15,7 @@ struct Item_S
    ItemType_T type;
 };
 
-Item_T * Item_Create(ItemType_T type);
+void Item_Init(Item_T * item, ItemType_T type);
 
 void Item_Destory(Item_T * item);
 

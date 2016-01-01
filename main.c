@@ -27,6 +27,7 @@
 #include "Resources.h"
 #include "PawnListRenderer.h"
 #include "StockPileListRenderer.h"
+#include "ItemList.h"
 
 static void gl_init(void);
 
@@ -67,6 +68,7 @@ PawnList_T pawn_list;
 PawnListRenderer_T pawn_list_renderer;
 StockPileList_T stockpile_list;
 StockPileListRenderer_T stockpile_list_renderer;
+ItemList_T item_list;
 
 
 // other
@@ -119,10 +121,13 @@ static void Item_Setup(void)
    Position_T pos;
    Position_T d_pos;
 
+   ItemList_Init(&item_list);
+
    MapItemList_Init(&map_item_list);
    MapItemListRenderer_Init(&map_item_list_renderer, &map_item_list);
 
-   item = Item_Create(e_IT_Log);
+   item = ItemList_Add(&item_list); 
+   Item_Init(item, e_IT_Log);
 
    map_item.item = item;
    map_item.x = 0;
@@ -131,7 +136,8 @@ static void Item_Setup(void)
 
    MapItemList_Add(&map_item_list, &map_item);
    
-   item = Item_Create(e_IT_Log);
+   item = ItemList_Add(&item_list);
+   Item_Init(item, e_IT_Log);
 
    map_item.item = item;
    map_item.x = 1;
@@ -150,15 +156,15 @@ static void Item_Setup(void)
 
 static void Pawn_Setup(void)
 {
-   Pawn_T  pawn;
+   Pawn_T * pawn;
    Position_T  pos;
    PawnList_Init(&pawn_list);
    PawnListRenderer_Init(&pawn_list_renderer, &pawn_list);
 
-   Pawn_Init(&pawn, &map_chunk, &map_item_list);
-   Pawn_SetJob(&pawn, &test_job);
+   pawn = PawnList_Add(&pawn_list);
+   Pawn_Init(pawn, &map_chunk, &map_item_list);
+   Pawn_SetJob(pawn, &test_job);
 
-   PawnList_Add(&pawn_list, &pawn);
 
 }
 
@@ -257,6 +263,8 @@ static void game_cleanup(CEngine_T * engine)
 
    StockPileListRenderer_Destroy(&stockpile_list_renderer);
    StockPileList_Destroy(&stockpile_list);
+
+   ItemList_Destroy(&item_list);
  
    Resources_Cleanup();
 }
