@@ -4,7 +4,7 @@
 
 void PositionSet_Init(PositionSet_T * set)
 {
-   ListMemory_Init(&set->list, sizeof(PositionSet_T), 0);
+   ListMemory_Init(&set->list, sizeof(Position_T), 0);
 }
 
 void PositionSet_Desstroy(PositionSet_T * set)

@@ -28,6 +28,7 @@
 #include "PawnListRenderer.h"
 #include "StockPileListRenderer.h"
 #include "ItemList.h"
+#include "MapRay.h"
 
 static void gl_init(void);
 
@@ -92,6 +93,8 @@ float a2;
 static void mapchunk_setup(void)
 {
    MapChunkTile_T tile_air, tile_grass, tile_rock;
+   PositionSet_T pset;
+   Position_T ps, pe;
    tile_air.material = e_MCTM_None;
    tile_air.topology = e_MCTT_None;
 
@@ -112,6 +115,13 @@ static void mapchunk_setup(void)
 
    
    MapChunkRender_Init(&map_chunk_render, &map_chunk);
+
+   PositionSet_Init(&pset);
+
+   Position_Set(&ps, 0, 4, 0);
+   Position_Set(&pe, 1, 4, 2);
+   MapRay_Cast(&pset, &map_chunk, &ps, &pe);
+   PositionSet_Desstroy(&pset);
 }
 
 static void Item_Setup(void)
