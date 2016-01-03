@@ -1,4 +1,5 @@
 #include "Pawn.h"
+#include "MapRay.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -64,13 +65,54 @@ void Pawn_Update(Pawn_T * pawn, float seconds)
    PawnCmdSystem_Update(&pawn->cmd_sys, seconds);
 }
 
+#define VIS_RAD 3
 void Pawn_AddVisibility(Pawn_T * pawn, PositionSet_T * set)
 {
    Position_T pos;
    const Position_T * current_pos;
+   int a, b;
    current_pos = &pawn->cmd_sys.position;
 
-   PositionSet_Add(set, current_pos);
+
+
+   for(a = -VIS_RAD; a < VIS_RAD + 1; a++)
+   {
+      for(b = -VIS_RAD; b < VIS_RAD + 1; b++)
+      {
+         pos.x = current_pos->x + a;
+         pos.y = current_pos->y + b;
+         pos.z = current_pos->z + VIS_RAD;
+         MapRay_Cast(set, pawn->map, current_pos, &pos);
+
+         pos.x = current_pos->x + a;
+         pos.y = current_pos->y + b;
+         pos.z = current_pos->z - VIS_RAD;
+         MapRay_Cast(set, pawn->map, current_pos, &pos);
+
+         pos.x = current_pos->x + a;
+         pos.y = current_pos->y + VIS_RAD;
+         pos.z = current_pos->z + b;
+         MapRay_Cast(set, pawn->map, current_pos, &pos);
+
+         pos.x = current_pos->x + a;
+         pos.y = current_pos->y - VIS_RAD;
+         pos.z = current_pos->z + b;
+         MapRay_Cast(set, pawn->map, current_pos, &pos);
+
+         pos.x = current_pos->x + VIS_RAD;
+         pos.y = current_pos->y + a;
+         pos.z = current_pos->z + b;
+         MapRay_Cast(set, pawn->map, current_pos, &pos);
+         
+         pos.x = current_pos->x - VIS_RAD;
+         pos.y = current_pos->y + a;
+         pos.z = current_pos->z + b;
+         MapRay_Cast(set, pawn->map, current_pos, &pos);
+      }
+   }
+   
+      
+
 }
 
 void Pawn_SetJob(Pawn_T * pawn, Job_T * job)

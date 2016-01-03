@@ -62,6 +62,7 @@ int main(int args, char * argc[])
 
 // open dwarf
 MapChunk_T map_chunk;
+MapChunk_T visible_map_chunk;
 MapChunkRender_T map_chunk_render;
 MapItemList_T map_item_list;
 MapItemListRenderer_T map_item_list_renderer;
@@ -105,6 +106,8 @@ static void mapchunk_setup(void)
    tile_rock.topology = e_MCTT_Block;
 
    MapChunk_Init(&map_chunk, 5, 5, 5);
+   MapChunk_Init(&visible_map_chunk, 5, 5, 5);
+   MapChunk_FillAllUnknown(&visible_map_chunk);
 
    MapChunk_Fill(&map_chunk, 0, 0, 0, 4, 4, 4, &tile_air);
    MapChunk_Fill(&map_chunk, 0, 0, 0, 4, 1, 4, &tile_grass);
@@ -114,14 +117,15 @@ static void mapchunk_setup(void)
 
 
    
-   MapChunkRender_Init(&map_chunk_render, &map_chunk);
+   MapChunkRender_Init(&map_chunk_render, &visible_map_chunk);
 
    PositionSet_Init(&pset);
 
    Position_Set(&ps, 0, 4, 0);
-   Position_Set(&pe, 1, 4, 2);
+   Position_Set(&pe, 2, 3, 4);
    MapRay_Cast(&pset, &map_chunk, &ps, &pe);
    PositionSet_Desstroy(&pset);
+
 }
 
 static void Item_Setup(void)
@@ -281,6 +285,8 @@ static void game_cleanup(CEngine_T * engine)
 
 static void game_update(CEngine_T * engine, float seconds)
 {
+   size_t count;
+   Position_T * pos_list;
    angle = angle + 3.14f / 4.0f * seconds;
    a2 += seconds;
    px = cos(a2) * 2;
@@ -296,6 +302,10 @@ static void game_update(CEngine_T * engine, float seconds)
 
    GLCam_FPS_Update(&fps_cam, seconds);
    PawnList_Update(&pawn_list, seconds);
+
+
+   pos_list = PawnList_GetVisibilityList(&pawn_list, &count);
+   MapChunk_CopyData(&visible_map_chunk, &map_chunk, pos_list, count);
 }
 
 static void game_render(CEngine_T * engine)

@@ -1,5 +1,5 @@
 #include "MapRay.h"
-#include <stdio.h>
+//#include <stdio.h>
 
 static int MapRay_CheckPoint(PositionSet_T * set, MapChunk_T * map, const int * ipos)
 {
@@ -8,20 +8,27 @@ static int MapRay_CheckPoint(PositionSet_T * set, MapChunk_T * map, const int * 
    MapChunkTile_T tile;
 
    Position_FromArray(&pos, ipos);
-   MapChunk_Get(map, pos.x, pos.y, pos.z, &tile);
 
-   PositionSet_Add(set, &pos);
-   printf("(%i, %i, %i)\n", pos.x, pos.y, pos.z);
-
-   if(tile.topology == e_MCTT_Block)
+   if(MapChunk_InBounds(map, pos.x, pos.y, pos.z))
    {
-      continue_check = 0;
+      MapChunk_Get(map, pos.x, pos.y, pos.z, &tile);
+
+      PositionSet_Add(set, &pos);
+      //printf("(%i, %i, %i)\n", pos.x, pos.y, pos.z);
+
+      if(tile.topology == e_MCTT_Block)
+      {
+         continue_check = 0;
+      }
+      else
+      {
+         continue_check = 1;
+      }
    }
    else
    {
-      continue_check = 1;
+      continue_check = 0;
    }
-
 
    return continue_check;
 }
@@ -88,19 +95,21 @@ void MapRay_Cast(PositionSet_T * set, MapChunk_T * map, const Position_T * start
    else
    {
       // Do Nothing
-      c_start = 0;
-      c_end   = 0;
+      c_start = start->x;
+      c_end   = start->x;
       index0  = 0;
    }
 
 
    continue_check = 1;
-   for(ipos[index0] = c_start; ipos[index0] != c_end; ipos[index0] += isign_delta[index0])
+   for(ipos[index0] = c_start; 
+       ipos[index0] != c_end; 
+       ipos[index0] += isign_delta[index0])
    {
       ran_check = 0;
       if(continue_check == 0)
       {
-         ipos[index0] = c_end;
+         break;
       }
       else
       {
@@ -133,7 +142,10 @@ void MapRay_Cast(PositionSet_T * set, MapChunk_T * map, const Position_T * start
       }
    }
 
-   (void)MapRay_CheckPoint(set, map, ipos);
+   if(continue_check == 1)
+   {
+      (void)MapRay_CheckPoint(set, map, ipos);
+   }
 
 }
 

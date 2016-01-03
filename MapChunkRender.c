@@ -252,7 +252,8 @@ void MapChunkRender_Destroy(MapChunkRender_T * rend)
 
 void MapChunkRender_Render(MapChunkRender_T * rend, const Matrix3D_T * world, const Matrix3D_T * pers, float lx, float ly, float lz)
 {
-
+   GLMesh_Cleanup(&rend->mesh);
+   MapChunkRender_GenMesh(rend);
 
    Shader_Begin(rend->shader);
    Shader_SetLightDirection(rend->shader, lx, ly, lz);
