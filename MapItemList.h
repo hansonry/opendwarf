@@ -4,9 +4,8 @@
 #include "Item.h"
 #include "ListMemory.h"
 
-typedef struct MapItem_S  MapItem_T;
-typedef struct MapItemList_S MapItemList_T;
-
+typedef struct MapItem_S         MapItem_T;
+typedef struct MapItemList_S     MapItemList_T;
 
 
 struct MapItem_S
