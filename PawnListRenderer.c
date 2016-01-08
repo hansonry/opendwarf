@@ -1,13 +1,13 @@
 #include "PawnListRenderer.h"
 
-#include "Resources.h"
+#include "RenderResources.h"
 #include "WavefrontLoader.h"
 
 static void PawnListRenderer_LoadResources(PawnListRenderer_T * rend)
 {
    ManagerShader_T * shader_manager;
    WavefrontLoaderData_T  pawn_data;
-   shader_manager = Resource_GetShaderManager();
+   shader_manager = Resources_GetShaderManager();
 
    rend->shader = ManagerShader_Get(shader_manager, "wavefront");
 

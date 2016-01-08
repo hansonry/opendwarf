@@ -2,7 +2,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "Resources.h"
+#include "RenderResources.h"
 #include "GLMeshBuilder.h"
 #include "FileTools.h"
 

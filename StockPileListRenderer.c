@@ -1,5 +1,5 @@
 #include "StockPileListRenderer.h"
-#include "Resources.h"
+#include "RenderResources.h"
 
 
 #define HL 0.5f
@@ -29,7 +29,7 @@ static void StockPileListRenderer_LoadResources(StockPileListRenderer_T * rend)
 
    text_manager = Resources_GetTextureManager();
    rend->text = ManagerGLTexture2D_Get(text_manager, "assets/selection.png");
-   shader_manager = Resource_GetShaderManager();
+   shader_manager = Resources_GetShaderManager();
 
    // Load Shader
    rend->shader = ManagerShader_Get(shader_manager, "decal");

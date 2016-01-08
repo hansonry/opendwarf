@@ -1,7 +1,7 @@
 #include "MapItemListRenderer.h"
 
 #include "WavefrontLoader.h"
-#include "Resources.h"
+#include "RenderResources.h"
 
 
 static void MapItemListRender_LoadResources(MapItemListRenderer_T * rend)
@@ -9,7 +9,7 @@ static void MapItemListRender_LoadResources(MapItemListRenderer_T * rend)
    ManagerShader_T * shader_manager;
    WavefrontLoaderData_T log_data;
 
-   shader_manager = Resource_GetShaderManager();
+   shader_manager = Resources_GetShaderManager();
 
    // Load Shader
    rend->shader = ManagerShader_Get(shader_manager, "wavefront");

@@ -25,12 +25,12 @@ ManagerGLTexture2D_T * Resources_GetTextureManager(void)
 }
 
 
-ManagerShader_T * Resource_GetShaderManager(void)
+ManagerShader_T * Resources_GetShaderManager(void)
 {
    return &shader_manager;
 }
 
-ManagerEvent_T * Resource_GetEventManager(void)
+ManagerEvent_T * Resources_GetEventManager(void)
 {
    return &event_manager;
 }

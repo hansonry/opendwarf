@@ -4,7 +4,7 @@
 #include <string.h>
 #include "ShaderTool.h"
 #include "GLMeshBuilder.h"
-#include "Resources.h"
+#include "RenderResources.h"
 
 
 
@@ -221,7 +221,7 @@ static void MapChunkRender_LoadResources(MapChunkRender_T * rend)
    ManagerShader_T * shader_manager;
    ManagerGLTexture2D_T * texture_manager;
 
-   shader_manager = Resource_GetShaderManager();
+   shader_manager = Resources_GetShaderManager();
    texture_manager = Resources_GetTextureManager();
 
 

@@ -128,12 +128,16 @@ static void mapchunk_setup(void)
 
 }
 
+#include "MapItemEvent.h"
 static void Item_Setup(void)
 {
    Item_T * item;
-   MapItem_T map_item;
+   TypeMap_T * event;
    Position_T pos;
    Position_T d_pos;
+   ManagerEvent_T * man_event;
+   
+   man_event = Resources_GetEventManager();   
 
    ItemList_Init(&item_list);
 
@@ -142,25 +146,22 @@ static void Item_Setup(void)
 
    item = ItemList_Add(&item_list); 
    Item_Init(item, e_IT_Log);
+  
+   event = ManagerEvent_GetEvent(man_event);   
+   Position_Set(&pos, 0, 2, 0);
+   MapItemEvent_CreateMapItem_Init(event, item, &pos);
+   ManagerEvent_SendEvent(man_event, event);
 
-   map_item.item = item;
-   map_item.x = 0;
-   map_item.y = 2;
-   map_item.z = 0;
-
-   MapItemList_Add(&map_item_list, &map_item);
-   
    item = ItemList_Add(&item_list);
    Item_Init(item, e_IT_Log);
 
-   map_item.item = item;
-   map_item.x = 1;
-   map_item.y = 2;
-   map_item.z = 0;
+   event = ManagerEvent_GetEvent(man_event);   
+   Position_Set(&pos, 1, 2, 0);
+   MapItemEvent_CreateMapItem_Init(event, item, &pos);
+   ManagerEvent_SendEvent(man_event, event);
 
-   MapItemList_Add(&map_item_list, &map_item);
 
-   Position_Set(&pos, map_item.x, map_item.y, map_item.z);
+   Position_Set(&pos, 1, 2, 0);
    Position_Set(&d_pos, 4, 2, 4);
 
    Job_MoveItem_Init(&test_job, item, &pos, &d_pos);
@@ -202,7 +203,7 @@ static void game_setup(CEngine_T * engine)
    ManagerShader_T * shader_manager;
    ManagerGLTexture2D_T * texture_manager;
    Resources_Init();
-   shader_manager = Resource_GetShaderManager();
+   shader_manager = Resources_GetShaderManager();
    texture_manager = Resources_GetTextureManager();
    gl_init();
    MatrixStack_Init(&m_stack);
