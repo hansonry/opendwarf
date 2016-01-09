@@ -132,7 +132,7 @@ static void mapchunk_setup(void)
 static void Item_Setup(void)
 {
    Item_T * item;
-   TypeMap_T * event;
+   TypeMap_T event;
    Position_T pos;
    Position_T d_pos;
    ManagerEvent_T * man_event;
@@ -147,26 +147,24 @@ static void Item_Setup(void)
    item = ItemList_Add(&item_list); 
    Item_Init(item, e_IT_Log);
   
-   event = ManagerEvent_GetEvent(man_event);   
+   TypeMap_Init(&event);   
    Position_Set(&pos, 0, 2, 0);
-   MapItemEvent_CreateMapItem_Init(event, item, &pos);
-   ManagerEvent_SendEvent(man_event, event);
+   MapItemEvent_CreateMapItem_Init(&event, item, &pos);
+   ManagerEvent_SendEvent(man_event, &event);
 
    item = ItemList_Add(&item_list);
    Item_Init(item, e_IT_Log);
-
-   event = ManagerEvent_GetEvent(man_event);   
+  
    Position_Set(&pos, 1, 2, 0);
-   MapItemEvent_CreateMapItem_Init(event, item, &pos);
-   ManagerEvent_SendEvent(man_event, event);
+   MapItemEvent_CreateMapItem_Init(&event, item, &pos);
+   ManagerEvent_SendEvent(man_event, &event);
+   TypeMap_Destory(&event);
 
 
    Position_Set(&pos, 1, 2, 0);
    Position_Set(&d_pos, 4, 2, 4);
 
    Job_MoveItem_Init(&test_job, item, &pos, &d_pos);
-
-
 }
 
 static void Pawn_Setup(void)
@@ -183,18 +181,33 @@ static void Pawn_Setup(void)
 
 }
 
+#include "StockPileEvent.h"
 static void StockPile_Setup(void)
 {
    Position_T  pos;
-   Position_Set(&pos, 4, 2, 4);
+   ManagerEvent_T * event_man;
+   TypeMap_T event;
+
+   event_man = Resources_GetEventManager();
+
 
    StockPileList_Init(&stockpile_list);
    StockPileListRenderer_Init(&stockpile_list_renderer, &stockpile_list);
 
-   StockPileList_AddPosition(&stockpile_list, &pos);
+   
+   TypeMap_Init(&event);
+
+   
+   Position_Set(&pos, 4, 2, 4);
+   StockPileEvent_CreateStockpile_Init(&event, &pos);
+   ManagerEvent_SendEvent(event_man, &event);
+
    
    Position_Set(&pos, 4, 2, 3);
-   StockPileList_AddPosition(&stockpile_list, &pos);
+   StockPileEvent_CreateStockpile_Init(&event, &pos);
+   ManagerEvent_SendEvent(event_man, &event);
+
+   TypeMap_Destory(&event);
 }
 
 static void game_setup(CEngine_T * engine)

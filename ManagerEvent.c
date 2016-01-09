@@ -12,13 +12,11 @@ struct EventReg_S
 void ManagerEvent_Init(ManagerEvent_T * man)
 {
    ListMemory_Init(&man->event_reg, sizeof(EventReg_T), 0);
-   TypeMap_Init(&man->event);
 }
 
 void ManagerEvent_Destroy(ManagerEvent_T * man)
 {
    ListMemory_Destory(&man->event_reg);
-   TypeMap_Destory(&man->event);
 }
 
 
@@ -60,8 +58,4 @@ void ManagerEvent_UnregisterCallback(ManagerEvent_T * man, void * object)
    }
 }
 
-TypeMap_T * ManagerEvent_GetEvent(ManagerEvent_T * man)
-{
-   return &man->event;
-}
 
