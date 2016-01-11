@@ -29,6 +29,7 @@
 #include "StockPileListRenderer.h"
 #include "ItemList.h"
 #include "MapRay.h"
+#include "JobManager.h"
 
 static void gl_init(void);
 
@@ -71,6 +72,7 @@ PawnListRenderer_T pawn_list_renderer;
 StockPileList_T stockpile_list;
 StockPileListRenderer_T stockpile_list_renderer;
 ItemList_T item_list;
+JobManager_T job_manager;
 
 
 // other
@@ -265,6 +267,8 @@ static void game_setup(CEngine_T * engine)
    Pawn_Setup();
    StockPile_Setup();
 
+   JobManager_Init(&job_manager, &pawn_list, &map_item_list, &stockpile_list);
+
 }
 
 static void game_cleanup(CEngine_T * engine)
@@ -293,6 +297,8 @@ static void game_cleanup(CEngine_T * engine)
    StockPileList_Destroy(&stockpile_list);
 
    ItemList_Destroy(&item_list);
+
+   JobManager_Destroy(&job_manager);
  
    Resources_Cleanup();
 }
@@ -320,6 +326,8 @@ static void game_update(CEngine_T * engine, float seconds)
 
    pos_list = PawnList_GetVisibilityList(&pawn_list, &count);
    MapChunk_CopyData(&visible_map_chunk, &map_chunk, pos_list, count);
+
+   JobManager_Update(&job_manager, seconds);
 }
 
 static void game_render(CEngine_T * engine)
