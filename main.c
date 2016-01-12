@@ -76,7 +76,6 @@ JobManager_T job_manager;
 
 
 // other
-Job_T test_job;
 WavefrontMesh_T log_mesh;
 UnitCube_T cube;
 
@@ -166,7 +165,6 @@ static void Item_Setup(void)
    Position_Set(&pos, 1, 2, 0);
    Position_Set(&d_pos, 4, 2, 4);
 
-   Job_MoveItem_Init(&test_job, item, &pos, &d_pos);
 }
 
 static void Pawn_Setup(void)
@@ -178,7 +176,6 @@ static void Pawn_Setup(void)
 
    pawn = PawnList_Add(&pawn_list);
    Pawn_Init(pawn, &map_chunk, &map_item_list);
-   Pawn_SetJob(pawn, &test_job);
 
 
 }

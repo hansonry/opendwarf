@@ -123,3 +123,20 @@ void Pawn_SetJob(Pawn_T * pawn, Job_T * job)
    Pawn_SetComandList(pawn, cmd_list, count);
 }
 
+
+int Pawn_HasJob(Pawn_T * pawn)
+{
+   int result;
+   if(!PawnCmdSystem_IsFinished(&pawn->cmd_sys) ||
+      (pawn->cmd_list != NULL && 
+       pawn->cmd_index < pawn->cmd_list_count))
+   {
+      result = 1;
+   }
+   else
+   {
+      result = 0;
+   }
+   return result;
+}
+

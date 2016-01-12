@@ -31,11 +31,13 @@ void JobManager_PawnNotLooking(JobManager_T * manager, Pawn_T * pawn)
 
 void JobManager_Update(JobManager_T * manager, float seconds)
 {
-   size_t i, k, map_item_count, stockpile_count, min_count;
+   size_t i, k;
+   size_t map_item_count, stockpile_count, min_count, job_count, pawn_count;
    MapItem_T * map_item_list;
    Position_T * stockpile_list;
    Position_T pos;
-   Job_T job;
+   Job_T job, *job_list;
+   Pawn_T ** pawn_list;
    int found;
 
    // Clear Lists
@@ -90,7 +92,7 @@ void JobManager_Update(JobManager_T * manager, float seconds)
       }
    }
 
-   // Check new lists for openings
+   // Check new lists for possible Jobs
    map_item_list  = ListMemory_Get(&manager->unhappy_items,      &map_item_count,  NULL);
    stockpile_list = ListMemory_Get(&manager->unhappy_stockpiles, &stockpile_count, NULL);
 
@@ -112,6 +114,28 @@ void JobManager_Update(JobManager_T * manager, float seconds)
       Job_MoveItem_Init(&job, map_item_list[i].item, &pos, &stockpile_list[i]);
       ListMemory_CopyAlloc(&manager->job_list, &job, NULL);
    }
+
+   // Check for bord pawns to give jobs to
+   job_list = ListMemory_Get(&manager->job_list, &job_count, NULL);
+   pawn_list = ObjectList_Get(&manager->pawn_list->pawn_list, &pawn_count);
+
+   if(job_count < pawn_count)
+   {
+      min_count = job_count;
+   }
+   else
+   {
+      min_count = pawn_count;
+   }
+
+   for(i = 0; i < min_count; i++)
+   {
+      if(!Pawn_HasJob(pawn_list[i]))
+      {
+         Pawn_SetJob(pawn_list[i], &job_list[i]);
+      }
+   }
+
 }
 
 

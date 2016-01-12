@@ -28,6 +28,8 @@ void Pawn_AddVisibility(Pawn_T * pawn, PositionSet_T * set);
 
 void Pawn_SetJob(Pawn_T * pawn, Job_T * job);
 
+int  Pawn_HasJob(Pawn_T * pawn);
+
 #endif // __PAWN_H__
 
 
