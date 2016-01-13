@@ -1,6 +1,7 @@
 ============ TODO ============
 
-
+* Get a cursor up and working.
+* Add camera mode to follow the cursor.
 
 ============ DONE ============
 
