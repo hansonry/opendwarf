@@ -15,6 +15,6 @@ void GLTexture2D_LoadID(GLTexture2D_T * text, GLuint gl_id);
 void GLTexture2D_Destroy(GLTexture2D_T * text);
 
 void GLTexture2D_ApplyToUniform(GLTexture2D_T * text, GLint uniform, GLenum texture_unit);
+void GLTexture2D_BindToUnit(GLTexture2D_T * text, GLenum texture_unit);
 
 #endif // __GLTEXTURE2D_H__
-

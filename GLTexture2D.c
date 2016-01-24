@@ -4,12 +4,12 @@
 
 void GLTexture2D_Load(GLTexture2D_T * text, const char * filename)
 {
-   text->gl_id = SOIL_load_OGL_texture(filename, 
-                                       SOIL_LOAD_AUTO, 
-                                       SOIL_CREATE_NEW_ID, 
-                                       SOIL_FLAG_MIPMAPS | 
-                                       SOIL_FLAG_INVERT_Y | 
-                                       SOIL_FLAG_NTSC_SAFE_RGB | 
+   text->gl_id = SOIL_load_OGL_texture(filename,
+                                       SOIL_LOAD_AUTO,
+                                       SOIL_CREATE_NEW_ID,
+                                       SOIL_FLAG_MIPMAPS |
+                                       SOIL_FLAG_INVERT_Y |
+                                       SOIL_FLAG_NTSC_SAFE_RGB |
                                        SOIL_FLAG_COMPRESS_TO_DXT);
 }
 
@@ -30,5 +30,8 @@ void GLTexture2D_ApplyToUniform(GLTexture2D_T * text, GLint uniform, GLenum text
    glUniform1i(uniform, texture_unit - GL_TEXTURE0); // Texture unit index
 }
 
-
-
+void GLTexture2D_BindToUnit(GLTexture2D_T * text, GLenum texture_unit)
+{
+   glActiveTexture(texture_unit);
+   glBindTexture(GL_TEXTURE_2D, text->gl_id);   
+}
