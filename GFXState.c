@@ -28,7 +28,7 @@ void GFXState_SetShader(GFXState_T * state, Shader_T * shader)
    }
 
 }
-void GFXState_SetTexture(GFXState_T * state, GLTexture2D_T * text, GLenum unit);
+void GFXState_SetTexture(GFXState_T * state, GLTexture2D_T * text, GLenum unit)
 {
    GLTexture2D_BindToUnit(text, unit);
 }
