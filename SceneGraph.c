@@ -69,7 +69,14 @@ static SGNode_T * SceneGraph_Node_New(SceneGraph_T * graph, const Matrix3D_T * d
    SGNode_T * node;
    node = malloc(sizeof(SGNode_T));
    Matrix3D_SetIdentity(&node->trans.final);
-   Matrix3D_Copy(&node->trans.delta, diff);
+   if(diff == NULL)
+   {
+      Matrix3D_SetIdentity(&node->trans.delta);
+   }
+   else
+   {
+      Matrix3D_Copy(&node->trans.delta, diff);
+   }
    node->trans.flag_recompute = 1;
    return node;
 }

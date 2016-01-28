@@ -30,6 +30,7 @@
 #include "ItemList.h"
 #include "MapRay.h"
 #include "JobManager.h"
+#include "GFXState.h"
 
 static void gl_init(void);
 
@@ -329,11 +330,15 @@ static void game_update(CEngine_T * engine, float seconds)
 
 static void game_render(CEngine_T * engine)
 {
-   Matrix3D_T matrix;
+   Matrix3D_T matrix, temp;
+   GFXState_T gfx_state;
    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    MatrixStack_Clear(&m_stack);
+   GFXState_Init(&gfx_state);
 
    GLCam_FPS_Render(&fps_cam, &m_stack);
+   MatrixStack_Get(&m_stack, &temp);
+   GFXState_SetCameraMatrix(&gfx_state, &temp);
 
    /*
    glBegin( GL_QUADS ); 
@@ -372,15 +377,14 @@ static void game_render(CEngine_T * engine)
 
    // Mesh Test
 
-   Shader_Begin(shader_wavefront);
-      Shader_SetLightDirection(shader_wavefront, 0.577f, 0.577f, -0.577f);
-      Shader_SetPositionPerspective(shader_wavefront, &m_stack.matrix, &projection);
-      WavefrontMesh_Render(&log_mesh, shader_wavefront->uniforms[e_SU_Samp2D_Texture0]);
-   Shader_End(shader_wavefront);
-
+   Shader_Use(shader_wavefront);
+   Shader_Setup(shader_wavefront, &gfx_state);
+   Shader_SetLightDirection(shader_wavefront, 0.577f, 0.577f, -0.577f);
+   WavefrontMesh_Render(&log_mesh, shader_wavefront->uniforms[e_SU_Samp2D_Texture0]);
    // open dwarf
 
 
+   GFXState_Destory(&gfx_state);
 }
 
 static void game_input(CEngine_T * engine, SDL_Event * event)
