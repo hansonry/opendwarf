@@ -2,7 +2,7 @@
 #define __GLMESHNODE_H__
 #include "GLMesh.h"
 #include "SceneGraph.h"
-#include "Shader.h"
+#include "ColorTextureLightShader.h"
 
 typedef struct GLMeshNode_S GLMeshNode_T;
 
@@ -11,7 +11,7 @@ struct GLMeshNode_S
    SGNode_T * node;
    GLMesh_T * mesh;
    GLenum     mesh_mode;
-   Shader_T * shader;
+   ColorTextureLightShader_T * shader;
 };
 
 void GLMeshNode_Init(GLMeshNode_T * node, SceneGraph_T * graph,

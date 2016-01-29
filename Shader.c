@@ -26,60 +26,40 @@ static const ShaderData_T * Shader_LookupData(const char * shader_name)
    return out;
 }
 
-void Shader_Load(Shader_T * shader, const char * shader_name)
+Shader_T * Shader_Create(const char * shader_name)
 {
    const ShaderData_T * data;
-   int i;
+   Shader_T * shader;
+   GLuint shader_id;
    data = Shader_LookupData(shader_name);
 
    if(data == NULL)
    {
-      printf("Error: Shader_Load could not find shader name: %s\n", shader_name);
+      printf("Error: Shader_Load: Could not find shader name: %s\n", shader_name);
+      shader = NULL;
    }
    else
    {
 
-      shader->shader_id = ShaderTool_CreateShaderProgram(data->vertex_filename, 
-                                                         data->geometry_filename, 
-                                                         data->fragment_filename);
-      ShaderInterface_Init(&shader->shaderi, data->type, shader->shader_id);
+      shader_id = ShaderTool_CreateShaderProgram(data->vertex_filename, 
+                                                 data->geometry_filename, 
+                                                 data->fragment_filename);
+      shader = data->create_function(data->shader_id, shader_id);
    }
+   return shader;
+}
+
+void Shader_Init(Shader_T * shader, const char * shader_name, ShaderType_T type, GLuint shader_id)
+{
+   shader->name = shader_name;
+   shader->type = type;
+   shader->shader_id = shader_id;
 }
 
 void Shader_Free(Shader_T * shader)
 {
-   ShaderInterface_Destory(&shader->shaderi);
    glDeleteProgram(shader->shader_id);
-}
-
-void Shader_SetTexutre(Shader_T * shader, const char * uniform, 
-                                          GLTexture2D_T * texture, 
-                                          GLenum slot)
-{
-   GLTexture2D_ApplyToUniform(texture, uniform, slot);
-}
-
-void Shader_SetPositionPerspective(Shader_T * shader, const char * uniform_world, 
-                                                      const char * uniform_perspective_world, 
-                                                      const Matrix3D_T * world, 
-                                                      const Matrix3D_T * perspective)
-{
-   Matrix3D_T temp;
-   Matrix3D_Multiply(&temp, perspective, world);
-
-   glUniformMatrix4fv(uniform_world,             1, GL_FALSE, world->data);
-   glUniformMatrix4fv(uniform_perspective_world, 1, GL_FALSE, temp.data);
-}
-
-void Shader_SetLightDirection(Shader_T * shader, const char * uniform, 
-                                                 float lx, float ly, float lz)
-{
-   glUniform3f(uniform, lx, ly, lz);
-}
-
-void Shader_Begin(Shader_T * shader)
-{
-   glUseProgram(shader->shader_id);
+   free(shader);
 }
 
 void Shader_VertexAttributesEnable(int count)
@@ -100,6 +80,17 @@ void Shader_VertexAttributesDissable(int count)
    }
 }
 
+GLint Shader_GetUniform(Shader_T * shader, const char * uniform_name)
+{
+   GLint value;
+
+   value = glGetUniformLocation(shader->shader_id, uniform_name);
+   if(value == -1)
+   {
+      printf("Error: Shader_GetUniform: Couldn't find uniform: %s\n", uniform_name);
+   }
+   return value;
+}
 
 
 void Shader_Use(Shader_T * shader)
@@ -119,10 +110,6 @@ void Shader_Use(Shader_T * shader)
 }
 
 
-void Shader_UpdateUniforms(Shader_T * shader, GFXState_T * gfx_state)
-{
-   ShaderInterface_Setup(&shader->shaderi, gfx_state);
-}
 
 
 

@@ -34,10 +34,9 @@ Shader_T * ManagerShader_Get(ManagerShader_T * manager, const char * shader_id)
    ptr = StringMap_Get(&manager->map, shader_id);
    if(ptr == NULL)
    {
-      ptr = malloc(sizeof(Shader_T));
+      ptr = Shader_Create(shader_id);
       ObjectList_Add(&manager->list, ptr);
       StringMap_Put(&manager->map, shader_id, ptr);
-      Shader_Load(ptr, shader_id);
    }
 
    return ptr;

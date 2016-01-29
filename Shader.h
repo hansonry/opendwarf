@@ -1,26 +1,36 @@
 #ifndef __SHADER_H__
 #define __SHADER_H__
 
-typedef struct GFXState_S GFXState_T;
-
-#include "GLTexture2D.h"
-#include "Matrix3D.h"
-#include "ShaderInterface.h"
+#include "GL/glew.h"
+#include "SDL2/SDL_opengl.h"
 
 typedef struct Shader_S Shader_T;
+typedef enum   ShaderType_E ShaderType_T;
+
+typedef Shader_T * (*Shader_Creater_Func_T)(const char * shader_name, GLuint shader_id);
+
+enum ShaderType_E
+{
+   e_ST_ColorTextureLight,
+   e_ST_Last
+};
 
 struct Shader_S
 {
    GLuint shader_id;
-   ShaderInterface_T shaderi;
+   ShaderType_T type;
+   const char * name;
 };
 
-void Shader_Load(Shader_T * shader, const char * shader_name);
+Shader_T * Shader_Create(const char * shader_name);
+void Shader_Init(Shader_T * shader, const char * shader_name, ShaderType_T type, GLuint shader_id);
 void Shader_Free(Shader_T * shader);
+
+GLint Shader_GetUniform(Shader_T * shader, const char * uniform_name);
+
 
 
 void Shader_Use(Shader_T * shader);
-void Shader_UpdateUniforms(Shader_T * shader, GFXState_T * gfx_state);
 
 #endif // __SHADER_H__
 
