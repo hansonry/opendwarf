@@ -2,9 +2,9 @@
 #include "ShaderData.inc"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-static Shader_T * last_active_shader = NULL;
 
 static const ShaderData_T * Shader_LookupData(const char * shader_name)
 {
@@ -49,11 +49,17 @@ Shader_T * Shader_Create(const char * shader_name)
    return shader;
 }
 
-void Shader_Init(Shader_T * shader, const char * shader_name, ShaderType_T type, GLuint shader_id)
+void Shader_Init(Shader_T * shader, const char   * shader_name, 
+                                    ShaderType_T   type, 
+                                    GLuint         shader_id,
+                                    const int    * attribute_list,
+                                    int            attribute_list_count)
 {
-   shader->name = shader_name;
-   shader->type = type;
-   shader->shader_id = shader_id;
+   shader->name                 = shader_name;
+   shader->type                 = type;
+   shader->shader_id            = shader_id;
+   shader->attribute_list       = attribute_list;
+   shader->attribute_list_count = attribute_list_count;
 }
 
 void Shader_Free(Shader_T * shader)
@@ -95,21 +101,33 @@ GLint Shader_GetUniform(Shader_T * shader, const char * uniform_name)
 
 void Shader_Use(Shader_T * shader)
 {
-   if(last_active_shader != shader)
+   int i;
+   if(shader == NULL)
    {
-      if(shader == NULL)
+      glUseProgram(0);
+   }
+   else
+   {
+      glUseProgram(shader->shader_id);
+      for(i = 0; i < shader->attribute_list_count; i++)
       {
-         glUseProgram(0);
+         glEnableVertexAttribArray(shader->attribute_list[i]);
       }
-      else
-      {
-         glUseProgram(shader->shader_id);
-      }
-      last_active_shader = shader;
    }
 }
 
 
 
+void Shader_End(Shader_T * shader)
+{
+   int i;
+   if(shader != NULL)
+   {
+      for(i = 0; i < shader->attribute_list_count; i++)
+      {
+         glDisableVertexAttribArray(shader->attribute_list[i]);
+      }
+   }
+}
 
 

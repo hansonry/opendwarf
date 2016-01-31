@@ -1,5 +1,7 @@
 #include "GFXState.h"
 
+#include <math.h>
+
 void GFXState_Init(GFXState_T * state)
 {
    Matrix3D_SetIdentity(&state->world);
@@ -63,8 +65,9 @@ void GFXState_SetShader(GFXState_T * state, Shader_T * shader)
 {
    if(state->shader != shader)
    {
+      Shader_End(state->shader);
       state->shader = shader;
-      Shader_Use(state->shader);
+      Shader_Begin(state->shader);
    }
 }
 
