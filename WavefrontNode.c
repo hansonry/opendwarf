@@ -6,13 +6,12 @@ static void WavefrontNode_DrawCallback(SGNode_T * node, GFXState_T * state)
 {
    WavefrontNode_T * w_node;
    w_node = node->data.leaf.object;
-
    GFXState_SetShader(state, &w_node->shader->parent);
 
    WavefrontShader_SetState(w_node->shader, state);
    WavefrontMesh_Render(w_node->mesh, w_node->shader->uniform_texture);
-
 }
+
 void WavefrontNode_Init(WavefrontNode_T * node, SceneGraph_T * graph,
                                                 WavefrontMesh_T * mesh)
 {

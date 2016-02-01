@@ -39,7 +39,6 @@ static const TypeMapPair_T * TypeMap_FindPair(const TypeMap_T * map, const char 
 static TypeMapPair_T * TypeMap_GetMemory(TypeMap_T * map, const char * key)
 {
    TypeMapPair_T * pair;
-
    pair = (TypeMapPair_T *)TypeMap_FindPair(map, key);
    if(pair == NULL)
    {

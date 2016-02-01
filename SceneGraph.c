@@ -17,7 +17,7 @@ static void SceneGraph_RenderLoop(SGNode_T * loop, GFXState_T * state, const Mat
    size_t i, count;
    SGNode_T ** node_list;
    int local_flag_recompute;
-   //printf("Here\n");
+   //printf("A\n");
    if(loop != NULL)
    {
       if(loop->trans.flag_recompute == 1 || parent_flag_recompute == 1)
@@ -38,6 +38,7 @@ static void SceneGraph_RenderLoop(SGNode_T * loop, GFXState_T * state, const Mat
 
       if(loop->type == e_SGNT_Branch)
       {
+         //printf("B\n");
          node_list = ListMemory_Get(&loop->data.branch.children, &count, NULL);
          for(i = 0; i < count; i++)
          {
@@ -46,11 +47,13 @@ static void SceneGraph_RenderLoop(SGNode_T * loop, GFXState_T * state, const Mat
       }
       else if(loop->type == e_SGNT_Leaf)
       {
+         //printf("C\n");
          if(loop->data.leaf.callback != NULL)
          {
             GFXState_SetWorldMatrix(state, &loop->trans.final);
             loop->data.leaf.callback(loop, state);
          }
+         //printf("CL\n");
       }
    }
 }

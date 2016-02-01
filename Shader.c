@@ -68,24 +68,6 @@ void Shader_Free(Shader_T * shader)
    free(shader);
 }
 
-void Shader_VertexAttributesEnable(int count)
-{
-   int i;
-   for(i = 0; i < count; i++)
-   {
-      glEnableVertexAttribArray(i);
-   }
-}
-
-void Shader_VertexAttributesDissable(int count)
-{
-   int i;
-   for(i = 0; i < count; i++)
-   {
-      glDisableVertexAttribArray(i);
-   }
-}
-
 GLint Shader_GetUniform(Shader_T * shader, const char * uniform_name)
 {
    GLint value;

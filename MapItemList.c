@@ -4,14 +4,21 @@
 #include "MapItemEvent.h"
 
 
-void MapItemEvent_CreateMapItem_Init(TypeMap_T * map, Item_T * item, const Position_T * pos)
+void MapItemEvent_CreateMapItemRequest_Init(TypeMap_T * map, Item_T * item, const Position_T * pos)
 {
    TypeMap_Clear(map);
-   TypeMap_AddStringKey(map, "Type", "CreateMapItem");
+   TypeMap_AddStringKey(map, "Type", "CreateMapItemRequest");
    TypeMap_AddPointerKey(map, "Item", item);
    TypeMap_AddIntKey(map, "X", pos->x);
    TypeMap_AddIntKey(map, "Y", pos->y);
    TypeMap_AddIntKey(map, "Z", pos->z);
+}
+
+static void MapItemEvent_CreateMapItemNotify_Init(TypeMap_T * map, int index)
+{
+   TypeMap_Clear(map);
+   TypeMap_AddStringKey(map, "Type", "CreateMapItemNotify");
+   TypeMap_AddIntKey(map, "Index", index);
 }
 
 static void MapItemList_EventCallback(void * object, const TypeMap_T * event)
@@ -19,7 +26,7 @@ static void MapItemList_EventCallback(void * object, const TypeMap_T * event)
    MapItemList_T * list = object;
    MapItem_T map_item;
 
-   if(TypeMap_IsStringEqual(event, "Type", "CreateMapItem") == 1)
+   if(TypeMap_IsStringEqual(event, "Type", "CreateMapItemRequest") == 1)
    {
       map_item.item = TypeMap_GetPointer(event, "Item");
       map_item.x    = TypeMap_GetInt(event, "X");
@@ -52,7 +59,17 @@ void MapItemList_Destory(MapItemList_T * list)
 void MapItemList_Add(MapItemList_T * list, const MapItem_T * item)
 {
    MapItem_T * mem;
-   ListMemory_CopyAlloc(&list->mapitem_list, item, NULL);
+   int index;
+   ManagerEvent_T * event_man;
+   TypeMap_T event;
+   
+   ListMemory_CopyAlloc(&list->mapitem_list, item, &index);
+
+   event_man = Resources_GetEventManager();
+   TypeMap_Init(&event);
+   MapItemEvent_CreateMapItemNotify_Init(&event, index);
+   ManagerEvent_SendEvent(event_man, &event);
+   TypeMap_Destory(&event);
 }
 
 void MapItemList_Remove(MapItemList_T * list, Item_T * item)

@@ -134,7 +134,7 @@ static void mapchunk_setup(void)
 }
 
 #include "MapItemEvent.h"
-static void Item_Setup(void)
+static void Item_Setup(SGNode_T * root_node)
 {
    Item_T * item;
    TypeMap_T event;
@@ -147,28 +147,28 @@ static void Item_Setup(void)
    ItemList_Init(&item_list);
 
    MapItemList_Init(&map_item_list);
-   MapItemListRenderer_Init(&map_item_list_renderer, &map_item_list);
+   MapItemListRenderer_Init(&map_item_list_renderer, &map_item_list, &scene_graph);
+   SceneGraph_Node_ChildAdd(root_node, MapItemListRenderer_GetNode(&map_item_list_renderer));
 
    item = ItemList_Add(&item_list); 
    Item_Init(item, e_IT_Log);
   
    TypeMap_Init(&event);   
    Position_Set(&pos, 0, 2, 0);
-   MapItemEvent_CreateMapItem_Init(&event, item, &pos);
+   MapItemEvent_CreateMapItemRequest_Init(&event, item, &pos);
    ManagerEvent_SendEvent(man_event, &event);
 
    item = ItemList_Add(&item_list);
    Item_Init(item, e_IT_Log);
   
    Position_Set(&pos, 1, 2, 0);
-   MapItemEvent_CreateMapItem_Init(&event, item, &pos);
+   MapItemEvent_CreateMapItemRequest_Init(&event, item, &pos);
    ManagerEvent_SendEvent(man_event, &event);
    TypeMap_Destory(&event);
 
 
    Position_Set(&pos, 1, 2, 0);
    Position_Set(&d_pos, 4, 2, 4);
-
 }
 
 static void Pawn_Setup(void)
@@ -180,8 +180,6 @@ static void Pawn_Setup(void)
 
    pawn = PawnList_Add(&pawn_list);
    Pawn_Init(pawn, &map_chunk, &map_item_list);
-
-
 }
 
 #include "StockPileEvent.h"
@@ -219,16 +217,20 @@ static void game_setup(CEngine_T * engine)
    ManagerShader_T * shader_manager;
    ManagerGLTexture2D_T * texture_manager;
    SGNode_T * root_node;
+   Matrix3D_T matrix;
    Resources_Init();
    shader_manager = Resources_GetShaderManager();
    texture_manager = Resources_GetTextureManager();
    gl_init();
    MatrixStack_Init(&m_stack);
 
+
    // SceneGraph
    SceneGraph_Init(&scene_graph);
    root_node = SceneGraph_Node_NewBranch(&scene_graph, NULL);
    SceneGraph_SetRootNode(&scene_graph, root_node);
+   Matrix3D_SetTranslation(&matrix, 0, 0, 10);
+   SceneGraph_Node_SetMatrix(root_node, &matrix);
 
    // Cube
 
@@ -271,11 +273,9 @@ static void game_setup(CEngine_T * engine)
    SceneGraph_Node_ChildAdd(root_node, WavefrontNode_GetNode(&wavefront_node)); 
    
 
-
-
    // open dwarf
    mapchunk_setup();
-   Item_Setup();
+   Item_Setup(root_node);
    Pawn_Setup();
    StockPile_Setup();
 
@@ -357,6 +357,7 @@ static void game_render(CEngine_T * engine)
    MatrixStack_Get(&m_stack, &temp);
    GFXState_SetCameraMatrix(&gfx_state, &temp);
    GFXState_SetPerspectiveMatrix(&gfx_state, &projection);
+   GFXState_SetLightSun1DirectionAndColor(&gfx_state, 0.557, 0.557f, -0.557f, 1, 1, 1);
 
    /*
    glBegin( GL_QUADS ); 
@@ -376,7 +377,7 @@ static void game_render(CEngine_T * engine)
 
    //UnitCube_Render(&cube);
    MapChunkRender_Render(&map_chunk_render, &m_stack.matrix, &projection, 0.577f, 0.577f, -0.577f);
-   MapItemListRenderer_Render(&map_item_list_renderer, &m_stack.matrix, &projection, 0.577f, 0.577f, -0.577f);
+   MapItemListRenderer_Render(&map_item_list_renderer);
    PawnListRenderer_Render(&pawn_list_renderer, &m_stack.matrix, &projection, 0.577f, 0.577f, -0.577f);
    StockPileListRenderer_Render(&stockpile_list_renderer, &m_stack.matrix, &projection, 0.577f, 0.577f, -0.577f);
 
@@ -399,7 +400,6 @@ static void game_render(CEngine_T * engine)
    //WavefrontMesh_Render(&log_mesh, shader_wavefront->uniforms[e_SU_Samp2D_Texture0]);
    // open dwarf
    
-   GFXState_SetLightSun1DirectionAndColor(&gfx_state, 0.557, 0.557f, -0.557f, 1, 1, 1);
    SceneGraph_Render(&scene_graph, &gfx_state);
 
 
