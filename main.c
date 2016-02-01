@@ -31,6 +31,8 @@
 #include "MapRay.h"
 #include "JobManager.h"
 #include "GFXState.h"
+#include "SceneGraph.h"
+#include "WavefrontNode.h"
 
 static void gl_init(void);
 
@@ -74,11 +76,12 @@ StockPileList_T stockpile_list;
 StockPileListRenderer_T stockpile_list_renderer;
 ItemList_T item_list;
 JobManager_T job_manager;
-
+SceneGraph_T scene_graph;
 
 // other
 WavefrontMesh_T log_mesh;
 UnitCube_T cube;
+WavefrontNode_T wavefront_node;
 
 GLTexture2D_T * test_text, font_text;
 GLFont_T font_hanken;
@@ -215,11 +218,17 @@ static void game_setup(CEngine_T * engine)
    WavefrontLoaderData_T log_data;
    ManagerShader_T * shader_manager;
    ManagerGLTexture2D_T * texture_manager;
+   SGNode_T * root_node;
    Resources_Init();
    shader_manager = Resources_GetShaderManager();
    texture_manager = Resources_GetTextureManager();
    gl_init();
    MatrixStack_Init(&m_stack);
+
+   // SceneGraph
+   SceneGraph_Init(&scene_graph);
+   root_node = SceneGraph_Node_NewBranch(&scene_graph, NULL);
+   SceneGraph_SetRootNode(&scene_graph, root_node);
 
    // Cube
 
@@ -256,6 +265,11 @@ static void game_setup(CEngine_T * engine)
    WavefrontLoader_LookupMaterial(&log_data);
    WavefrontMesh_Init(&log_mesh, &log_data, "assets/");
    WavefrontLoader_Delete(&log_data);
+
+   WavefrontNode_Init(&wavefront_node, &scene_graph, &log_mesh);
+   
+   SceneGraph_Node_ChildAdd(root_node, WavefrontNode_GetNode(&wavefront_node)); 
+   
 
 
 
@@ -298,6 +312,9 @@ static void game_cleanup(CEngine_T * engine)
 
    JobManager_Destroy(&job_manager);
  
+
+   WavefrontNode_Destroy(&wavefront_node);
+   SceneGraph_Destroy(&scene_graph);
    Resources_Cleanup();
 }
 
@@ -339,6 +356,7 @@ static void game_render(CEngine_T * engine)
    GLCam_FPS_Render(&fps_cam, &m_stack);
    MatrixStack_Get(&m_stack, &temp);
    GFXState_SetCameraMatrix(&gfx_state, &temp);
+   GFXState_SetPerspectiveMatrix(&gfx_state, &projection);
 
    /*
    glBegin( GL_QUADS ); 
@@ -363,10 +381,6 @@ static void game_render(CEngine_T * engine)
    StockPileListRenderer_Render(&stockpile_list_renderer, &m_stack.matrix, &projection, 0.577f, 0.577f, -0.577f);
 
 
-   glEnableVertexAttribArray(0);
-   glEnableVertexAttribArray(1);
-   glEnableVertexAttribArray(2);
-   //glEnableVertexAttribArray(3);
 
 
 
@@ -375,6 +389,8 @@ static void game_render(CEngine_T * engine)
    MatrixStack_ApplyTranslation(&m_stack, px, py, 0);
    MatrixStack_ApplyYRotation(&m_stack, angle);
 
+   SceneGraph_Node_SetMatrix(WavefrontNode_GetNode(&wavefront_node), &m_stack.matrix);
+
    // Mesh Test
 
    //Shader_Use(shader_wavefront);
@@ -382,6 +398,9 @@ static void game_render(CEngine_T * engine)
    //Shader_SetLightDirection(shader_wavefront, 0.577f, 0.577f, -0.577f);
    //WavefrontMesh_Render(&log_mesh, shader_wavefront->uniforms[e_SU_Samp2D_Texture0]);
    // open dwarf
+   
+   GFXState_SetLightSun1DirectionAndColor(&gfx_state, 0.557, 0.557f, -0.557f, 1, 1, 1);
+   SceneGraph_Render(&scene_graph, &gfx_state);
 
 
    GFXState_Destory(&gfx_state);

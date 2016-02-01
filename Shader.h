@@ -12,6 +12,7 @@ typedef Shader_T * (*Shader_Creater_Func_T)(const char * shader_name, GLuint sha
 enum ShaderType_E
 {
    e_ST_ColorTextureLight,
+   e_ST_Wavefront,
    e_ST_Last
 };
 
