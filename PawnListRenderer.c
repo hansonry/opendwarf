@@ -39,8 +39,8 @@ void PawnListRenderer_Render(PawnListRenderer_T * rend, const Matrix3D_T * world
    size_t i, count;
 
 
-   Shader_Begin(rend->shader);
-   Shader_SetLightDirection(rend->shader, lx, ly, lz);
+   //Shader_Begin(rend->shader);
+   //Shader_SetLightDirection(rend->shader, lx, ly, lz);
 
    plist = ObjectList_Get(&rend->list->pawn_list, &count);
 
@@ -51,11 +51,11 @@ void PawnListRenderer_Render(PawnListRenderer_T * rend, const Matrix3D_T * world
                                        pawn->cmd_sys.vispos_y, 
                                        pawn->cmd_sys.vispos_z);
       Matrix3D_Multiply(&temp, world, &offset);
-      Shader_SetPositionPerspective(rend->shader, &temp, pers);
-      WavefrontMesh_Render(&rend->pawn_mesh, rend->shader->uniforms[e_SU_Samp2D_Texture0]);
+      //Shader_SetPositionPerspective(rend->shader, &temp, pers);
+      //WavefrontMesh_Render(&rend->pawn_mesh, rend->shader->uniforms[e_SU_Samp2D_Texture0]);
    }
 
-   Shader_End(rend->shader);
+   //Shader_End(rend->shader);
    
 
 }

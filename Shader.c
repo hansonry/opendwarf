@@ -93,13 +93,13 @@ GLint Shader_GetUniform(Shader_T * shader, const char * uniform_name)
    value = glGetUniformLocation(shader->shader_id, uniform_name);
    if(value == -1)
    {
-      printf("Error: Shader_GetUniform: Couldn't find uniform: %s\n", uniform_name);
+      printf("Error: Shader_GetUniform: Couldn't find uniform: %s for shader %s\n", uniform_name, shader->name);
    }
    return value;
 }
 
 
-void Shader_Use(Shader_T * shader)
+void Shader_Begin(Shader_T * shader)
 {
    int i;
    if(shader == NULL)

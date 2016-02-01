@@ -67,9 +67,9 @@ void StockPileListRenderer_Render(StockPileListRenderer_T * rend, const Matrix3D
    Position_T * pos_list;
 
 
-   Shader_Begin(rend->shader);
-   Shader_SetLightDirection(rend->shader, lx, ly, lz);
-   Shader_SetTexutre(rend->shader, rend->text, GL_TEXTURE0);
+   //Shader_Begin(rend->shader);
+   //Shader_SetLightDirection(rend->shader, lx, ly, lz);
+   //Shader_SetTexutre(rend->shader, rend->text, GL_TEXTURE0);
 
 
    pos_list = ListMemory_Get(&rend->list->list, &count, NULL);
@@ -77,13 +77,13 @@ void StockPileListRenderer_Render(StockPileListRenderer_T * rend, const Matrix3D
    {
       Matrix3D_SetTranslation(&translater, pos_list[i].x, pos_list[i].y, pos_list[i].z);
       Matrix3D_Multiply(&temp, world, &translater);
-      Shader_SetPositionPerspective(rend->shader, &temp, pers);
+      //Shader_SetPositionPerspective(rend->shader, &temp, pers);
          
-      GLMesh_Render(&rend->mesh, GL_QUADS);
+      //GLMesh_Render(&rend->mesh, GL_QUADS);
 
    }
 
-   Shader_End(rend->shader);
+   //Shader_End(rend->shader);
 
 }
 

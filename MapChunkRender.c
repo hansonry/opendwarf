@@ -255,10 +255,10 @@ void MapChunkRender_Render(MapChunkRender_T * rend, const Matrix3D_T * world, co
    GLMesh_Cleanup(&rend->mesh);
    MapChunkRender_GenMesh(rend);
 
-   Shader_Begin(rend->shader);
-   Shader_SetLightDirection(rend->shader, lx, ly, lz);
-   Shader_SetPositionPerspective(rend->shader, world, pers);
-   Shader_SetTexutre(rend->shader, rend->texture, GL_TEXTURE0);
+   //Shader_Begin(rend->shader);
+   //Shader_SetLightDirection(rend->shader, lx, ly, lz);
+   //Shader_SetPositionPerspective(rend->shader, world, pers);
+   //Shader_SetTexutre(rend->shader, rend->texture, GL_TEXTURE0);
 
 
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -266,7 +266,7 @@ void MapChunkRender_Render(MapChunkRender_T * rend, const Matrix3D_T * world, co
    
 
 
-   GLMesh_Render(&rend->mesh, GL_TRIANGLES);
+   //GLMesh_Render(&rend->mesh, GL_TRIANGLES);
 
    Shader_End(rend->shader);
 

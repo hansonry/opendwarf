@@ -48,8 +48,8 @@ void MapItemListRenderer_Render(MapItemListRenderer_T * rend, const Matrix3D_T *
    Matrix3D_T temp, translater;
 
 
-   Shader_Begin(rend->shader);
-   Shader_SetLightDirection(rend->shader, lx, ly, lz);
+   //Shader_Begin(rend->shader);
+   //Shader_SetLightDirection(rend->shader, lx, ly, lz);
 
 
    list = ListMemory_Get(&rend->list->mapitem_list, &count, NULL);
@@ -59,13 +59,13 @@ void MapItemListRenderer_Render(MapItemListRenderer_T * rend, const Matrix3D_T *
       {
          Matrix3D_SetTranslation(&translater, list[i].x, list[i].y, list[i].z);
          Matrix3D_Multiply(&temp, world, &translater);
-         Shader_SetPositionPerspective(rend->shader, &temp, pers);
+         //Shader_SetPositionPerspective(rend->shader, &temp, pers);
 
 
-         WavefrontMesh_Render(&rend->log_mesh, rend->shader->uniforms[e_SU_Samp2D_Texture0]);
+         //WavefrontMesh_Render(&rend->log_mesh, rend->shader->uniforms[e_SU_Samp2D_Texture0]);
       }
    }
 
-   Shader_End(rend->shader);
+   //Shader_End(rend->shader);
 }
 

@@ -377,10 +377,10 @@ static void game_render(CEngine_T * engine)
 
    // Mesh Test
 
-   Shader_Use(shader_wavefront);
-   Shader_Setup(shader_wavefront, &gfx_state);
-   Shader_SetLightDirection(shader_wavefront, 0.577f, 0.577f, -0.577f);
-   WavefrontMesh_Render(&log_mesh, shader_wavefront->uniforms[e_SU_Samp2D_Texture0]);
+   //Shader_Use(shader_wavefront);
+   //Shader_Setup(shader_wavefront, &gfx_state);
+   //Shader_SetLightDirection(shader_wavefront, 0.577f, 0.577f, -0.577f);
+   //WavefrontMesh_Render(&log_mesh, shader_wavefront->uniforms[e_SU_Samp2D_Texture0]);
    // open dwarf
 
 
