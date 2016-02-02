@@ -46,6 +46,7 @@ struct SGNode_S
 {
    SGNodeType_T type;
    SGTrans_T    trans;
+   int          visible;
    union
    {
       SGN_Branch_T branch;
@@ -70,9 +71,12 @@ void SceneGraph_SetRootNode(SceneGraph_T * graph, SGNode_T * node);
 SGNode_T * SceneGraph_Node_NewBranch(SceneGraph_T * graph, const Matrix3D_T * diff);
 SGNode_T * SceneGraph_Node_NewLeaf(SceneGraph_T * graph, const Matrix3D_T * diff, SGNodeCallback_T callback, void * object);
 void SceneGraph_Node_SetMatrix(SGNode_T * node, const Matrix3D_T * diff);
+void SceneGraph_Node_SetVisible(SGNode_T * node, int is_visible);
 
 int SceneGraph_Node_ChildAdd(SGNode_T * node, SGNode_T * child);
 int SceneGraph_Node_ChildRemove(SGNode_T * node, SGNode_T * child);
+
+
 
 
 #endif // __SCENEGRAPH_H__

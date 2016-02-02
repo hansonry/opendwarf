@@ -18,7 +18,7 @@ static void SceneGraph_RenderLoop(SGNode_T * loop, GFXState_T * state, const Mat
    SGNode_T ** node_list;
    int local_flag_recompute;
    //printf("A\n");
-   if(loop != NULL)
+   if(loop != NULL && loop->visible == 1)
    {
       if(loop->trans.flag_recompute == 1 || parent_flag_recompute == 1)
       {
@@ -85,6 +85,7 @@ static SGNode_T * SceneGraph_Node_New(SceneGraph_T * graph, const Matrix3D_T * d
       Matrix3D_Copy(&node->trans.delta, diff);
    }
    node->trans.flag_recompute = 1;
+   node->visible = 1;
    return node;
 }
 
@@ -185,3 +186,18 @@ void SceneGraph_Node_SetMatrix(SGNode_T * node, const Matrix3D_T * diff)
    Matrix3D_Copy(&node->trans.delta, diff);
    node->trans.flag_recompute = 1;
 }
+
+void SceneGraph_Node_SetVisible(SGNode_T * node, int is_visible)
+{
+   if(is_visible)
+   {
+      node->visible = 1;
+      node->trans.flag_recompute = 1;
+   }
+   else
+   {
+      node->visible = 0;
+   }
+}
+
+

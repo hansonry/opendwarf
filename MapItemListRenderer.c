@@ -40,6 +40,7 @@ static void MapItemListRenderer_EventCallback(void * object, const TypeMap_T * e
          if(list[i].index == index)
          {
             SceneGraph_Node_ChildRemove(rend->root_node, WavefrontNode_GetNode(&list[i].node));
+            WavefrontNode_Destroy(&list[i].node);
             ArrayList_FreeNow(&rend->gfx_list, i);
             break;
          }
