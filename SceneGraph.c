@@ -39,7 +39,7 @@ static void SceneGraph_RenderLoop(SGNode_T * loop, GFXState_T * state, const Mat
       if(loop->type == e_SGNT_Branch)
       {
          //printf("B\n");
-         node_list = ListMemory_Get(&loop->data.branch.children, &count, NULL);
+         node_list = ArrayList_Get(&loop->data.branch.children, &count, NULL);
          for(i = 0; i < count; i++)
          {
             SceneGraph_RenderLoop(node_list[i], state, &loop->trans.final, local_flag_recompute);
@@ -93,7 +93,7 @@ SGNode_T * SceneGraph_Node_NewBranch(SceneGraph_T * graph, const Matrix3D_T * di
    SGNode_T * node;
    node = SceneGraph_Node_New(graph, diff);
    node->type = e_SGNT_Branch;
-   ListMemory_Init(&node->data.branch.children, sizeof(SGNode_T *), 0);
+   ArrayList_Init(&node->data.branch.children, sizeof(SGNode_T *), 0);
    return node;
 }
 
@@ -114,7 +114,7 @@ static int SceneGraph_Branch_GetChildIndex(SGN_Branch_T * branch, SGNode_T * chi
       SGNode_T ** child_list;
 
       result_index = -1;
-      child_list = ListMemory_Get(&branch->children, &count, NULL);
+      child_list = ArrayList_Get(&branch->children, &count, NULL);
 
       for(i = 0; i < count; i++)
       {
@@ -139,7 +139,7 @@ int SceneGraph_Node_ChildAdd(SGNode_T * node, SGNode_T * child)
       index = SceneGraph_Branch_GetChildIndex(branch, child);
       if(index < 0)
       {
-         ListMemory_CopyAlloc(&branch->children, &child, NULL);
+         ArrayList_CopyAlloc(&branch->children, &child, NULL);
          result = 1;
       }
       else
@@ -165,7 +165,7 @@ int SceneGraph_Node_ChildRemove(SGNode_T * node, SGNode_T * child)
       index = SceneGraph_Branch_GetChildIndex(branch, child);
       if(index >= 0)
       {
-         ListMemory_FreeNow(&branch->children, index);
+         ArrayList_FreeNow(&branch->children, index);
          result = 1;
       }
       else

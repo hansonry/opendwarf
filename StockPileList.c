@@ -31,7 +31,7 @@ static void StockPileList_ReciveEvent(void * object, const TypeMap_T * event)
 void StockPileList_Init(StockPileList_T * list)
 {
    ManagerEvent_T * event_man;
-   ListMemory_Init(&list->list, sizeof(Position_T), 0);
+   ArrayList_Init(&list->list, sizeof(Position_T), 0);
    event_man = Resources_GetEventManager();
    ManagerEvent_RegisterCallback(event_man, list, StockPileList_ReciveEvent);
 }
@@ -39,7 +39,7 @@ void StockPileList_Init(StockPileList_T * list)
 void StockPileList_Destroy(StockPileList_T * list)
 {
    ManagerEvent_T * event_man;
-   ListMemory_Destory(&list->list);
+   ArrayList_Destory(&list->list);
 
    event_man = Resources_GetEventManager();
    ManagerEvent_UnregisterCallback(event_man, list); 
@@ -48,7 +48,7 @@ void StockPileList_Destroy(StockPileList_T * list)
 
 void StockPileList_AddPosition(StockPileList_T * list, const Position_T * pos)
 {
-   ListMemory_CopyAlloc(&list->list, pos, NULL);
+   ArrayList_CopyAlloc(&list->list, pos, NULL);
 }
 
 void StockPileList_RemovePosition(StockPileList_T * list, const Position_T * pos)
@@ -56,12 +56,12 @@ void StockPileList_RemovePosition(StockPileList_T * list, const Position_T * pos
    Position_T * pos_list;
    size_t i, count;
 
-   pos_list = ListMemory_Get(&list->list, &count, NULL);
+   pos_list = ArrayList_Get(&list->list, &count, NULL);
    for(i = 0; i < count; i++)
    {
       if(Position_IsEqual(&pos_list[i], pos))
       {
-         ListMemory_FreeNow(&list->list, i);
+         ArrayList_FreeNow(&list->list, i);
          break;
       }
    }

@@ -1,7 +1,7 @@
 #ifndef __TREE_H__
 #define __TREE_H__
 #include <stddef.h>
-#include "ListMemory.h"
+#include "ArrayList.h"
 #include "ObjectList.h"
 
 typedef struct Tree_S          Tree_T;
@@ -27,7 +27,7 @@ struct TreeNode_S
    void * object;
    int owns_object;
    TreeNodeCallback_T callback;
-   ListMemory_T childeren;
+   ArrayList_T childeren;
 };
 
 struct Tree_S

@@ -2,7 +2,7 @@
 #define __MAPITEMLIST_H__
 
 #include "Item.h"
-#include "ListMemory.h"
+#include "ArrayList.h"
 
 typedef struct MapItem_S         MapItem_T;
 typedef struct MapItemList_S     MapItemList_T;
@@ -18,7 +18,7 @@ struct MapItem_S
 
 struct MapItemList_S
 {
-   ListMemory_T mapitem_list;
+   ArrayList_T mapitem_list;
 };
 
 void MapItemList_Init(MapItemList_T * list);

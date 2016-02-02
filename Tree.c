@@ -37,7 +37,7 @@ TreeNode_T * Tree_NewNodeWithNewObject(Tree_T * tree, TreeNodeCallback_T callbac
    TreeNode_T * node;
    node = malloc(sizeof(TreeNode_T) + object_size);
 
-   ListMemory_Init(&node->childeren, sizeof(TreeNode_T *), 0);
+   ArrayList_Init(&node->childeren, sizeof(TreeNode_T *), 0);
    node->callback = callback;
    node->owns_object = 1;
    node->object = ((byte_t*)node) + sizeof(TreeNode_T);
@@ -55,7 +55,7 @@ TreeNode_T * Tree_NewNode(Tree_T * tree, TreeNodeCallback_T callback, void * obj
    TreeNode_T * node;
    node = malloc(sizeof(TreeNode_T));
 
-   ListMemory_Init(&node->childeren, sizeof(TreeNode_T *), 0);
+   ArrayList_Init(&node->childeren, sizeof(TreeNode_T *), 0);
    node->callback = callback;
    node->owns_object = 0;
    node->object = object;
@@ -81,7 +81,7 @@ void Tree_RunLoop(TreeNode_T * node, TreeNode_T * parent)
          node->callback(node, e_TNE_Enter, parent);
       }
 
-      node_list = ListMemory_Get(&node->childeren, &count, NULL);
+      node_list = ArrayList_Get(&node->childeren, &count, NULL);
       for(i = 0; i < count; i ++)
       {
          Tree_RunLoop(node_list[i], node);
@@ -109,7 +109,7 @@ static int TreeNode_GetIndex(TreeNode_T * parent, const TreeNode_T * child)
    result = -1;
    if(child != NULL)
    {
-      node_list = ListMemory_Get(&parent->childeren, &count, NULL);
+      node_list = ArrayList_Get(&parent->childeren, &count, NULL);
 
       for(i = 0; i < count; i ++)
       {
@@ -130,7 +130,7 @@ int TreeNode_ChildAttach(TreeNode_T * node, TreeNode_T * child)
    index = TreeNode_GetIndex(node, child);
    if(index < 0 && child != NULL)
    {
-      ListMemory_CopyAlloc(&node->childeren, child, NULL);
+      ArrayList_CopyAlloc(&node->childeren, child, NULL);
       if(node->callback != NULL)
       {
          node->callback(node, e_TNE_AttachedChild, child);
@@ -156,7 +156,7 @@ int TreeNode_ChildDetach(TreeNode_T * node, TreeNode_T * child)
    index = TreeNode_GetIndex(node, child);
    if(index >= 0)
    {
-      ListMemory_FreeNow(&node->childeren, index);
+      ArrayList_FreeNow(&node->childeren, index);
       if(node->callback != NULL)
       {
          node->callback(node, e_TNE_DetachedChild, child);

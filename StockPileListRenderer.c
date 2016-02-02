@@ -72,7 +72,7 @@ void StockPileListRenderer_Render(StockPileListRenderer_T * rend, const Matrix3D
    //Shader_SetTexutre(rend->shader, rend->text, GL_TEXTURE0);
 
 
-   pos_list = ListMemory_Get(&rend->list->list, &count, NULL);
+   pos_list = ArrayList_Get(&rend->list->list, &count, NULL);
    for(i = 0; i < count; i++)
    {
       Matrix3D_SetTranslation(&translater, pos_list[i].x, pos_list[i].y, pos_list[i].z);

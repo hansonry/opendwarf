@@ -22,7 +22,7 @@ static size_t AStar_GuessDistance(const Position_T * a, const Position_T * b)
 static AStarPath_T * AStar_NewPath(AStar_T * as, int x, int y, int z, size_t dist_from_end, size_t * index)
 {
    AStarPath_T * path;
-   path = ListMemory_Allocate(&as->path_list, index);
+   path = ArrayList_Allocate(&as->path_list, index);
    path->next_index_diff = 0;
    Position_Set(&path->pos, x, y, z);
    // Find path from end to start
@@ -38,7 +38,7 @@ void AStar_Init(AStar_T * as, MapChunk_T * map, const Position_T * start, const 
 {  
    AStarPath_T * path; 
    as->map = map;
-   ListMemory_Init(&as->path_list, sizeof(AStarPath_T), 0);
+   ArrayList_Init(&as->path_list, sizeof(AStarPath_T), 0);
    Position_Copy(&as->start, start);
    Position_Copy(&as->end,   end);
    as->found_path = 0;
@@ -50,7 +50,7 @@ void AStar_Init(AStar_T * as, MapChunk_T * map, const Position_T * start, const 
 
 void AStar_Destroy(AStar_T * as)
 {
-   ListMemory_Destory(&as->path_list);
+   ArrayList_Destory(&as->path_list);
 }
 
 // You are responisble for freeing the result
@@ -61,7 +61,7 @@ Position_T * AStar_CreatePositionList(AStar_T * as, size_t * count)
    size_t path_target_index, loop_index;
    Position_T * pos_list;
 
-   path_list = ListMemory_Get(&as->path_list, NULL, NULL);
+   path_list = ArrayList_Get(&as->path_list, NULL, NULL);
 
    if(as->found_path == 1)
    {
@@ -175,7 +175,7 @@ static void AStar_ComputeOffset(AStar_T * as, size_t offset_index,  size_t paren
    size_t new_end_dist;
 
 
-   path_list = ListMemory_Get(&as->path_list, &path_count, NULL);
+   path_list = ArrayList_Get(&as->path_list, &path_count, NULL);
    parent = &path_list[parent_index];
 
    Position_Copy(&newPos, &parent->pos);
@@ -229,7 +229,7 @@ int AStar_Step(AStar_T * as)
    int found_open;
    int result;
 
-   path_list = ListMemory_Get(&as->path_list, &old_list_size, NULL);
+   path_list = ArrayList_Get(&as->path_list, &old_list_size, NULL);
 
    // Find lowest open path cost
    found_open = 0;

@@ -23,7 +23,7 @@ static const TypeMapPair_T * TypeMap_FindPair(const TypeMap_T * map, const char 
    const TypeMapPair_T * result, * list;
    size_t i, count;
    result = NULL;
-   list = ListMemory_Get((ListMemory_T*)&map->pairs, &count, NULL);
+   list = ArrayList_Get((ArrayList_T*)&map->pairs, &count, NULL);
    for(i = 0; i < count; i ++)
    {
       if(strcmp(list[i].key, key) == 0)
@@ -42,7 +42,7 @@ static TypeMapPair_T * TypeMap_GetMemory(TypeMap_T * map, const char * key)
    pair = (TypeMapPair_T *)TypeMap_FindPair(map, key);
    if(pair == NULL)
    {
-      pair = ListMemory_Allocate(&map->pairs, NULL);
+      pair = ArrayList_Allocate(&map->pairs, NULL);
    }
    pair->key = key;
    return pair;
@@ -50,12 +50,12 @@ static TypeMapPair_T * TypeMap_GetMemory(TypeMap_T * map, const char * key)
 
 void TypeMap_Init(TypeMap_T * map)
 {
-   ListMemory_Init(&map->pairs, sizeof(TypeMapPair_T), 0);
+   ArrayList_Init(&map->pairs, sizeof(TypeMapPair_T), 0);
 }
 
 void TypeMap_Destory(TypeMap_T * map)
 {
-   ListMemory_Destory(&map->pairs);
+   ArrayList_Destory(&map->pairs);
 }
 
 void TypeMap_AddIntKey(TypeMap_T * map, const char * key, int value)
@@ -102,12 +102,12 @@ void TypeMap_RemoveKey(TypeMap_T * map, const char * key)
    TypeMapPair_T * pair, * list;
    size_t i, count;
 
-   list = ListMemory_Get(&map->pairs, &count, NULL);
+   list = ArrayList_Get(&map->pairs, &count, NULL);
    for(i = 0; i < count; i++)
    {
       if(strcmp(list[i].key, key) == 0)
       {
-         ListMemory_FreeNow(&map->pairs, i);
+         ArrayList_FreeNow(&map->pairs, i);
          break;
       }
    }
@@ -207,7 +207,7 @@ const char * TypeMap_GetString(const TypeMap_T * map, const char * key)
 
 void TypeMap_Clear(TypeMap_T * map)
 {
-   ListMemory_Clear(&map->pairs);
+   ArrayList_Clear(&map->pairs);
 }
 
 int TypeMap_IsStringEqual(const TypeMap_T * map, const char * key, const char * cmp_value)

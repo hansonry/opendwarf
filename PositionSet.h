@@ -1,12 +1,12 @@
 #ifndef __PositionSet_H__
 #define __PositionSet_H__
-#include "ListMemory.h"
+#include "ArrayList.h"
 #include "Position.h"
 
 typedef struct PositionSet_S PositionSet_T;
 struct PositionSet_S
 {
-   ListMemory_T list;
+   ArrayList_T list;
 };
 
 

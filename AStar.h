@@ -3,7 +3,7 @@
 
 #include "MapChunk.h"
 #include "Position.h"
-#include "ListMemory.h"
+#include "ArrayList.h"
 #include <stddef.h>
 
 typedef struct AStar_S     AStar_T;
@@ -12,7 +12,7 @@ typedef struct AStarPath_S AStarPath_T;
 struct AStar_S
 {
    MapChunk_T * map;
-   ListMemory_T path_list;
+   ArrayList_T path_list;
    Position_T start;
    Position_T end;
    size_t start_index;

@@ -13,9 +13,9 @@ struct JobManager_S
    MapItemList_T * map_item_list;
    PawnList_T * pawn_list;
 
-   ListMemory_T unhappy_items;
-   ListMemory_T unhappy_stockpiles;
-   ListMemory_T job_list;
+   ArrayList_T unhappy_items;
+   ArrayList_T unhappy_stockpiles;
+   ArrayList_T job_list;
 };
 
 void JobManager_Init(JobManager_T * manager, PawnList_T * pawn_list, MapItemList_T * map_item_list, StockPileList_T * stockpile_list);

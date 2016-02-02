@@ -11,12 +11,12 @@ struct EventReg_S
 
 void ManagerEvent_Init(ManagerEvent_T * man)
 {
-   ListMemory_Init(&man->event_reg, sizeof(EventReg_T), 0);
+   ArrayList_Init(&man->event_reg, sizeof(EventReg_T), 0);
 }
 
 void ManagerEvent_Destroy(ManagerEvent_T * man)
 {
-   ListMemory_Destory(&man->event_reg);
+   ArrayList_Destory(&man->event_reg);
 }
 
 
@@ -25,7 +25,7 @@ void ManagerEvent_SendEvent(ManagerEvent_T * man, const TypeMap_T * event)
    EventReg_T * list;
    size_t count, i, k;
 
-   list = ListMemory_Get(&man->event_reg, &count, NULL);
+   list = ArrayList_Get(&man->event_reg, &count, NULL);
    for(i = 0; i < count; i ++)
    {
       list[i].callback(list[i].object, event);
@@ -39,7 +39,7 @@ void ManagerEvent_RegisterCallback(ManagerEvent_T * man, void * object, EventCal
    reg.object            = object;
    reg.callback          = callback;
 
-   ListMemory_CopyAlloc(&man->event_reg, &reg, NULL);
+   ArrayList_CopyAlloc(&man->event_reg, &reg, NULL);
 }
 
 void ManagerEvent_UnregisterCallback(ManagerEvent_T * man, void * object)
@@ -47,12 +47,12 @@ void ManagerEvent_UnregisterCallback(ManagerEvent_T * man, void * object)
    EventReg_T * list;
    size_t count, i;
 
-   list = ListMemory_Get(&man->event_reg, &count, NULL);
+   list = ArrayList_Get(&man->event_reg, &count, NULL);
    for(i = 0; i < count; i ++)
    {
       if(list[i].object == object)
       {
-         ListMemory_FreeNow(&man->event_reg, i);
+         ArrayList_FreeNow(&man->event_reg, i);
          break;
       }
    }

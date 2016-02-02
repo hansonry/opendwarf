@@ -1,7 +1,7 @@
 #ifndef __MEMORYREFSET_H__
 #define __MEMORYREFSET_H__
 #include <stddef.h>
-#include "ListMemory.h"
+#include "ArrayList.h"
 
 typedef struct MemoryRefSet_S MemoryRefSet_T;
 typedef void (*MemoryRefSet_Freeer_T)(void * data);
@@ -10,7 +10,7 @@ struct MemoryRefSet_S
 {
    size_t                element_size;
    MemoryRefSet_Freeer_T freer;
-   ListMemory_T          memory_list;
+   ArrayList_T          memory_list;
 
 };
 

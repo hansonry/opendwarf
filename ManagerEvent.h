@@ -1,7 +1,7 @@
 #ifndef __MANAGEREVENT_H__
 #define __MANAGEREVENT_H__
 
-#include "ListMemory.h"
+#include "ArrayList.h"
 #include "TypeMap.h"
 
 typedef struct ManagerEvent_S ManagerEvent_T;
@@ -9,7 +9,7 @@ typedef void (*EventCallback_T)(void * object, const TypeMap_T * event);
 
 struct ManagerEvent_S
 {
-   ListMemory_T event_reg;
+   ArrayList_T event_reg;
 };
 
 

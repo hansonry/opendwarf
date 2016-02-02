@@ -1,7 +1,7 @@
 #ifndef __TYPEMAP_H__
 #define __TYPEMAP_H__
 
-#include "ListMemory.h"
+#include "ArrayList.h"
 
 
 typedef struct TypeMap_S     TypeMap_T;
@@ -18,7 +18,7 @@ enum TypeMapType_E
 
 struct TypeMap_S
 {
-   ListMemory_T pairs;
+   ArrayList_T pairs;
 };
 
 void TypeMap_Init(TypeMap_T * map);

@@ -1,14 +1,14 @@
 #ifndef __STOCKPILELIST_H__
 #define __STOCKPILELIST_H__
 
-#include "ListMemory.h"
+#include "ArrayList.h"
 #include "Position.h"
 
 typedef struct StockPileList_S StockPileList_T;
 
 struct StockPileList_S
 {
-   ListMemory_T list;
+   ArrayList_T list;
 };
 
 

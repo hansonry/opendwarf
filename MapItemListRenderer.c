@@ -28,7 +28,7 @@ static void MapItemListRenderer_EventCallback(void * object, const TypeMap_T * e
       element->index = TypeMap_GetInt(event, "Index");
       WavefrontNode_Init(&element->node, rend->scene_graph, &rend->log_mesh);
       SceneGraph_Node_ChildAdd(rend->root_node, WavefrontNode_GetNode(&element->node));
-      ListMemory_CopyAlloc(&rend->gfx_list, &element, NULL);
+      ArrayList_CopyAlloc(&rend->gfx_list, &element, NULL);
       
    }
 
@@ -64,7 +64,7 @@ void MapItemListRenderer_Init(MapItemListRenderer_T * rend, MapItemList_T * list
    rend->scene_graph = scene_graph;
    rend->root_node = SceneGraph_Node_NewBranch(rend->scene_graph, NULL);
    rend->list = list;
-   ListMemory_Init(&rend->gfx_list, sizeof(MILR_Element_T*), 0);
+   ArrayList_Init(&rend->gfx_list, sizeof(MILR_Element_T*), 0);
    MapItemListRender_LoadResources(rend);
 }
 
@@ -95,8 +95,8 @@ void MapItemListRenderer_Render(MapItemListRenderer_T * rend)
    Matrix3D_T temp, translater;
 
 
-   list = ListMemory_Get(&rend->list->mapitem_list, &list_count, NULL);
-   ele_list = ListMemory_Get(&rend->gfx_list, &ele_count, NULL);
+   list = ArrayList_Get(&rend->list->mapitem_list, &list_count, NULL);
+   ele_list = ArrayList_Get(&rend->gfx_list, &ele_count, NULL);
    for(i = 0; i < ele_count; i++)
    {
       index = ele_list[i]->index;

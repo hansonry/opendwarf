@@ -1,20 +1,20 @@
-#include "ListMemory.h"
+#include "ArrayList.h"
 
 #include <stdlib.h>
 #include <string.h>
 
 typedef unsigned char byte_t;
-struct ListMemoryDelLink_S
+struct ArrayListDelLink_S
 {
    size_t index;
-   ListMemoryDelLink_T * next;
+   ArrayListDelLink_T * next;
 };
 
 #define ADDY(list, offset) (&(((byte_t *)(list->memory))[(list->element_size) * (offset)]))
 
 #define GROW_BY 16
 
-void ListMemory_Init(ListMemory_T * list, size_t element_size, size_t grow_by)
+void ArrayList_Init(ArrayList_T * list, size_t element_size, size_t grow_by)
 {
    size_t new_size;
    list->element_size = element_size;
@@ -35,9 +35,9 @@ void ListMemory_Init(ListMemory_T * list, size_t element_size, size_t grow_by)
 
 }
 
-void ListMemory_Destory(ListMemory_T * list)
+void ArrayList_Destory(ArrayList_T * list)
 {
-   ListMemoryDelLink_T * link, * loop;
+   ArrayListDelLink_T * link, * loop;
    loop = list->root;
    while(loop != NULL)
    {
@@ -50,7 +50,7 @@ void ListMemory_Destory(ListMemory_T * list)
 
 
 
-void * ListMemory_Allocate(ListMemory_T * list, size_t * index)
+void * ArrayList_Allocate(ArrayList_T * list, size_t * index)
 {
    byte_t * mem;
    size_t new_size;
@@ -72,19 +72,19 @@ void * ListMemory_Allocate(ListMemory_T * list, size_t * index)
 
    return mem;
 }
-void ListMemory_CopyAlloc(ListMemory_T * list, const void * mem, size_t * index)
+void ArrayList_CopyAlloc(ArrayList_T * list, const void * mem, size_t * index)
 {
    void * new_mem;
-   new_mem = ListMemory_Allocate(list, index);
+   new_mem = ArrayList_Allocate(list, index);
    memcpy(new_mem, mem, list->element_size);
 }
 
-void * ListMemory_GetIndex(ListMemory_T * list, size_t index)
+void * ArrayList_GetIndex(ArrayList_T * list, size_t index)
 {
    return ADDY(list, index);
 }
 
-static void ListMemory_RemoveIndex(ListMemory_T * list, size_t index)
+static void ArrayList_RemoveIndex(ArrayList_T * list, size_t index)
 {
    byte_t * mem_from, * mem_to;
    if(index < list->element_count - 1)
@@ -96,14 +96,14 @@ static void ListMemory_RemoveIndex(ListMemory_T * list, size_t index)
    list->element_count --;
 }
 
-void ListMemory_FreeNow(ListMemory_T * list, size_t index)
+void ArrayList_FreeNow(ArrayList_T * list, size_t index)
 {
-   ListMemory_RemoveIndex(list, index);
+   ArrayList_RemoveIndex(list, index);
 }
 
-void ListMemory_FreeLater(ListMemory_T * list, size_t index)
+void ArrayList_FreeLater(ArrayList_T * list, size_t index)
 {
-   ListMemoryDelLink_T * link, * loop, *current;
+   ArrayListDelLink_T * link, * loop, *current;
    int is_good;
 
    // Remove Duplicates
@@ -126,7 +126,7 @@ void ListMemory_FreeLater(ListMemory_T * list, size_t index)
    {
 
       // Create link;
-      link = malloc(sizeof(ListMemoryDelLink_T));
+      link = malloc(sizeof(ArrayListDelLink_T));
       link->next = NULL;
       link->index = index;
 
@@ -162,25 +162,25 @@ void ListMemory_FreeLater(ListMemory_T * list, size_t index)
 
 }
 
-void ListMemory_FlushFree(ListMemory_T * list)
+void ArrayList_FlushFree(ArrayList_T * list)
 {
-   ListMemoryDelLink_T * link, * loop;
+   ArrayListDelLink_T * link, * loop;
    loop = list->root;
    while(loop != NULL)
    {
       link = loop;
       loop = loop->next;
-      ListMemory_RemoveIndex(list, link->index);
+      ArrayList_RemoveIndex(list, link->index);
       free(link);
    }
 }
 
-void ListMemory_Clear(ListMemory_T * list)
+void ArrayList_Clear(ArrayList_T * list)
 {
    list->element_count = 0;
 }
 
-void * ListMemory_Get(ListMemory_T * list, size_t * count, size_t * element_size)
+void * ArrayList_Get(ArrayList_T * list, size_t * count, size_t * element_size)
 {
    if(count != NULL)
    {
@@ -193,7 +193,7 @@ void * ListMemory_Get(ListMemory_T * list, size_t * count, size_t * element_size
    return list->memory;
 }
 
-void * ListMemory_GetCopy(ListMemory_T * list, size_t * count, size_t * element_size)
+void * ArrayList_GetCopy(ArrayList_T * list, size_t * count, size_t * element_size)
 {
    void * mem;
    size_t size;

@@ -1,6 +1,6 @@
 #ifndef __SCENEGRAPH_H__
 #define __SCENEGRAPH_H__
-#include "ListMemory.h"
+#include "ArrayList.h"
 #include "Matrix3D.h"
 #include "GFXState.h"
 
@@ -32,7 +32,7 @@ struct SGN_Leaf_S
 
 struct SGN_Branch_S
 {
-   ListMemory_T children;
+   ArrayList_T children;
 };
 
 enum SGNodeType_E

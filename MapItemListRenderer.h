@@ -2,7 +2,7 @@
 #define __MAPITEMLISTRENDERER_H__
 
 #include "MapItemList.h"
-#include "ListMemory.h"
+#include "ArrayList.h"
 #include "Matrix3D.h"
 #include "GLTexture2D.h"
 #include "WavefrontMesh.h"
@@ -15,7 +15,7 @@ struct MapItemListRenderer_S
    MapItemList_T * list;
    WavefrontMesh_T log_mesh;
    Shader_T * shader;
-   ListMemory_T gfx_list;
+   ArrayList_T gfx_list;
    SceneGraph_T * scene_graph;
    SGNode_T * root_node;
 };
