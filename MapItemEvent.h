@@ -4,7 +4,7 @@
 #include "Item.h"
 #include "Position.h"
 
-void MapItemEvent_CreateMapItemRequest_Init(TypeMap_T * map, Item_T * item, const Position_T * pos);
+void MapItemEvent_AddMapItemRequest_Init(TypeMap_T * map, Item_T * item, const Position_T * pos);
 
 
 

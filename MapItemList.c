@@ -4,20 +4,27 @@
 #include "MapItemEvent.h"
 
 
-void MapItemEvent_CreateMapItemRequest_Init(TypeMap_T * map, Item_T * item, const Position_T * pos)
+void MapItemEvent_AddMapItemRequest_Init(TypeMap_T * map, Item_T * item, const Position_T * pos)
 {
    TypeMap_Clear(map);
-   TypeMap_AddStringKey(map, "Type", "CreateMapItemRequest");
+   TypeMap_AddStringKey(map, "Type", "AddMapItemRequest");
    TypeMap_AddPointerKey(map, "Item", item);
    TypeMap_AddIntKey(map, "X", pos->x);
    TypeMap_AddIntKey(map, "Y", pos->y);
    TypeMap_AddIntKey(map, "Z", pos->z);
 }
 
-static void MapItemEvent_CreateMapItemNotify_Init(TypeMap_T * map, int index)
+static void MapItemEvent_AddMapItemNotify_Init(TypeMap_T * map, int index)
 {
    TypeMap_Clear(map);
-   TypeMap_AddStringKey(map, "Type", "CreateMapItemNotify");
+   TypeMap_AddStringKey(map, "Type", "AddMapItemNotify");
+   TypeMap_AddIntKey(map, "Index", index);
+}
+
+static void MapItemEvent_RemoveMapItemNotify_Init(TypeMap_T * map, int index)
+{
+   TypeMap_Clear(map);
+   TypeMap_AddStringKey(map, "Type", "RemoveMapItemNotify");
    TypeMap_AddIntKey(map, "Index", index);
 }
 
@@ -26,7 +33,7 @@ static void MapItemList_EventCallback(void * object, const TypeMap_T * event)
    MapItemList_T * list = object;
    MapItem_T map_item;
 
-   if(TypeMap_IsStringEqual(event, "Type", "CreateMapItemRequest") == 1)
+   if(TypeMap_IsStringEqual(event, "Type", "AddMapItemRequest") == 1)
    {
       map_item.item = TypeMap_GetPointer(event, "Item");
       map_item.x    = TypeMap_GetInt(event, "X");
@@ -67,7 +74,7 @@ void MapItemList_Add(MapItemList_T * list, const MapItem_T * item)
 
    event_man = Resources_GetEventManager();
    TypeMap_Init(&event);
-   MapItemEvent_CreateMapItemNotify_Init(&event, index);
+   MapItemEvent_AddMapItemNotify_Init(&event, index);
    ManagerEvent_SendEvent(event_man, &event);
    TypeMap_Destory(&event);
 }
@@ -76,15 +83,30 @@ void MapItemList_Remove(MapItemList_T * list, Item_T * item)
 {
    size_t i, count;
    MapItem_T * item_list;
+   int found, index;
+   ManagerEvent_T * event_man;
+   TypeMap_T event;
 
+   found = 0;
    item_list = ArrayList_Get(&list->mapitem_list, &count, NULL);
    for(i = 0; i < count; i++)
    {
       if(item_list[i].item == item)
       {
-         ArrayList_FreeNow(&list->mapitem_list, i);
+         index = i;
+         found = 1;
          break;
       }
+   }
+   if(found == 1)
+   {
+      event_man = Resources_GetEventManager();
+      TypeMap_Init(&event);
+      MapItemEvent_RemoveMapItemNotify_Init(&event, index);
+      ManagerEvent_SendEvent(event_man, &event);
+      TypeMap_Destory(&event);
+
+      ArrayList_FreeNow(&list->mapitem_list, i);
    }
 }
 

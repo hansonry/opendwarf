@@ -4,13 +4,19 @@
 #include "WavefrontShader.h"
 #include "WavefrontMesh.h"
 
-typedef struct WavefrontNode_S WavefrontNode_T;
+typedef struct WavefrontNode_S     WavefrontNode_T;
+typedef struct WavefrontNodeData_S WavefrontNodeData_T;
+
+struct WavefrontNodeData_S
+{
+   WavefrontShader_T * shader;
+   WavefrontMesh_T * mesh;
+};
 
 struct WavefrontNode_S
 {
    SGNode_T * node;
-   WavefrontShader_T * shader;
-   WavefrontMesh_T * mesh;
+   WavefrontNodeData_T * data;
 };
 
 void WavefrontNode_Init(WavefrontNode_T * node, SceneGraph_T * graph,

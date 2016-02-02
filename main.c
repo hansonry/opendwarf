@@ -155,14 +155,14 @@ static void Item_Setup(SGNode_T * root_node)
   
    TypeMap_Init(&event);   
    Position_Set(&pos, 0, 2, 0);
-   MapItemEvent_CreateMapItemRequest_Init(&event, item, &pos);
+   MapItemEvent_AddMapItemRequest_Init(&event, item, &pos);
    ManagerEvent_SendEvent(man_event, &event);
 
    item = ItemList_Add(&item_list);
    Item_Init(item, e_IT_Log);
   
    Position_Set(&pos, 1, 2, 0);
-   MapItemEvent_CreateMapItemRequest_Init(&event, item, &pos);
+   MapItemEvent_AddMapItemRequest_Init(&event, item, &pos);
    ManagerEvent_SendEvent(man_event, &event);
    TypeMap_Destory(&event);
 

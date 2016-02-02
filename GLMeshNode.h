@@ -5,13 +5,18 @@
 #include "ColorTextureLightShader.h"
 
 typedef struct GLMeshNode_S GLMeshNode_T;
+typedef struct GLMeshNodeData_S GLMeshNodeData_T;
+struct GLMeshNodeData_S
+{
+   GLMesh_T                  * mesh;
+   GLenum                      mesh_mode;
+   ColorTextureLightShader_T * shader;
+};
 
 struct GLMeshNode_S
 {
-   SGNode_T * node;
-   GLMesh_T * mesh;
-   GLenum     mesh_mode;
-   ColorTextureLightShader_T * shader;
+   SGNode_T         * node;
+   GLMeshNodeData_T * data;
 };
 
 void GLMeshNode_Init(GLMeshNode_T * node, SceneGraph_T * graph,
