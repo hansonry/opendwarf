@@ -20,9 +20,17 @@ Shader_T * WavefrontShader_Create(const char * shader_name, GLuint shader_id)
    shader->uniform_light_direction   = UL("LightDirection");
    shader->uniform_light_color       = -1; //UL("LightColor");
 
+   RenderQueue_Init(&shader->queue_solid, sizeof(WavefrontShaderState_T));
+   RenderQueue_Init(&shader->queue_transparent, sizeof(WavefrontShaderState_T));
+
    return (Shader_T *)shader;
 }
-void WavefrontShader_Destory(WavefrontShader_T * shader);
+
+void WavefrontShader_Destory(WavefrontShader_T * shader)
+{
+   RenderQueue_Destory(&shader->queue_solid);
+   RenderQueue_Destory(&shader->queue_transparent);
+}
 
 
 void WavefrontShader_SetState(WavefrontShader_T * shader, GFXState_T * state)
@@ -37,5 +45,16 @@ void WavefrontShader_SetTexture(WavefrontShader_T * shader, GLTexture2D_T * text
 }
 
 
+void WavefrontShader_InsertStateToQueue(WavefrontShader_T * shader, int is_transparent)
+{
+   if(is_transparent)
+   {
+      RenderQueue_Add(&shader->queue_transparent, &shader->state);
+   }
+   else
+   {
+      RenderQueue_Add(&shader->queue_solid, &shader->state);
+   }
+}
 
 
