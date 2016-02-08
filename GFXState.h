@@ -5,7 +5,6 @@
 #include "SDL2/SDL_opengl.h"
 
 #include "Matrix3D.h"
-#include "Shader.h"
 
 typedef struct GFXState_S GFXState_T;
 typedef struct GFXStateLight_S GFXStateLight_T;
@@ -23,7 +22,6 @@ struct GFXStateLight_S
 
 struct GFXState_S
 {
-   Shader_T        * shader;
    Matrix3D_T        world;
    Matrix3D_T        camera;
    Matrix3D_T        perspective;
@@ -45,11 +43,9 @@ void GFXState_SetLightSun1DirectionAndColor(GFXState_T * state, float x, float y
                                                                 float r, float g, float b);
 
 
-void GFXState_SetShader(GFXState_T * state, Shader_T * shader);
 
-void GFXState_SetAllMatrixUniforms(GFXState_T * state, GLint world_matrix_uniform, 
-                                                       GLint camera_world_matrix_uniform);
+void GFXState_SetShaderMatrix(GFXState_T * state, Matrix3D_T * world, 
+                                                  Matrix3D_T * world_perspective);
 
-void GFXState_SetLightSun1Uniforms(GFXState_T * state, GLint light_location_uniform, 
-                                                       GLint light_color_uniform);
 #endif // __GFXSTATE_H__
+

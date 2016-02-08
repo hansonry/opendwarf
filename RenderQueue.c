@@ -20,9 +20,9 @@ void RenderQueue_Peek(RenderQueue_T * queue, void * object_out)
    (void)PriorityQueue_Peek(&queue->queue, object_out);
 }
 
-void RenderQueue_Pop(RenderQueue_T * queue, void * object_out)
+int RenderQueue_Pop(RenderQueue_T * queue, void * object_out)
 {
-   (void)PriorityQueue_Pop(&queue->queue, object_out);
+   return PriorityQueue_Pop(&queue->queue, object_out);
 }
 
 void RenderQueue_Flush(RenderQueue_T * queue)

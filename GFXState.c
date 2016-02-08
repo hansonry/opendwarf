@@ -7,7 +7,6 @@ void GFXState_Init(GFXState_T * state)
    Matrix3D_SetIdentity(&state->world);
    Matrix3D_SetIdentity(&state->camera);
    Matrix3D_SetIdentity(&state->perspective);
-   state->shader = NULL;
 }
 void GFXState_Destory(GFXState_T * state)
 {
@@ -61,39 +60,11 @@ void GFXState_SetLightSun1DirectionAndColor(GFXState_T * state, float x, float y
    state->light_sun1.color_b = b;
 }
 
-void GFXState_SetShader(GFXState_T * state, Shader_T * shader)
+void GFXState_SetShaderMatrix(GFXState_T * state, Matrix3D_T * world, 
+                                                  Matrix3D_T * world_perspective)
 {
-   if(state->shader != shader)
-   {
-      Shader_End(state->shader);
-      state->shader = shader;
-      Shader_Begin(state->shader);
-   }
+   Matrix3D_Multiply(world,             &state->camera,      &state->world);
+   Matrix3D_Multiply(world_perspective, &state->perspective, world);
 }
 
-
-void GFXState_SetAllMatrixUniforms(GFXState_T * state, GLint world_matrix_uniform, 
-                                                       GLint camera_world_matrix_uniform)
-{
-   Matrix3D_T world_camera;
-   Matrix3D_T world_camera_perspective;
-
-   Matrix3D_Multiply(&world_camera,             &state->camera,      &state->world);
-   Matrix3D_Multiply(&world_camera_perspective, &state->perspective, &world_camera);
-
-   glUniformMatrix4fv(world_matrix_uniform,        1, GL_FALSE, world_camera.data);
-   glUniformMatrix4fv(camera_world_matrix_uniform, 1, GL_FALSE, world_camera_perspective.data);
-}
-
-void GFXState_SetLightSun1Uniforms(GFXState_T * state, GLint light_location_uniform,
-                                                       GLint light_color_uniform)
-{
-
-   glUniform3f(light_location_uniform, state->light_sun1.pos_x, 
-                                       state->light_sun1.pos_y,
-                                       state->light_sun1.pos_z);
-   glUniform3f(light_color_uniform, state->light_sun1.color_r, 
-                                    state->light_sun1.color_g,
-                                    state->light_sun1.color_b);
-}
 

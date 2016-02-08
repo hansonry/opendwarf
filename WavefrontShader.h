@@ -4,6 +4,7 @@
 #include "GFXState.h"
 #include "GLTexture2D.h"
 #include "RenderQueue.h"
+#include "GLMesh.h"
 
 typedef struct WavefrontShader_S       WavefrontShader_T;
 typedef struct WavefrontShaderState_S  WavefrontShaderState_T;
@@ -19,6 +20,8 @@ struct WavefrontShaderState_S
    float light_direction_x;
    float light_direction_y;
    float light_direction_z;
+   GLMesh_T * mesh;
+   GLenum mesh_mode;
 };
 
 struct WavefrontShader_S
@@ -36,10 +39,11 @@ struct WavefrontShader_S
 
 Shader_T * WavefrontShader_Create(const char * shader_name, GLuint shader_id);
 
-void WavefrontShader_Destory(WavefrontShader_T * shader);
 
 void WavefrontShader_SetState(WavefrontShader_T * shader, GFXState_T * state);
-void WavefrontShader_SetTexture(WavefrontShader_T * shader, GLTexture2D_T * texture);
+void WavefrontShader_SetMeshAndTexture(WavefrontShader_T * shader, GLTexture2D_T * texture, 
+                                                                   GLMesh_T * mesh, 
+                                                                   GLenum mesh_mode);
 void WavefrontShader_InsertStateToQueue(WavefrontShader_T * shader, int is_transparent);
 
 

@@ -16,7 +16,7 @@ void RenderQueue_Destory(RenderQueue_T * queue);
 void RenderQueue_Add(RenderQueue_T * queue, void * object);
 
 void RenderQueue_Peek(RenderQueue_T * queue, void * object_out);
-void RenderQueue_Pop(RenderQueue_T * queue, void * object_out);
+int RenderQueue_Pop(RenderQueue_T * queue, void * object_out);
 
 void RenderQueue_Flush(RenderQueue_T * queue);
 

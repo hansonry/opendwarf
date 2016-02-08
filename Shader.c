@@ -49,22 +49,27 @@ Shader_T * Shader_Create(const char * shader_name)
    return shader;
 }
 
-void Shader_Init(Shader_T * shader, const char   * shader_name, 
-                                    ShaderType_T   type, 
-                                    GLuint         shader_id,
-                                    const int    * attribute_list,
-                                    int            attribute_list_count)
+void Shader_Init(Shader_T * shader, const char               * shader_name, 
+                                    ShaderType_T               type, 
+                                    GLuint                     shader_id,
+                                    Shader_Destoryer_Func_T    destroyer,
+                                    Shader_RenderPass_Func_T   renderer)
 {
    shader->name                 = shader_name;
    shader->type                 = type;
    shader->shader_id            = shader_id;
-   shader->attribute_list       = attribute_list;
-   shader->attribute_list_count = attribute_list_count;
+   shader->destroyer            = destroyer;
+   shader->renderer             = renderer;
 }
 
 void Shader_Free(Shader_T * shader)
 {
-   glDeleteProgram(shader->shader_id);
+   if(shader->destroyer != NULL)
+   {
+      shader->destroyer(shader);
+   }
+
+   glDeleteProgram(shader->shader_id);   
    free(shader);
 }
 
@@ -81,34 +86,11 @@ GLint Shader_GetUniform(Shader_T * shader, const char * uniform_name)
 }
 
 
-void Shader_Begin(Shader_T * shader)
+void Shader_Render(Shader_T * shader, ShaderPass_T pass)
 {
-   int i;
-   if(shader == NULL)
+   if(shader->renderer != NULL)
    {
-      glUseProgram(0);
-   }
-   else
-   {
-      glUseProgram(shader->shader_id);
-      for(i = 0; i < shader->attribute_list_count; i++)
-      {
-         glEnableVertexAttribArray(shader->attribute_list[i]);
-      }
-   }
-}
-
-
-
-void Shader_End(Shader_T * shader)
-{
-   int i;
-   if(shader != NULL)
-   {
-      for(i = 0; i < shader->attribute_list_count; i++)
-      {
-         glDisableVertexAttribArray(shader->attribute_list[i]);
-      }
+      shader->renderer(shader, pass);
    }
 }
 
