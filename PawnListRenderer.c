@@ -9,7 +9,7 @@ static void PawnListRenderer_LoadResources(PawnListRenderer_T * rend)
    WavefrontLoaderData_T  pawn_data;
    shader_manager = Resources_GetShaderManager();
 
-   rend->shader = ManagerShader_Get(shader_manager, "wavefront");
+   rend->shader = (WavefrontShader_T *)ManagerShader_Get(shader_manager, "wavefront");
 
 
    WavefrontLoader_Load(&pawn_data, "assets/pawn1.obj");
@@ -32,30 +32,29 @@ void PawnListRenderer_Destroy(PawnListRenderer_T * rend)
 }
 
 
-void PawnListRenderer_Render(PawnListRenderer_T * rend, const Matrix3D_T * world, const Matrix3D_T * pers, float lx, float ly, float lz)
+void PawnListRenderer_Render(PawnListRenderer_T * rend, MatrixStack_T * stack, GFXState_T * gfx_state)
 {
    Matrix3D_T temp, offset;
    Pawn_T ** plist,* pawn;
    size_t i, count;
 
 
-   //Shader_Begin(rend->shader);
-   //Shader_SetLightDirection(rend->shader, lx, ly, lz);
-
    plist = ObjectList_Get(&rend->list->pawn_list, &count);
 
    for(i = 0; i < count; i++)
    {
+      MatrixStack_Push(stack);
       pawn = plist[i];
-      Matrix3D_SetTranslation(&offset, pawn->cmd_sys.vispos_x, 
-                                       pawn->cmd_sys.vispos_y, 
-                                       pawn->cmd_sys.vispos_z);
-      Matrix3D_Multiply(&temp, world, &offset);
-      //Shader_SetPositionPerspective(rend->shader, &temp, pers);
-      //WavefrontMesh_Render(&rend->pawn_mesh, rend->shader->uniforms[e_SU_Samp2D_Texture0]);
+      
+      MatrixStack_ApplyTranslation(stack, pawn->cmd_sys.vispos_x, 
+                                          pawn->cmd_sys.vispos_y, 
+                                          pawn->cmd_sys.vispos_z);
+      GFXState_SetWorldMatrix(gfx_state, &stack->matrix);
+      WavefrontShader_SetState(rend->shader, gfx_state);
+      WavefrontMesh_Render(&rend->pawn_mesh, rend->shader, 0);
+      MatrixStack_Pop(stack);
    }
 
-   //Shader_End(rend->shader);
    
 
 }

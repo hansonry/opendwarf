@@ -31,8 +31,6 @@
 #include "MapRay.h"
 #include "JobManager.h"
 #include "GFXState.h"
-#include "SceneGraph.h"
-#include "WavefrontNode.h"
 
 static void gl_init(void);
 
@@ -76,12 +74,10 @@ StockPileList_T stockpile_list;
 StockPileListRenderer_T stockpile_list_renderer;
 ItemList_T item_list;
 JobManager_T job_manager;
-SceneGraph_T scene_graph;
 
 // other
 WavefrontMesh_T log_mesh;
 UnitCube_T cube;
-WavefrontNode_T wavefront_node;
 
 GLTexture2D_T * test_text, font_text;
 GLFont_T font_hanken;
@@ -134,7 +130,7 @@ static void mapchunk_setup(void)
 }
 
 #include "MapItemEvent.h"
-static void Item_Setup(SGNode_T * root_node)
+static void Item_Setup(void)
 {
    Item_T * item;
    TypeMap_T event;
@@ -147,8 +143,7 @@ static void Item_Setup(SGNode_T * root_node)
    ItemList_Init(&item_list);
 
    MapItemList_Init(&map_item_list);
-   MapItemListRenderer_Init(&map_item_list_renderer, &map_item_list, &scene_graph);
-   SceneGraph_Node_ChildAdd(root_node, MapItemListRenderer_GetNode(&map_item_list_renderer));
+   MapItemListRenderer_Init(&map_item_list_renderer, &map_item_list);
 
    item = ItemList_Add(&item_list); 
    Item_Init(item, e_IT_Log);
@@ -216,7 +211,6 @@ static void game_setup(CEngine_T * engine)
    WavefrontLoaderData_T log_data;
    ManagerShader_T * shader_manager;
    ManagerGLTexture2D_T * texture_manager;
-   SGNode_T * root_node;
    Matrix3D_T matrix;
    Resources_Init();
    shader_manager = Resources_GetShaderManager();
@@ -225,12 +219,6 @@ static void game_setup(CEngine_T * engine)
    MatrixStack_Init(&m_stack);
 
 
-   // SceneGraph
-   SceneGraph_Init(&scene_graph);
-   root_node = SceneGraph_Node_NewBranch(&scene_graph, NULL);
-   SceneGraph_SetRootNode(&scene_graph, root_node);
-   Matrix3D_SetTranslation(&matrix, 0, 0, 10);
-   SceneGraph_Node_SetMatrix(root_node, &matrix);
 
    // Cube
 
@@ -268,14 +256,10 @@ static void game_setup(CEngine_T * engine)
    WavefrontMesh_Init(&log_mesh, &log_data, "assets/");
    WavefrontLoader_Delete(&log_data);
 
-   WavefrontNode_Init(&wavefront_node, &scene_graph, &log_mesh);
-   
-   SceneGraph_Node_ChildAdd(root_node, WavefrontNode_GetNode(&wavefront_node)); 
-   
 
    // open dwarf
    mapchunk_setup();
-   Item_Setup(root_node);
+   Item_Setup();
    Pawn_Setup();
    StockPile_Setup();
 
@@ -313,8 +297,6 @@ static void game_cleanup(CEngine_T * engine)
    JobManager_Destroy(&job_manager);
  
 
-   WavefrontNode_Destroy(&wavefront_node);
-   SceneGraph_Destroy(&scene_graph);
    Resources_Cleanup();
 }
 
@@ -349,6 +331,8 @@ static void game_render(CEngine_T * engine)
 {
    Matrix3D_T matrix, temp;
    GFXState_T gfx_state;
+   ManagerShader_T * manager_shader;
+
    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    MatrixStack_Clear(&m_stack);
    GFXState_Init(&gfx_state);
@@ -377,8 +361,8 @@ static void game_render(CEngine_T * engine)
 
    //UnitCube_Render(&cube);
    MapChunkRender_Render(&map_chunk_render, &m_stack.matrix, &projection, 0.577f, 0.577f, -0.577f);
-   MapItemListRenderer_Render(&map_item_list_renderer);
-   PawnListRenderer_Render(&pawn_list_renderer, &m_stack.matrix, &projection, 0.577f, 0.577f, -0.577f);
+   MapItemListRenderer_Render(&map_item_list_renderer, &m_stack, &gfx_state);
+   PawnListRenderer_Render(&pawn_list_renderer, &m_stack, &gfx_state);
    StockPileListRenderer_Render(&stockpile_list_renderer, &m_stack.matrix, &projection, 0.577f, 0.577f, -0.577f);
 
 
@@ -390,7 +374,6 @@ static void game_render(CEngine_T * engine)
    MatrixStack_ApplyTranslation(&m_stack, px, py, 0);
    MatrixStack_ApplyYRotation(&m_stack, angle);
 
-   SceneGraph_Node_SetMatrix(WavefrontNode_GetNode(&wavefront_node), &m_stack.matrix);
 
    // Mesh Test
 
@@ -400,10 +383,14 @@ static void game_render(CEngine_T * engine)
    //WavefrontMesh_Render(&log_mesh, shader_wavefront->uniforms[e_SU_Samp2D_Texture0]);
    // open dwarf
    
-   SceneGraph_Render(&scene_graph, &gfx_state);
+
+
 
 
    GFXState_Destory(&gfx_state);
+
+   manager_shader = Resources_GetShaderManager();
+   ManagerShader_DrawAll(manager_shader);
 }
 
 static void game_input(CEngine_T * engine, SDL_Event * event)

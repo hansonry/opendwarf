@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #define UL(x) Shader_GetUniform(&shader->parent, (x))
 
-static const int attrib_data[] = {0, 1, 2};
 
 
 Shader_T * ColorTextureLightShader_Create(const char * shader_name, GLuint shader_id)
@@ -12,7 +11,8 @@ Shader_T * ColorTextureLightShader_Create(const char * shader_name, GLuint shade
    Shader_Init(&shader->parent, shader_name, 
                                 e_ST_ColorTextureLight, 
                                 shader_id,
-                                attrib_data, 3);
+                                NULL, 
+                                NULL);
 
    shader->uniform_world             = UL("WMatrix");
    shader->uniform_world_perspective = UL("PMatrix");
@@ -28,7 +28,7 @@ void ColorTextureLightShader_Destory(ColorTextureLightShader_T * shader);
 
 void ColorTextureLightShader_SetState(ColorTextureLightShader_T * shader, GFXState_T * state)
 {
-   GFXState_SetAllMatrixUniforms(state, shader->uniform_world, shader->uniform_world_perspective);
+   //GFXState_SetAllMatrixUniforms(state, shader->uniform_world, shader->uniform_world_perspective);
 }
 
 void ColorTextureLightShader_SetColor(ColorTextureLightShader_T * shader, float r, float g, float b)

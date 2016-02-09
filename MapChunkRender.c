@@ -268,7 +268,7 @@ void MapChunkRender_Render(MapChunkRender_T * rend, const Matrix3D_T * world, co
 
    //GLMesh_Render(&rend->mesh, GL_TRIANGLES);
 
-   Shader_End(rend->shader);
+   //Shader_End(rend->shader);
 
 }
 

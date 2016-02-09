@@ -2,32 +2,27 @@
 #define __MAPITEMLISTRENDERER_H__
 
 #include "MapItemList.h"
-#include "ArrayList.h"
-#include "Matrix3D.h"
-#include "GLTexture2D.h"
+#include "MatrixStack.h"
+#include "GFXState.h"
 #include "WavefrontMesh.h"
-#include "Shader.h"
-#include "SceneGraph.h"
+#include "WavefrontShader.h"
+
 
 typedef struct MapItemListRenderer_S MapItemListRenderer_T;
 struct MapItemListRenderer_S
 {
    MapItemList_T * list;
    WavefrontMesh_T log_mesh;
-   Shader_T * shader;
-   ArrayList_T gfx_list;
-   SceneGraph_T * scene_graph;
-   SGNode_T * root_node;
+   WavefrontShader_T * shader;
 };
 
-void MapItemListRenderer_Init(MapItemListRenderer_T * rend, MapItemList_T * list, 
-                                                            SceneGraph_T * scene_graph);
+void MapItemListRenderer_Init(MapItemListRenderer_T * rend, MapItemList_T * list);
 void MapItemListRenderer_Destroy(MapItemListRenderer_T * rend);
 
-SGNode_T * MapItemListRenderer_GetNode(MapItemListRenderer_T * rend);
 
 
-void MapItemListRenderer_Render(MapItemListRenderer_T * rend);
+void MapItemListRenderer_Render(MapItemListRenderer_T * rend, MatrixStack_T * stack, 
+                                                              GFXState_T * gfx_state);
 
 
 #endif // __MAPITEMLISTRENDERER_H__

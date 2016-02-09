@@ -40,7 +40,7 @@ void   PriorityQueue_Insert(PriorityQueue_T * queue, const void * object_in, int
    PriorityQueueLink_T * loop, * prev, * link;
    link = PriorityQueue_NewLink(queue, object_in, priority);
 
-   if(queue->root = NULL)
+   if(queue->root == NULL)
    {
       queue->root = link;
       queue->count = 1;
@@ -135,8 +135,6 @@ int    PriorityQueue_Pop(PriorityQueue_T * queue, void * object_out)
    {
       result = 0;
    }
-
-
    return result;
 }
 
