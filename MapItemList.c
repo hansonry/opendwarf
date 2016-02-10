@@ -66,7 +66,7 @@ void MapItemList_Destory(MapItemList_T * list)
 void MapItemList_Add(MapItemList_T * list, const MapItem_T * item)
 {
    MapItem_T * mem;
-   int index;
+   size_t index;
    ManagerEvent_T * event_man;
    TypeMap_T event;
    
