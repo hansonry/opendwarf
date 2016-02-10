@@ -23,6 +23,7 @@ enum ShaderType_E
 {
    e_ST_ColorTextureLight,
    e_ST_Wavefront,
+   e_ST_Map,
    e_ST_Last
 };
 

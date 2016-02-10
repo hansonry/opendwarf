@@ -17,7 +17,7 @@ void main()
    vec4 AmbiantColor;
    vec4 t_frag_color;
 
-   t_frag_color = texture2D(CSampler, TexCoord0) * vec4(Color, 1);
+   t_frag_color = texture2D(CSampler, TexCoord0) * Color;
 
 
 
@@ -32,7 +32,7 @@ void main()
       DiffuseColor = vec4(0, 0, 0, 0);
    }
 
-   AmbiantColor = vec4(vec3(1,1,1) *0.2, 1.0);
+   AmbiantColor = vec4(vec3(1,1,1) * 0.2, 0.0);
 
 
    FragColor = t_frag_color * (DiffuseColor + AmbiantColor);

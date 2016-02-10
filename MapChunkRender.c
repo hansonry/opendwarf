@@ -227,7 +227,7 @@ static void MapChunkRender_LoadResources(MapChunkRender_T * rend)
 
    rend->texture = ManagerGLTexture2D_Get(texture_manager, "assets/tiles.png");
 
-   rend->shader = ManagerShader_Get(shader_manager, "block");
+   rend->shader = (MapShader_T *)ManagerShader_Get(shader_manager, "block");
 }
 
 static void MapChunkRender_FreeResources(MapChunkRender_T * rend)
@@ -250,25 +250,20 @@ void MapChunkRender_Destroy(MapChunkRender_T * rend)
    MapChunkRender_FreeResources(rend);
 }
 
-void MapChunkRender_Render(MapChunkRender_T * rend, const Matrix3D_T * world, const Matrix3D_T * pers, float lx, float ly, float lz)
+void MapChunkRender_Render(MapChunkRender_T * rend, MatrixStack_T * stack, 
+                                                    GFXState_T * gfx_state)
 {
    GLMesh_Cleanup(&rend->mesh);
    MapChunkRender_GenMesh(rend);
 
-   //Shader_Begin(rend->shader);
-   //Shader_SetLightDirection(rend->shader, lx, ly, lz);
-   //Shader_SetPositionPerspective(rend->shader, world, pers);
-   //Shader_SetTexutre(rend->shader, rend->texture, GL_TEXTURE0);
+
+   GFXState_SetWorldMatrix(gfx_state, &stack->matrix);
+   MapShader_SetState(rend->shader, gfx_state);
+   MapShader_SetMeshAndTexture(rend->shader, rend->texture, &rend->mesh, GL_TRIANGLES);
+
+   MapShader_InsertStateToQueue(rend->shader, 0);
 
 
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-   
-
-
-   //GLMesh_Render(&rend->mesh, GL_TRIANGLES);
-
-   //Shader_End(rend->shader);
 
 }
 

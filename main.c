@@ -83,7 +83,7 @@ GLTexture2D_T * test_text, font_text;
 GLFont_T font_hanken;
 GLCam_FPS_T fps_cam;
 int cam_drag;
-Shader_T *shader_test1, *shader_wavefront;
+Shader_T *shader_wavefront;
 float angle;
 Matrix3D_T projection;
 MatrixStack_T m_stack;
@@ -225,16 +225,12 @@ static void game_setup(CEngine_T * engine)
    UnitCube_Init(&cube);
 
    // Shader
-   shader_test1 = ManagerShader_Get(shader_manager, "test1");
    shader_wavefront = ManagerShader_Get(shader_manager, "wavefront");
 
 
 
    // Projection Matrix
    Matrix3D_SetProjection(&projection, 30, SCREEN_WIDTH, SCREEN_HEIGHT, 1, 100);
-
-   // Textures
-   test_text = ManagerGLTexture2D_Get(texture_manager, "testImage1024.png");
 
    // Kin
    px = 0;
@@ -329,7 +325,6 @@ static void game_update(CEngine_T * engine, float seconds)
 
 static void game_render(CEngine_T * engine)
 {
-   Matrix3D_T matrix, temp;
    GFXState_T gfx_state;
    ManagerShader_T * manager_shader;
 
@@ -338,10 +333,11 @@ static void game_render(CEngine_T * engine)
    GFXState_Init(&gfx_state);
 
    GLCam_FPS_Render(&fps_cam, &m_stack);
-   MatrixStack_Get(&m_stack, &temp);
-   GFXState_SetCameraMatrix(&gfx_state, &temp);
+   GFXState_SetCameraMatrix(&gfx_state, &m_stack.matrix);
    GFXState_SetPerspectiveMatrix(&gfx_state, &projection);
    GFXState_SetLightSun1DirectionAndColor(&gfx_state, 0.557, 0.557f, -0.557f, 1, 1, 1);
+   MatrixStack_Clear(&m_stack);
+
 
    /*
    glBegin( GL_QUADS ); 
@@ -354,16 +350,15 @@ static void game_render(CEngine_T * engine)
 
 
 
-   Matrix3D_SetIdentity(&matrix);
 
    MatrixStack_ApplyTranslation(&m_stack, 0,  0,  10);
 
 
    //UnitCube_Render(&cube);
-   MapChunkRender_Render(&map_chunk_render, &m_stack.matrix, &projection, 0.577f, 0.577f, -0.577f);
+   MapChunkRender_Render(&map_chunk_render, &m_stack, &gfx_state);
    MapItemListRenderer_Render(&map_item_list_renderer, &m_stack, &gfx_state);
    PawnListRenderer_Render(&pawn_list_renderer, &m_stack, &gfx_state);
-   StockPileListRenderer_Render(&stockpile_list_renderer, &m_stack.matrix, &projection, 0.577f, 0.577f, -0.577f);
+   StockPileListRenderer_Render(&stockpile_list_renderer, &m_stack, &gfx_state);
 
 
 
@@ -376,6 +371,7 @@ static void game_render(CEngine_T * engine)
 
 
    // Mesh Test
+
 
    //Shader_Use(shader_wavefront);
    //Shader_Setup(shader_wavefront, &gfx_state);
