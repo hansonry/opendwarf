@@ -10,14 +10,9 @@ typedef enum   ShaderPass_E ShaderPass_T;
 
 typedef Shader_T * (*Shader_Creater_Func_T)(const char * shader_name, GLuint shader_id);
 typedef void (*Shader_Destoryer_Func_T)(Shader_T * shader);
-typedef void (*Shader_RenderPass_Func_T)(Shader_T * shader, ShaderPass_T pass);
-
-enum ShaderPass_E
-{
-   e_SP_Solid,
-   e_SP_Transparent,
-   e_SP_Last
-};
+typedef void (*Shader_RenderPass_Func_T)(Shader_T * shader, void     * shader_data, 
+                                                            Shader_T * prev_shader, 
+                                                            Shader_T * next_shader);
 
 enum ShaderType_E
 {
@@ -46,7 +41,9 @@ void Shader_Free(Shader_T * shader);
 
 GLint Shader_GetUniform(Shader_T * shader, const char * uniform_name);
 
-void Shader_Render(Shader_T * shader, ShaderPass_T pass);
+void Shader_Render(Shader_T * shader, void     * shader_data, 
+                                      Shader_T * prev_shader, 
+                                      Shader_T * next_shader);
 
 
 

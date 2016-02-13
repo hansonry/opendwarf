@@ -86,11 +86,13 @@ GLint Shader_GetUniform(Shader_T * shader, const char * uniform_name)
 }
 
 
-void Shader_Render(Shader_T * shader, ShaderPass_T pass)
+void Shader_Render(Shader_T * shader, void     * shader_data, 
+                                      Shader_T * prev_shader, 
+                                      Shader_T * next_shader)
 {
    if(shader->renderer != NULL)
    {      
-      shader->renderer(shader, pass);
+      shader->renderer(shader, shader_data, prev_shader, next_shader);
    }
 }
 

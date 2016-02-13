@@ -3,8 +3,8 @@
 #include "Shader.h"
 #include "GFXState.h"
 #include "GLTexture2D.h"
-#include "RenderQueue.h"
 #include "GLMesh.h"
+
 
 typedef struct WavefrontShader_S       WavefrontShader_T;
 typedef struct WavefrontShaderState_S  WavefrontShaderState_T;
@@ -27,8 +27,6 @@ struct WavefrontShaderState_S
 struct WavefrontShader_S
 {
    Shader_T parent;
-   RenderQueue_T queue_solid;
-   RenderQueue_T queue_transparent;
    WavefrontShaderState_T state;
    GLint uniform_texture;
    GLint uniform_world;
@@ -44,7 +42,7 @@ void WavefrontShader_SetState(WavefrontShader_T * shader, GFXState_T * state);
 void WavefrontShader_SetMeshAndTexture(WavefrontShader_T * shader, GLTexture2D_T * texture, 
                                                                    GLMesh_T * mesh, 
                                                                    GLenum mesh_mode);
-void WavefrontShader_InsertStateToQueue(WavefrontShader_T * shader, int is_transparent);
+WavefrontShaderState_T * WavefrontShader_CreateState(WavefrontShader_T * shader);
 
 
 

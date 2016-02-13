@@ -5,52 +5,44 @@
 static void WavefrontShader_Destory(Shader_T * _shader)
 {
    WavefrontShader_T * shader = (WavefrontShader_T*)_shader;
-   RenderQueue_Destory(&shader->queue_solid);
-   RenderQueue_Destory(&shader->queue_transparent);
 }
 
-static void WavefrontShader_RenderQueue(WavefrontShader_T * shader, RenderQueue_T * queue)
-{
-   WavefrontShaderState_T state;
-   glUseProgram(shader->parent.shader_id);
-   glEnableVertexAttribArray(0);
-   glEnableVertexAttribArray(1);
-   glEnableVertexAttribArray(2);
-   glActiveTexture(GL_TEXTURE0);
-   glUniform1i(shader->uniform_texture, GL_TEXTURE0);
-   while(RenderQueue_Pop(queue, &state))
-   {
-
-      glUniformMatrix4fv(shader->uniform_world,             1, GL_FALSE, state.matix_world.data);
-      glUniformMatrix4fv(shader->uniform_world_perspective, 1, GL_FALSE, state.matix_world_perspective.data);
-      glUniform3f(shader->uniform_light_direction, state.light_direction_x, 
-                                                   state.light_direction_y,
-                                                   state.light_direction_z);
-      glUniform3f(shader->uniform_light_color, state.light_color_r, 
-                                               state.light_color_g,
-                                               state.light_color_b);
-      glBindTexture(GL_TEXTURE_2D, state.texture->gl_id);
-      GLMesh_Render(state.mesh, state.mesh_mode);
-   }
-   glDisableVertexAttribArray(0);
-   glDisableVertexAttribArray(1);
-   glDisableVertexAttribArray(2);
-}
-
-static void WavefrontShader_Renderer(Shader_T * _shader, ShaderPass_T pass)
+static void WavefrontShader_Renderer(Shader_T * _shader, void     * _shader_data, 
+                                                         Shader_T * prev_shader, 
+                                                         Shader_T * next_shader)
 {
    WavefrontShader_T * shader = (WavefrontShader_T*)_shader;
-   if(pass == e_SP_Solid)
+   WavefrontShaderState_T * state = (WavefrontShaderState_T*)_shader_data;
+
+   // Setup
+   if(_shader != prev_shader)
    {
-      // Render the solid queue
-      WavefrontShader_RenderQueue(shader, &shader->queue_solid);
-   }
-   else if(pass == e_SP_Transparent)
-   {
-      // Render the transparent queue
-      WavefrontShader_RenderQueue(shader, &shader->queue_transparent);
+      glUseProgram(shader->parent.shader_id);
+      glEnableVertexAttribArray(0);
+      glEnableVertexAttribArray(1);
+      glEnableVertexAttribArray(2);
+      glActiveTexture(GL_TEXTURE0);
+      glUniform1i(shader->uniform_texture, GL_TEXTURE0);
    }
 
+   glUniformMatrix4fv(shader->uniform_world,             1, GL_FALSE, state->matix_world.data);
+   glUniformMatrix4fv(shader->uniform_world_perspective, 1, GL_FALSE, state->matix_world_perspective.data);
+   glUniform3f(shader->uniform_light_direction, state->light_direction_x, 
+                                                state->light_direction_y,
+                                                state->light_direction_z);
+   glUniform3f(shader->uniform_light_color, state->light_color_r, 
+                                            state->light_color_g,
+                                            state->light_color_b);
+   glBindTexture(GL_TEXTURE_2D, state->texture->gl_id);
+   GLMesh_Render(state.mesh, state->mesh_mode);
+
+   // Cleanup
+   if(_shader != next_shader)
+   {
+      glDisableVertexAttribArray(0);
+      glDisableVertexAttribArray(1);
+      glDisableVertexAttribArray(2);
+   }
 }
 
 Shader_T * WavefrontShader_Create(const char * shader_name, GLuint shader_id)
@@ -69,8 +61,6 @@ Shader_T * WavefrontShader_Create(const char * shader_name, GLuint shader_id)
    shader->uniform_light_direction   = UL("LightDirection");
    shader->uniform_light_color       = -1; //UL("LightColor");
 
-   RenderQueue_Init(&shader->queue_solid, sizeof(WavefrontShaderState_T));
-   RenderQueue_Init(&shader->queue_transparent, sizeof(WavefrontShaderState_T));
 
    return (Shader_T *)shader;
 }
@@ -100,16 +90,8 @@ void WavefrontShader_SetMeshAndTexture(WavefrontShader_T * shader, GLTexture2D_T
 }
 
 
-void WavefrontShader_InsertStateToQueue(WavefrontShader_T * shader, int is_transparent)
+WavefrontShaderState_T * WavefrontShader_CreateState(WavefrontShader_T * shader)
 {
-   if(is_transparent)
-   {
-      RenderQueue_Add(&shader->queue_transparent, &shader->state);
-   }
-   else
-   {
-      RenderQueue_Add(&shader->queue_solid, &shader->state);
-   }
-}
 
+}
 
