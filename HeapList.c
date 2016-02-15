@@ -58,11 +58,11 @@ static void HeapList_CreateNewBlock(HeapList_T * list)
    loop = block.memory;
    for(i = 0; i < block.size; i ++)
    {
-      ArrayList_CopyAlloc(&list->unused_memory, &loop, NULL);
+      ArrayList_CopyAdd(&list->unused_memory, &loop, NULL);
       loop += list->element_size;
    }
 
-   ArrayList_CopyAlloc(&list->block_list, &block, NULL);
+   ArrayList_CopyAdd(&list->block_list, &block, NULL);
 }
 
 void * HeapList_Allocate(HeapList_T * list)
@@ -79,7 +79,7 @@ void * HeapList_Allocate(HeapList_T * list)
    }
 
    mem = unused_list[0];
-   ArrayList_FreeNow(&list->unused_memory, 0);
+   ArrayList_Remove(&list->unused_memory, 0);
    list->count ++;
 
    return mem;
@@ -123,7 +123,7 @@ void   HeapList_Free(HeapList_T * list, void * mem)
    found = HeapList_OwnsMemory(list, mem);
    if(found == 1)
    {
-      ArrayList_CopyAlloc(&list->unused_memory, &mem, NULL);
+      ArrayList_CopyAdd(&list->unused_memory, &mem, NULL);
       list->count --;
    }
    else
@@ -145,7 +145,7 @@ void   HeapList_FreeAll(HeapList_T * list)
       loop = block_list[i].memory;
       for(k = 0; k < block_list[i].size; k++)
       {
-         ArrayList_CopyAlloc(&list->unused_memory, &loop, NULL);
+         ArrayList_CopyAdd(&list->unused_memory, &loop, NULL);
          loop = loop + list->element_size;
       }
 

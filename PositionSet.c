@@ -32,7 +32,7 @@ void PositionSet_Add(PositionSet_T * set, const Position_T * pos)
 
    if(found == 0)
    {
-      ArrayList_CopyAlloc(&set->list, pos, NULL);
+      ArrayList_CopyAdd(&set->list, pos, NULL);
    }
 }
 

@@ -22,7 +22,7 @@ static size_t AStar_GuessDistance(const Position_T * a, const Position_T * b)
 static AStarPath_T * AStar_NewPath(AStar_T * as, int x, int y, int z, size_t dist_from_end, size_t * index)
 {
    AStarPath_T * path;
-   path = ArrayList_Allocate(&as->path_list, index);
+   path = ArrayList_Add(&as->path_list, index);
    path->next_index_diff = 0;
    Position_Set(&path->pos, x, y, z);
    // Find path from end to start

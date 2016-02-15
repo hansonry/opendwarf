@@ -42,7 +42,7 @@ static TypeMapPair_T * TypeMap_GetMemory(TypeMap_T * map, const char * key)
    pair = (TypeMapPair_T *)TypeMap_FindPair(map, key);
    if(pair == NULL)
    {
-      pair = ArrayList_Allocate(&map->pairs, NULL);
+      pair = ArrayList_Add(&map->pairs, NULL);
    }
    pair->key = key;
    return pair;
@@ -107,7 +107,7 @@ void TypeMap_RemoveKey(TypeMap_T * map, const char * key)
    {
       if(strcmp(list[i].key, key) == 0)
       {
-         ArrayList_FreeNow(&map->pairs, i);
+         ArrayList_Remove(&map->pairs, i);
          break;
       }
    }

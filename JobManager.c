@@ -67,7 +67,7 @@ void JobManager_Update(JobManager_T * manager, float seconds)
 
       if(found == 0)
       {
-         ArrayList_CopyAlloc(&manager->unhappy_items, &map_item_list[i], NULL);
+         ArrayList_CopyAdd(&manager->unhappy_items, &map_item_list[i], NULL);
       }
    }
 
@@ -88,7 +88,7 @@ void JobManager_Update(JobManager_T * manager, float seconds)
 
       if(found == 0)
       {
-         ArrayList_CopyAlloc(&manager->unhappy_stockpiles, &stockpile_list[k], NULL);
+         ArrayList_CopyAdd(&manager->unhappy_stockpiles, &stockpile_list[k], NULL);
       }
    }
 
@@ -112,7 +112,7 @@ void JobManager_Update(JobManager_T * manager, float seconds)
                          map_item_list[i].y,
                          map_item_list[i].z);
       Job_MoveItem_Init(&job, map_item_list[i].item, &pos, &stockpile_list[i]);
-      ArrayList_CopyAlloc(&manager->job_list, &job, NULL);
+      ArrayList_CopyAdd(&manager->job_list, &job, NULL);
    }
 
    // Check for bord pawns to give jobs to

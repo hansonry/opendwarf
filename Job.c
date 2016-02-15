@@ -38,7 +38,7 @@ static void Job_AppendPath(ArrayList_T * cmd_list, MapChunk_T * map, const Posit
    for(i = 0; i < count; i++)
    {
       PawnCmd_Move_Init(&cmd, &pos_list[i]);
-      ArrayList_CopyAlloc(cmd_list, &cmd, NULL);
+      ArrayList_CopyAdd(cmd_list, &cmd, NULL);
    }
 
    AStar_Destroy(&astar);
@@ -55,7 +55,7 @@ static PawnCmd_T * Job_PickupItem_CreateCmdList(Job_PickupItem_T * job, PawnCmdS
    Job_AppendPath(&list, map, &sys->position, &job->item_pos);
 
    PawnCmd_Pickup_Init(&cmd, job->item);
-   ArrayList_CopyAlloc(&list, &cmd, NULL);
+   ArrayList_CopyAdd(&list, &cmd, NULL);
 
 
 
@@ -78,12 +78,12 @@ static PawnCmd_T * Job_MoveItem_CreateCmdList(Job_MoveItem_T * job, PawnCmdSyste
    Job_AppendPath(&list, map, &sys->position, &job->item_pos);
 
    PawnCmd_Pickup_Init(&cmd, job->item);
-   ArrayList_CopyAlloc(&list, &cmd, NULL);
+   ArrayList_CopyAdd(&list, &cmd, NULL);
 
    Job_AppendPath(&list, map, &job->item_pos, &job->drop_pos);
 
    PawnCmd_Drop_Init(&cmd);
-   ArrayList_CopyAlloc(&list, &cmd, NULL);
+   ArrayList_CopyAdd(&list, &cmd, NULL);
 
    cmd_list = ArrayList_GetCopy(&list, count, NULL);
 

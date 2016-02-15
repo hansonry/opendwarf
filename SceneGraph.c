@@ -140,7 +140,7 @@ int SceneGraph_Node_ChildAdd(SGNode_T * node, SGNode_T * child)
       index = SceneGraph_Branch_GetChildIndex(branch, child);
       if(index < 0)
       {
-         ArrayList_CopyAlloc(&branch->children, &child, NULL);
+         ArrayList_CopyAdd(&branch->children, &child, NULL);
          result = 1;
       }
       else
@@ -166,7 +166,7 @@ int SceneGraph_Node_ChildRemove(SGNode_T * node, SGNode_T * child)
       index = SceneGraph_Branch_GetChildIndex(branch, child);
       if(index >= 0)
       {
-         ArrayList_FreeNow(&branch->children, index);
+         ArrayList_Remove(&branch->children, index);
          result = 1;
       }
       else

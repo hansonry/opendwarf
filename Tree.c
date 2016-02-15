@@ -130,7 +130,7 @@ int TreeNode_ChildAttach(TreeNode_T * node, TreeNode_T * child)
    index = TreeNode_GetIndex(node, child);
    if(index < 0 && child != NULL)
    {
-      ArrayList_CopyAlloc(&node->childeren, child, NULL);
+      ArrayList_CopyAdd(&node->childeren, child, NULL);
       if(node->callback != NULL)
       {
          node->callback(node, e_TNE_AttachedChild, child);
@@ -156,7 +156,7 @@ int TreeNode_ChildDetach(TreeNode_T * node, TreeNode_T * child)
    index = TreeNode_GetIndex(node, child);
    if(index >= 0)
    {
-      ArrayList_FreeNow(&node->childeren, index);
+      ArrayList_Remove(&node->childeren, index);
       if(node->callback != NULL)
       {
          node->callback(node, e_TNE_DetachedChild, child);

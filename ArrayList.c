@@ -31,26 +31,17 @@ void ArrayList_Init(ArrayList_T * list, size_t element_size, size_t grow_by)
    new_size = list->grow_by;
    list->memory = malloc(list->element_size * new_size);
    list->memory_size = new_size;
-   list->root = NULL;
 
 }
 
 void ArrayList_Destory(ArrayList_T * list)
 {
-   ArrayListDelLink_T * link, * loop;
-   loop = list->root;
-   while(loop != NULL)
-   {
-      link = loop;
-      loop = loop->next;
-      free(link);
-   }
    free(list->memory);
 }
 
 
 
-void * ArrayList_Allocate(ArrayList_T * list, size_t * index)
+void * ArrayList_Add(ArrayList_T * list, size_t * index)
 {
    byte_t * mem;
    size_t new_size;
@@ -72,10 +63,10 @@ void * ArrayList_Allocate(ArrayList_T * list, size_t * index)
 
    return mem;
 }
-void ArrayList_CopyAlloc(ArrayList_T * list, const void * mem, size_t * index)
+void ArrayList_CopyAdd(ArrayList_T * list, const void * mem, size_t * index)
 {
    void * new_mem;
-   new_mem = ArrayList_Allocate(list, index);
+   new_mem = ArrayList_Add(list, index);
    memcpy(new_mem, mem, list->element_size);
 }
 
@@ -96,83 +87,9 @@ static void ArrayList_RemoveIndex(ArrayList_T * list, size_t index)
    list->element_count --;
 }
 
-void ArrayList_FreeNow(ArrayList_T * list, size_t index)
+void ArrayList_Remove(ArrayList_T * list, size_t index)
 {
    ArrayList_RemoveIndex(list, index);
-}
-
-void ArrayList_FreeLater(ArrayList_T * list, size_t index)
-{
-   ArrayListDelLink_T * link, * loop, *current;
-   int is_good;
-
-   // Remove Duplicates
-   loop = list->root;
-   is_good = 1;
-   while(loop != NULL)
-   {
-      if(loop->index == index)
-      {
-         loop = NULL;
-         is_good = 0;
-      }
-      else
-      {
-         loop = loop->next;
-      }
-   }
-
-   if(is_good == 1)
-   {
-
-      // Create link;
-      link = malloc(sizeof(ArrayListDelLink_T));
-      link->next = NULL;
-      link->index = index;
-
-
-      // Put into sorted list
-      if(list->root == NULL)
-      {
-         list->root = link;
-      }
-      else if(list->root->index < link->index)
-      {
-         link->next = list->root;
-         list->root = link;
-      }
-      else
-      {
-         loop = list->root;
-         while(loop != NULL)
-         {
-            current = loop;
-            loop = loop->next;
-
-            if(current->next == NULL ||
-               current->next->index < link->index)
-            {
-               link->next = current->next;
-               current->next = link;
-               loop = NULL; // Exit loop
-            }
-         }
-      }
-   }
-
-}
-
-void ArrayList_FlushFree(ArrayList_T * list)
-{
-   ArrayListDelLink_T * link, * loop;
-   loop = list->root;
-   while(loop != NULL)
-   {
-      link = loop;
-      loop = loop->next;
-      ArrayList_RemoveIndex(list, link->index);
-      free(link);
-   }
 }
 
 void ArrayList_Clear(ArrayList_T * list)
@@ -210,5 +127,14 @@ void * ArrayList_GetCopy(ArrayList_T * list, size_t * count, size_t * element_si
    mem = malloc(size);
    memcpy(mem, list->memory, size);
    return mem;
+}
+
+void ArrayList_SwapLists(ArrayList_T * list1, ArrayList_T * list2)
+{
+   ArrayList_T temp;
+   memcpy(&temp, list1, sizeof(ArrayList_T));
+   memcpy(list1, list2, sizeof(ArrayList_T));
+   memcpy(list2, &temp, sizeof(ArrayList_T));
+
 }
 

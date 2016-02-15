@@ -70,7 +70,7 @@ void MapItemList_Add(MapItemList_T * list, const MapItem_T * item)
    ManagerEvent_T * event_man;
    TypeMap_T event;
    
-   ArrayList_CopyAlloc(&list->mapitem_list, item, &index);
+   ArrayList_CopyAdd(&list->mapitem_list, item, &index);
 
    event_man = Resources_GetEventManager();
    TypeMap_Init(&event);
@@ -106,7 +106,7 @@ void MapItemList_Remove(MapItemList_T * list, Item_T * item)
       ManagerEvent_SendEvent(event_man, &event);
       TypeMap_Destory(&event);
 
-      ArrayList_FreeNow(&list->mapitem_list, i);
+      ArrayList_Remove(&list->mapitem_list, i);
    }
 }
 

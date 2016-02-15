@@ -48,7 +48,7 @@ void StockPileList_Destroy(StockPileList_T * list)
 
 void StockPileList_AddPosition(StockPileList_T * list, const Position_T * pos)
 {
-   ArrayList_CopyAlloc(&list->list, pos, NULL);
+   ArrayList_CopyAdd(&list->list, pos, NULL);
 }
 
 void StockPileList_RemovePosition(StockPileList_T * list, const Position_T * pos)
@@ -61,7 +61,7 @@ void StockPileList_RemovePosition(StockPileList_T * list, const Position_T * pos
    {
       if(Position_IsEqual(&pos_list[i], pos))
       {
-         ArrayList_FreeNow(&list->list, i);
+         ArrayList_Remove(&list->list, i);
          break;
       }
    }

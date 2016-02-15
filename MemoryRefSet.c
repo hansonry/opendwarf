@@ -47,7 +47,7 @@ void * MemoryRefSet_Allocate(MemoryRefSet_T * mem)
    entry.ptr        = malloc(mem->element_size);
    entry.ref_count  = 0;
    entry.array_size = 1;
-   ArrayList_CopyAlloc(&mem->memory_list, &entry, NULL);
+   ArrayList_CopyAdd(&mem->memory_list, &entry, NULL);
    return entry.ptr;
 }
 
@@ -65,7 +65,7 @@ void * MemoryRefSet_ArrayAllocate(MemoryRefSet_T * mem, size_t count)
    entry.ptr        = malloc(mem->element_size * count);
    entry.ref_count  = 0;
    entry.array_size = count;
-   ArrayList_CopyAlloc(&mem->memory_list, &entry, NULL);
+   ArrayList_CopyAdd(&mem->memory_list, &entry, NULL);
    return entry.ptr;
 }
 
@@ -126,7 +126,7 @@ void MemoryRefSet_CheckCounts(MemoryRefSet_T * mem)
 
    e_list = ArrayList_Get(&mem->memory_list, &count, NULL);
 
-   for(i = 0; i < count; i++)
+   for(i = count - 1; i < count; i--)
    {
       if(e_list[i].ref_count <= 0)
       {
@@ -136,11 +136,9 @@ void MemoryRefSet_CheckCounts(MemoryRefSet_T * mem)
          }
          free(e_list[i].ptr);
          e_list[i].ptr = NULL;
-         ArrayList_FreeLater(&mem->memory_list, i);
+         ArrayList_Remove(&mem->memory_list, i);
       }
    }
-
-   ArrayList_FlushFree(&mem->memory_list);
 
 }
 

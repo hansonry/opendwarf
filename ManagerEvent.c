@@ -39,7 +39,7 @@ void ManagerEvent_RegisterCallback(ManagerEvent_T * man, void * object, EventCal
    reg.object            = object;
    reg.callback          = callback;
 
-   ArrayList_CopyAlloc(&man->event_reg, &reg, NULL);
+   ArrayList_CopyAdd(&man->event_reg, &reg, NULL);
 }
 
 void ManagerEvent_UnregisterCallback(ManagerEvent_T * man, void * object)
@@ -52,7 +52,7 @@ void ManagerEvent_UnregisterCallback(ManagerEvent_T * man, void * object)
    {
       if(list[i].object == object)
       {
-         ArrayList_FreeNow(&man->event_reg, i);
+         ArrayList_Remove(&man->event_reg, i);
          break;
       }
    }
