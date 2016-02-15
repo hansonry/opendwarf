@@ -26,7 +26,6 @@ struct MapShaderState_S
 struct MapShader_S
 {
    Shader_T parent;
-   MapShaderState_T state;
    GLint uniform_texture;
    GLint uniform_world;
    GLint uniform_world_perspective;
@@ -37,14 +36,13 @@ struct MapShader_S
 Shader_T * MapShader_Create(const char * shader_name, GLuint shader_id);
 
 
-void MapShader_SetState(MapShader_T * shader, GFXState_T * state);
+void MapShaderState_SetGFXState(MapShaderState_T * state, GFXState_T * gfx_state);
 
-void MapShader_SetMeshAndTexture(MapShader_T * shader, GLTexture2D_T * texture, 
-                                                       GLMesh_T * mesh, 
-                                                       GLenum mesh_mode);
+void MapShaderState_SetMeshAndTexture(MapShaderState_T * state, GLTexture2D_T * texture, 
+                                                         GLMesh_T * mesh, 
+                                                         GLenum mesh_mode);
 
 
-MapShaderState_T * MapShader_CreateState(MapShader_T * shader);
 
 
 

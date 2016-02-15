@@ -8,6 +8,7 @@
 #include "GFXState.h"
 #include "GLMesh.h"
 #include "RenderQueue.h"
+#include "MemoryBlock.h"
 
 typedef struct MapChunkRender_S MapChunkRender_T;
 
@@ -17,6 +18,7 @@ struct MapChunkRender_S
    GLMesh_T mesh;
    GLTexture2D_T * texture;
    MapShader_T * shader;
+   MemoryBlock_T mem_block;
 };
 
 void MapChunkRender_Init(MapChunkRender_T * rend, MapChunk_T * map);

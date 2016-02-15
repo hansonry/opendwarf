@@ -17,10 +17,10 @@ static RenderQueueLink_T * RenderQueueLink_CreateLink(Shader_T * shader,
 {
    RenderQueueLink_T * link;
    link = malloc(sizeof(RenderQueueLink_T));
-   link->shader      = shader;
+   link->shader       = shader;
    link->shader_state = shader_state;
-   link->priority    = 0;
-   link->next        = NULL;
+   link->priority     = 0;
+   link->next         = NULL;
    return link;
 }
 
@@ -39,7 +39,14 @@ void RenderQueue_Add(RenderQueue_T * queue, Shader_T * shader,
    {
       if(link->priority < loop->priority)
       {
-         prev->next = link;
+         if(prev == NULL)
+         {
+            queue->root = link;
+         }
+         else
+         {
+            prev->next = link;
+         }
          link->next = loop;
          is_placed  = 1;
       }
@@ -76,6 +83,7 @@ void RenderQueue_Flush(RenderQueue_T * queue)
       free(temp);
    }
    queue->count = 0;
+   queue->root = NULL;
 }
 
 
@@ -83,7 +91,6 @@ void RenderQueue_Render(RenderQueue_T * queue)
 {
    RenderQueueLink_T * loop, * prev;
    Shader_T * s_next, *  s_prev;
-
    prev = NULL;
    loop = queue->root;
   

@@ -83,7 +83,14 @@ void   MemoryBlock_Init(MemoryBlock_T * block, size_t element_size,
 
    ArrayList_Init(&block->record_list, sizeof(MBRecord_T), 0);
 
-   block->main_chunk.size       = init_count;
+   if(init_count == 0)
+   {
+      block->main_chunk.size = block->grow_by;
+   }
+   else
+   {
+      block->main_chunk.size = init_count;
+   }
    block->main_chunk.memory     = malloc(block->element_size * block->main_chunk.size);
    block->main_chunk.next       = NULL;
    block->main_chunk_used_count = 0;
@@ -210,6 +217,7 @@ void   MemoryBlock_FreeAll(MemoryBlock_T * block)
 {
    MBRecord_T * list;
    size_t count, i;
+
 
    list = ArrayList_Get(&block->record_list, &count, NULL);
    for(i = 0; i < count; i++)

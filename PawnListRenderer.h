@@ -7,6 +7,7 @@
 #include "MatrixStack.h"
 #include "GFXState.h"
 #include "RenderQueue.h"
+#include "MemoryBlock.h"
 
 typedef struct PawnListRenderer_S PawnListRenderer_T;
 struct PawnListRenderer_S
@@ -14,6 +15,7 @@ struct PawnListRenderer_S
    PawnList_T * list;
    WavefrontMesh_T pawn_mesh;
    WavefrontShader_T * shader;
+   MemoryBlock_T mem_block;
 };
 
 

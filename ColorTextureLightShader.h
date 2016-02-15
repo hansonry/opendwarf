@@ -30,7 +30,6 @@ struct ColorTextureLightShaderState_S
 struct ColorTextureLightShader_S
 {
    Shader_T parent;
-   ColorTextureLightShaderState_T state;
    GLint uniform_texture;
    GLint uniform_world;
    GLint uniform_world_perspective;
@@ -42,18 +41,17 @@ struct ColorTextureLightShader_S
 Shader_T * ColorTextureLightShader_Create(const char * shader_name, GLuint shader_id);
 
 
-void ColorTextureLightShader_SetState(ColorTextureLightShader_T * shader, GFXState_T * state);
+void ColorTextureLightShaderState_SetGFXState(ColorTextureLightShaderState_T * state, GFXState_T * gfx_state);
 
-void ColorTextureLightShader_SetColor(ColorTextureLightShader_T * shader, float color_r,
-                                                                          float color_g,
-                                                                          float color_b,
-                                                                          float color_a);
+void ColorTextureLightShaderState_SetColor(ColorTextureLightShaderState_T * state, float color_r,
+                                                                                   float color_g,
+                                                                                   float color_b,
+                                                                                   float color_a);
 
-void ColorTextureLightShader_SetMeshAndTexture(ColorTextureLightShader_T * shader, GLTexture2D_T * texture, 
-                                                                                   GLMesh_T * mesh, 
-                                                                                   GLenum mesh_mode);
+void ColorTextureLightShaderState_SetMeshAndTexture(ColorTextureLightShaderState_T * state, GLTexture2D_T * texture, 
+                                                                                            GLMesh_T * mesh, 
+                                                                                            GLenum mesh_mode);
 
-ColorTextureLightShaderState_T * ColorTextureLightShader_CreateState(ColorTextureLightShader_T * shader);
 
 
 

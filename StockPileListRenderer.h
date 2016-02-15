@@ -7,6 +7,7 @@
 #include "ColorTextureLightShader.h"
 #include "GLMesh.h"
 #include "RenderQueue.h"
+#include "MemoryBlock.h"
 
 typedef struct StockPileListRenderer_S StockPileListRenderer_T;
 
@@ -16,6 +17,7 @@ struct StockPileListRenderer_S
    GLTexture2D_T * text;
    ColorTextureLightShader_T * shader;
    GLMesh_T mesh;
+   MemoryBlock_T mem_block;
 };
 
 

@@ -27,7 +27,6 @@ struct WavefrontShaderState_S
 struct WavefrontShader_S
 {
    Shader_T parent;
-   WavefrontShaderState_T state;
    GLint uniform_texture;
    GLint uniform_world;
    GLint uniform_world_perspective;
@@ -38,11 +37,10 @@ struct WavefrontShader_S
 Shader_T * WavefrontShader_Create(const char * shader_name, GLuint shader_id);
 
 
-void WavefrontShader_SetState(WavefrontShader_T * shader, GFXState_T * state);
-void WavefrontShader_SetMeshAndTexture(WavefrontShader_T * shader, GLTexture2D_T * texture, 
-                                                                   GLMesh_T * mesh, 
-                                                                   GLenum mesh_mode);
-WavefrontShaderState_T * WavefrontShader_CreateState(WavefrontShader_T * shader);
+void WavefrontShaderState_SetGFXState(WavefrontShaderState_T * state, GFXState_T * gfx_state);
+void WavefrontShaderState_SetMeshAndTexture(WavefrontShaderState_T * state, GLTexture2D_T * texture, 
+                                                                            GLMesh_T * mesh, 
+                                                                            GLenum mesh_mode);
 
 
 

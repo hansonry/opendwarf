@@ -77,43 +77,38 @@ Shader_T * ColorTextureLightShader_Create(const char * shader_name, GLuint shade
 
 
 
-void ColorTextureLightShader_SetState(ColorTextureLightShader_T * shader, GFXState_T * state)
+void ColorTextureLightShaderState_SetGFXState(ColorTextureLightShaderState_T * state, GFXState_T * gfx_state)
 {
-   GFXState_SetShaderMatrix(state, &shader->state.matix_world, 
-                                   &shader->state.matix_world_perspective);
-   shader->state.light_direction_x = state->light_sun1.pos_x;
-   shader->state.light_direction_y = state->light_sun1.pos_y;
-   shader->state.light_direction_z = state->light_sun1.pos_z;
+   GFXState_SetShaderMatrix(gfx_state, &state->matix_world, 
+                                   &state->matix_world_perspective);
+   state->light_direction_x = gfx_state->light_sun1.pos_x;
+   state->light_direction_y = gfx_state->light_sun1.pos_y;
+   state->light_direction_z = gfx_state->light_sun1.pos_z;
 
-   shader->state.light_color_r = state->light_sun1.color_r;
-   shader->state.light_color_g = state->light_sun1.color_g;
-   shader->state.light_color_b = state->light_sun1.color_b;
+   state->light_color_r = gfx_state->light_sun1.color_r;
+   state->light_color_g = gfx_state->light_sun1.color_g;
+   state->light_color_b = gfx_state->light_sun1.color_b;
 }
 
-void ColorTextureLightShader_SetColor(ColorTextureLightShader_T * shader, float color_r,
-                                                                          float color_g,
-                                                                          float color_b,
-                                                                          float color_a)
+void ColorTextureLightShaderState_SetColor(ColorTextureLightShaderState_T * state, float color_r,
+                                                                                   float color_g,
+                                                                                   float color_b,
+                                                                                   float color_a)
 {
-   shader->state.color_r = color_r;
-   shader->state.color_g = color_g;
-   shader->state.color_b = color_b;
-   shader->state.color_a = color_a;
+   state->color_r = color_r;
+   state->color_g = color_g;
+   state->color_b = color_b;
+   state->color_a = color_a;
 
 }
 
-void ColorTextureLightShader_SetMeshAndTexture(ColorTextureLightShader_T * shader, GLTexture2D_T * texture, 
-                                                                                   GLMesh_T * mesh, 
-                                                                                   GLenum mesh_mode)
+void ColorTextureLightShaderState_SetMeshAndTexture(ColorTextureLightShaderState_T * state, GLTexture2D_T * texture, 
+                                                                                            GLMesh_T * mesh, 
+                                                                                            GLenum mesh_mode)
 {
-   shader->state.texture = texture;
-   shader->state.mesh_mode = mesh_mode;
-   shader->state.mesh = mesh;
+   state->texture = texture;
+   state->mesh_mode = mesh_mode;
+   state->mesh = mesh;
 }
 
-
-ColorTextureLightShaderState_T * ColorTextureLightShader_CreateState(ColorTextureLightShader_T * shader)
-{
-
-}
 

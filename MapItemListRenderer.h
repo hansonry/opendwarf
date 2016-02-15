@@ -7,6 +7,7 @@
 #include "WavefrontMesh.h"
 #include "WavefrontShader.h"
 #include "RenderQueue.h"
+#include "MemoryBlock.h"
 
 
 typedef struct MapItemListRenderer_S MapItemListRenderer_T;
@@ -15,6 +16,7 @@ struct MapItemListRenderer_S
    MapItemList_T * list;
    WavefrontMesh_T log_mesh;
    WavefrontShader_T * shader;
+   MemoryBlock_T mem_block;
 };
 
 void MapItemListRenderer_Init(MapItemListRenderer_T * rend, MapItemList_T * list);

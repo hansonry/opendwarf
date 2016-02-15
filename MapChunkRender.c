@@ -238,6 +238,7 @@ static void MapChunkRender_FreeResources(MapChunkRender_T * rend)
 void MapChunkRender_Init(MapChunkRender_T * rend, MapChunk_T * map)
 {
    rend->map = map;
+   MemoryBlock_Init(&rend->mem_block, sizeof(MapShaderState_T), 0, 0);
    MapChunkRender_LoadResources(rend);
    MapChunkRender_GenMesh(rend);
 }
@@ -247,6 +248,7 @@ void MapChunkRender_Init(MapChunkRender_T * rend, MapChunk_T * map)
 void MapChunkRender_Destroy(MapChunkRender_T * rend)
 {
    GLMesh_Cleanup(&rend->mesh);
+   MemoryBlock_Destroy(&rend->mem_block);
    MapChunkRender_FreeResources(rend);
 }
 
@@ -257,17 +259,17 @@ void MapChunkRender_Render(MapChunkRender_T * rend, RenderQueue_T * render_queue
    MapShaderState_T * state;
    GLMesh_Cleanup(&rend->mesh);
    MapChunkRender_GenMesh(rend);
+   
+   MemoryBlock_FreeAll(&rend->mem_block);
 
+   state = MemoryBlock_Allocate(&rend->mem_block);
 
    GFXState_SetWorldMatrix(gfx_state, &stack->matrix);
-   MapShader_SetState(rend->shader, gfx_state);
-   MapShader_SetMeshAndTexture(rend->shader, rend->texture, &rend->mesh, GL_TRIANGLES);
+   MapShaderState_SetGFXState(state, gfx_state);
+   MapShaderState_SetMeshAndTexture(state, rend->texture, &rend->mesh, GL_TRIANGLES);
 
-   state = MapShader_CreateState(rend->shader);
 
    RenderQueue_Add(render_queue, &rend->shader->parent, state);
-
-
 
 }
 

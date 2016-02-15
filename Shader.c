@@ -90,7 +90,7 @@ void Shader_Render(Shader_T * shader, void     * shader_data,
                                       Shader_T * prev_shader, 
                                       Shader_T * next_shader)
 {
-   if(shader->renderer != NULL)
+   if((shader != NULL) && (shader->renderer != NULL) && (shader_data != NULL))
    {      
       shader->renderer(shader, shader_data, prev_shader, next_shader);
    }

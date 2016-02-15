@@ -48,6 +48,7 @@ void MapItemListRenderer_Init(MapItemListRenderer_T * rend, MapItemList_T * list
    event_man = Resources_GetEventManager();
    ManagerEvent_RegisterCallback(event_man, rend, MapItemListRenderer_EventCallback);
 
+   MemoryBlock_Init(&rend->mem_block, sizeof(WavefrontShaderState_T), 0, 0);
    rend->list = list;
    MapItemListRender_LoadResources(rend);
 }
@@ -60,6 +61,7 @@ static void MapItemListRender_FreeResources(MapItemListRenderer_T * rend)
 void MapItemListRenderer_Destroy(MapItemListRenderer_T * rend)
 {
    MapItemListRender_FreeResources(rend);
+   MemoryBlock_Destroy(&rend->mem_block);
 }
 
 
@@ -67,24 +69,27 @@ void MapItemListRenderer_Render(MapItemListRenderer_T * rend, RenderQueue_T * re
                                                               MatrixStack_T * stack, 
                                                               GFXState_T    * gfx_state)
 {
+   WavefrontShaderState_T state;
    MapItem_T * list;
    size_t list_count, i;
    int index;
    Matrix3D_T temp, translater;
 
+   MemoryBlock_FreeAll(&rend->mem_block);
+
    list = ArrayList_Get(&rend->list->mapitem_list, &list_count, NULL);
    for(i = 0; i < list_count; i++)
    {
-         MatrixStack_Push(stack);
-         MatrixStack_ApplyTranslation(stack, list[i].x, 
-                                             list[i].y, 
-                                             list[i].z);
+      MatrixStack_Push(stack);
+      MatrixStack_ApplyTranslation(stack, list[i].x, 
+                                          list[i].y, 
+                                          list[i].z);
 
-         GFXState_SetWorldMatrix(gfx_state, &stack->matrix);
-         WavefrontShader_SetState(rend->shader, gfx_state);
+      GFXState_SetWorldMatrix(gfx_state, &stack->matrix);
+      WavefrontShaderState_SetGFXState(&state, gfx_state);
 
-         WavefrontMesh_Render(&rend->log_mesh, render_queue, rend->shader, 0);
-         MatrixStack_Pop(stack);
+      WavefrontMesh_Render(&rend->log_mesh, render_queue, rend->shader,&rend->mem_block, &state, 0);
+      MatrixStack_Pop(stack);
    }
 }
 

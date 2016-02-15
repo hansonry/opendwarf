@@ -45,6 +45,7 @@ static void StockPileListRenderer_LoadResources(StockPileListRenderer_T * rend)
 void StockPileListRenderer_Init(StockPileListRenderer_T * rend, StockPileList_T * list)
 {
    rend->list = list;
+   MemoryBlock_Init(&rend->mem_block, sizeof(ColorTextureLightShaderState_T), 0, 0);
    StockPileListRenderer_LoadResources(rend);
 }
 
@@ -56,6 +57,7 @@ static void StockPileListRenderer_FreeResources(StockPileListRenderer_T * rend)
 void StockPileListRenderer_Destroy(StockPileListRenderer_T * rend)
 {
    StockPileListRenderer_FreeResources(rend);
+   MemoryBlock_Destroy(&rend->mem_block);
 }
 
 
@@ -69,7 +71,7 @@ void StockPileListRenderer_Render(StockPileListRenderer_T * rend, RenderQueue_T 
    Matrix3D_T temp, translater;
    Position_T * pos_list;
 
-   ColorTextureLightShader_SetColor(rend->shader, 1, 1, 1, 1);
+   MemoryBlock_FreeAll(&rend->mem_block);
 
    pos_list = ArrayList_Get(&rend->list->list, &count, NULL);
    for(i = 0; i < count; i++)
@@ -79,13 +81,16 @@ void StockPileListRenderer_Render(StockPileListRenderer_T * rend, RenderQueue_T 
                                           pos_list[i].y, 
                                           pos_list[i].z);
       GFXState_SetWorldMatrix(gfx_state, &stack->matrix);
-      ColorTextureLightShader_SetState(rend->shader, gfx_state);
-      ColorTextureLightShader_SetMeshAndTexture(rend->shader, rend->text, 
-                                                              &rend->mesh, 
-                                                              GL_QUADS);
 
 
-      state = ColorTextureLightShader_CreateState(rend->shader);
+      state = MemoryBlock_Allocate(&rend->mem_block);
+      ColorTextureLightShaderState_SetColor(state, 1, 1, 1, 1);
+      ColorTextureLightShaderState_SetGFXState(state, gfx_state);
+      ColorTextureLightShaderState_SetMeshAndTexture(state, rend->text, 
+                                                            &rend->mesh, 
+                                                            GL_QUADS);
+
+
       RenderQueue_Add(render_queue, &rend->shader->parent, state);
          
       MatrixStack_Pop(stack);
