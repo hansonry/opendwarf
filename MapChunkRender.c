@@ -250,9 +250,11 @@ void MapChunkRender_Destroy(MapChunkRender_T * rend)
    MapChunkRender_FreeResources(rend);
 }
 
-void MapChunkRender_Render(MapChunkRender_T * rend, MatrixStack_T * stack, 
+void MapChunkRender_Render(MapChunkRender_T * rend, RenderQueue_T * render_queue, 
+                                                    MatrixStack_T * stack, 
                                                     GFXState_T * gfx_state)
 {
+   MapShaderState_T * state;
    GLMesh_Cleanup(&rend->mesh);
    MapChunkRender_GenMesh(rend);
 
@@ -261,7 +263,9 @@ void MapChunkRender_Render(MapChunkRender_T * rend, MatrixStack_T * stack,
    MapShader_SetState(rend->shader, gfx_state);
    MapShader_SetMeshAndTexture(rend->shader, rend->texture, &rend->mesh, GL_TRIANGLES);
 
-   MapShader_InsertStateToQueue(rend->shader, 0);
+   state = MapShader_CreateState(rend->shader);
+
+   RenderQueue_Add(render_queue, &rend->shader->parent, state);
 
 
 

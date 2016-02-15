@@ -133,8 +133,11 @@ void WavefrontMesh_Destroy(WavefrontMesh_T * wmesh)
 
 }
 
-void WavefrontMesh_Render(WavefrontMesh_T * wmesh, WavefrontShader_T * shader, int is_transparent)
+void WavefrontMesh_Render(WavefrontMesh_T * wmesh, RenderQueue_T * render_queue, 
+                                                   WavefrontShader_T * shader, 
+                                                   int is_transparent)
 {
+   WavefrontShaderState_T * state;
    WMMeshTexture_T ** mt_list;
    size_t i, count;
 
@@ -142,7 +145,8 @@ void WavefrontMesh_Render(WavefrontMesh_T * wmesh, WavefrontShader_T * shader, i
    for(i = 0; i < count; i ++)
    {
       WavefrontShader_SetMeshAndTexture(shader, mt_list[i]->texture, &mt_list[i]->mesh, GL_TRIANGLES);
-      WavefrontShader_InsertStateToQueue(shader, is_transparent);
+      state = WavefrontShader_CreateState(shader);
+      RenderQueue_Add(render_queue, &shader->parent, state);
    }
 
 }

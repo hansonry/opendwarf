@@ -29,7 +29,7 @@ void RenderQueue_Add(RenderQueue_T * queue, Shader_T * shader,
 {
    RenderQueueLink_T * link, * prev, * loop;
    int is_placed;
-   link = RenderQueueLink_CreateLink(mesh, mesh_mode, shader, shader_state);
+   link = RenderQueueLink_CreateLink(shader, shader_state);
 
    loop = queue->root;
    prev = NULL;
@@ -66,7 +66,7 @@ void RenderQueue_Add(RenderQueue_T * queue, Shader_T * shader,
 
 void RenderQueue_Flush(RenderQueue_T * queue)
 {
-   RenderQueueLink_T * loop, temp;
+   RenderQueueLink_T * loop, * temp;
 
    loop = queue->root;
    while(loop != NULL)
@@ -82,7 +82,7 @@ void RenderQueue_Flush(RenderQueue_T * queue)
 void RenderQueue_Render(RenderQueue_T * queue)
 {
    RenderQueueLink_T * loop, * prev;
-   Shader_T * s_next, s_prev;
+   Shader_T * s_next, *  s_prev;
 
    prev = NULL;
    loop = queue->root;

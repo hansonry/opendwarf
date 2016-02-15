@@ -6,6 +6,7 @@
 #include "GLTexture2D.h"
 #include "ColorTextureLightShader.h"
 #include "GLMesh.h"
+#include "RenderQueue.h"
 
 typedef struct StockPileListRenderer_S StockPileListRenderer_T;
 
@@ -20,7 +21,9 @@ struct StockPileListRenderer_S
 
 void StockPileListRenderer_Init(StockPileListRenderer_T * rend, StockPileList_T * list);
 void StockPileListRenderer_Destroy(StockPileListRenderer_T * rend);
-void StockPileListRenderer_Render(StockPileListRenderer_T * rend, MatrixStack_T * stack, GFXState_T * gfx_state);
+void StockPileListRenderer_Render(StockPileListRenderer_T * rend, RenderQueue_T * render_queue, 
+                                                                  MatrixStack_T * stack, 
+                                                                  GFXState_T    * gfx_state);
 
 
 #endif // __STOCKPILELISTRENDERER_H__

@@ -31,6 +31,7 @@
 #include "MapRay.h"
 #include "JobManager.h"
 #include "GFXState.h"
+#include "RenderQueue.h"
 
 static void gl_init(void);
 
@@ -74,6 +75,7 @@ StockPileList_T stockpile_list;
 StockPileListRenderer_T stockpile_list_renderer;
 ItemList_T item_list;
 JobManager_T job_manager;
+RenderQueue_T render_queue;
 
 // other
 WavefrontMesh_T log_mesh;
@@ -217,6 +219,7 @@ static void game_setup(CEngine_T * engine)
    texture_manager = Resources_GetTextureManager();
    gl_init();
    MatrixStack_Init(&m_stack);
+   RenderQueue_Init(&render_queue);
 
 
 
@@ -291,6 +294,8 @@ static void game_cleanup(CEngine_T * engine)
    ItemList_Destroy(&item_list);
 
    JobManager_Destroy(&job_manager);
+
+   RenderQueue_Destory(&render_queue);
  
 
    Resources_Cleanup();
@@ -326,7 +331,6 @@ static void game_update(CEngine_T * engine, float seconds)
 static void game_render(CEngine_T * engine)
 {
    GFXState_T gfx_state;
-   ManagerShader_T * manager_shader;
 
    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    MatrixStack_Clear(&m_stack);
@@ -355,10 +359,10 @@ static void game_render(CEngine_T * engine)
 
 
    //UnitCube_Render(&cube);
-   MapChunkRender_Render(&map_chunk_render, &m_stack, &gfx_state);
-   MapItemListRenderer_Render(&map_item_list_renderer, &m_stack, &gfx_state);
-   PawnListRenderer_Render(&pawn_list_renderer, &m_stack, &gfx_state);
-   StockPileListRenderer_Render(&stockpile_list_renderer, &m_stack, &gfx_state);
+   MapChunkRender_Render(&map_chunk_render,               &render_queue, &m_stack, &gfx_state);
+   MapItemListRenderer_Render(&map_item_list_renderer,    &render_queue, &m_stack, &gfx_state);
+   PawnListRenderer_Render(&pawn_list_renderer,           &render_queue, &m_stack, &gfx_state);
+   StockPileListRenderer_Render(&stockpile_list_renderer, &render_queue, &m_stack, &gfx_state);
 
 
 
@@ -381,12 +385,10 @@ static void game_render(CEngine_T * engine)
    
 
 
-
+   RenderQueue_Render(&render_queue);
 
    GFXState_Destory(&gfx_state);
 
-   manager_shader = Resources_GetShaderManager();
-   ManagerShader_DrawAll(manager_shader);
 }
 
 static void game_input(CEngine_T * engine, SDL_Event * event)

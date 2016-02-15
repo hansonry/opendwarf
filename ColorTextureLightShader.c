@@ -6,62 +6,53 @@
 static void ColorTextureLightShader_Destory(Shader_T * _shader)
 {
    ColorTextureLightShader_T * shader = (ColorTextureLightShader_T*)_shader;
-   RenderQueue_Destory(&shader->queue_solid);
-   RenderQueue_Destory(&shader->queue_transparent);
 }
 
-static void ColorTextureLightShader_RenderQueue(ColorTextureLightShader_T * shader, RenderQueue_T * queue)
+static void ColorTextureLightShader_Renderer(Shader_T * _shader, void     * _state,
+                                                                 Shader_T * prev_shader,
+                                                                 Shader_T * next_shader)
 {
-   ColorTextureLightShaderState_T state;
-   glUseProgram(shader->parent.shader_id);
-   glEnableVertexAttribArray(0);
-   glEnableVertexAttribArray(1);
-   glEnableVertexAttribArray(2);
-   glActiveTexture(GL_TEXTURE0);
+   ColorTextureLightShaderState_T * state = (ColorTextureLightShaderState_T *)_state;
+   ColorTextureLightShader_T * shader = (ColorTextureLightShader_T *)_shader;
 
-   glUniform1i(shader->uniform_texture, GL_TEXTURE0);
-   while(RenderQueue_Pop(queue, &state))
+   if(_shader != prev_shader)
    {
-
-      glUniformMatrix4fv(shader->uniform_world,             1, GL_FALSE, state.matix_world.data);
-      glUniformMatrix4fv(shader->uniform_world_perspective, 1, GL_FALSE, state.matix_world_perspective.data);
-      glUniform3f(shader->uniform_light_direction, state.light_direction_x, 
-                                                   state.light_direction_y,
-                                                   state.light_direction_z);
-      glUniform3f(shader->uniform_light_color, state.light_color_r, 
-                                               state.light_color_g,
-                                               state.light_color_b);
-
-      glUniform3f(shader->uniform_light_color, state.light_color_r, 
-                                               state.light_color_g,
-                                               state.light_color_b);
-      glUniform4f(shader->uniform_color, state.color_r, 
-                                         state.color_g,
-                                         state.color_b,
-                                         state.color_a);
-      glBindTexture(GL_TEXTURE_2D, state.texture->gl_id);
-      GLMesh_Render(state.mesh, state.mesh_mode);
+      glUseProgram(shader->parent.shader_id);
+      glEnableVertexAttribArray(0);
+      glEnableVertexAttribArray(1);
+      glEnableVertexAttribArray(2);
+      glActiveTexture(GL_TEXTURE0);
+      glUniform1i(shader->uniform_texture, GL_TEXTURE0);
    }
-   glDisableVertexAttribArray(0);
-   glDisableVertexAttribArray(1);
-   glDisableVertexAttribArray(2);
+
+
+   glUniformMatrix4fv(shader->uniform_world,             1, GL_FALSE, state->matix_world.data);
+   glUniformMatrix4fv(shader->uniform_world_perspective, 1, GL_FALSE, state->matix_world_perspective.data);
+   glUniform3f(shader->uniform_light_direction, state->light_direction_x, 
+                                                state->light_direction_y,
+                                                state->light_direction_z);
+   glUniform3f(shader->uniform_light_color, state->light_color_r, 
+                                            state->light_color_g,
+                                            state->light_color_b);
+
+   glUniform3f(shader->uniform_light_color, state->light_color_r, 
+                                            state->light_color_g,
+                                            state->light_color_b);
+   glUniform4f(shader->uniform_color, state->color_r, 
+                                      state->color_g,
+                                      state->color_b,
+                                      state->color_a);
+   glBindTexture(GL_TEXTURE_2D, state->texture->gl_id);
+   GLMesh_Render(state->mesh, state->mesh_mode);
+
+   if(_shader != next_shader)
+   {
+      glDisableVertexAttribArray(0);
+      glDisableVertexAttribArray(1);
+      glDisableVertexAttribArray(2);
+   }
 }
 
-static void ColorTextureLightShader_Renderer(Shader_T * _shader, ShaderPass_T pass)
-{
-   ColorTextureLightShader_T * shader = (ColorTextureLightShader_T*)_shader;
-   if(pass == e_SP_Solid)
-   {
-      // Render the solid queue
-      ColorTextureLightShader_RenderQueue(shader, &shader->queue_solid);
-   }
-   else if(pass == e_SP_Transparent)
-   {
-      // Render the transparent queue
-      ColorTextureLightShader_RenderQueue(shader, &shader->queue_transparent);
-   }
-
-}
 
 Shader_T * ColorTextureLightShader_Create(const char * shader_name, GLuint shader_id)
 {
@@ -80,8 +71,6 @@ Shader_T * ColorTextureLightShader_Create(const char * shader_name, GLuint shade
    shader->uniform_light_color       = UL("LightColor");
    shader->uniform_color             = UL("Color");
 
-   RenderQueue_Init(&shader->queue_solid, sizeof(ColorTextureLightShaderState_T));
-   RenderQueue_Init(&shader->queue_transparent, sizeof(ColorTextureLightShaderState_T));
 
    return (Shader_T *)shader;
 }
@@ -123,14 +112,8 @@ void ColorTextureLightShader_SetMeshAndTexture(ColorTextureLightShader_T * shade
 }
 
 
-void ColorTextureLightShader_InsertStateToQueue(ColorTextureLightShader_T * shader, int is_transparent)
+ColorTextureLightShaderState_T * ColorTextureLightShader_CreateState(ColorTextureLightShader_T * shader)
 {
-   if(is_transparent)
-   {
-      RenderQueue_Add(&shader->queue_transparent, &shader->state);
-   }
-   else
-   {
-      RenderQueue_Add(&shader->queue_solid, &shader->state);
-   }
+
 }
+

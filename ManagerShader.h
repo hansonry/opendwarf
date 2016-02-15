@@ -19,7 +19,5 @@ void ManagerShader_Destroy(ManagerShader_T * manager);
 
 Shader_T * ManagerShader_Get(ManagerShader_T * manager, const char * shader_id);
 
-void ManagerShader_DrawAll(ManagerShader_T * manager);
-
 #endif // __MANAGERSHADER_H__
 

@@ -43,19 +43,4 @@ Shader_T * ManagerShader_Get(ManagerShader_T * manager, const char * shader_id)
    
 }
 
-void ManagerShader_DrawAll(ManagerShader_T * manager)
-{
-   Shader_T ** list;
-   size_t i, count, k;
-
-   list = ObjectList_Get(&manager->list, &count);
-
-   for(k = 0; k < e_SP_Last; k++)
-   {
-      for(i = 0; i < count; i++)
-      {
-         Shader_Render(list[i], k);
-      }
-   }
-}
 

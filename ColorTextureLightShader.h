@@ -3,7 +3,6 @@
 #include "Shader.h"
 #include "GFXState.h"
 #include "GLTexture2D.h"
-#include "RenderQueue.h"
 #include "GLMesh.h"
 
 typedef struct ColorTextureLightShader_S       ColorTextureLightShader_T;
@@ -31,8 +30,6 @@ struct ColorTextureLightShaderState_S
 struct ColorTextureLightShader_S
 {
    Shader_T parent;
-   RenderQueue_T queue_solid;
-   RenderQueue_T queue_transparent;
    ColorTextureLightShaderState_T state;
    GLint uniform_texture;
    GLint uniform_world;
@@ -56,7 +53,7 @@ void ColorTextureLightShader_SetMeshAndTexture(ColorTextureLightShader_T * shade
                                                                                    GLMesh_T * mesh, 
                                                                                    GLenum mesh_mode);
 
-void ColorTextureLightShader_InsertStateToQueue(ColorTextureLightShader_T * shader, int is_transparent);
+ColorTextureLightShaderState_T * ColorTextureLightShader_CreateState(ColorTextureLightShader_T * shader);
 
 
 

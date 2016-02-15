@@ -60,9 +60,12 @@ void StockPileListRenderer_Destroy(StockPileListRenderer_T * rend)
 
 
 
-void StockPileListRenderer_Render(StockPileListRenderer_T * rend, MatrixStack_T * stack, GFXState_T * gfx_state)
+void StockPileListRenderer_Render(StockPileListRenderer_T * rend, RenderQueue_T * render_queue, 
+                                                                  MatrixStack_T * stack, 
+                                                                  GFXState_T    * gfx_state)
 {
    size_t count, i;
+   ColorTextureLightShaderState_T * state;
    Matrix3D_T temp, translater;
    Position_T * pos_list;
 
@@ -81,7 +84,9 @@ void StockPileListRenderer_Render(StockPileListRenderer_T * rend, MatrixStack_T 
                                                               &rend->mesh, 
                                                               GL_QUADS);
 
-      ColorTextureLightShader_InsertStateToQueue(rend->shader, 1);
+
+      state = ColorTextureLightShader_CreateState(rend->shader);
+      RenderQueue_Add(render_queue, &rend->shader->parent, state);
          
       MatrixStack_Pop(stack);
 

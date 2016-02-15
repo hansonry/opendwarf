@@ -3,7 +3,6 @@
 #include "Shader.h"
 #include "GFXState.h"
 #include "GLTexture2D.h"
-#include "RenderQueue.h"
 #include "GLMesh.h"
 
 typedef struct MapShader_S       MapShader_T;
@@ -27,8 +26,6 @@ struct MapShaderState_S
 struct MapShader_S
 {
    Shader_T parent;
-   RenderQueue_T queue_solid;
-   RenderQueue_T queue_transparent;
    MapShaderState_T state;
    GLint uniform_texture;
    GLint uniform_world;
@@ -46,7 +43,8 @@ void MapShader_SetMeshAndTexture(MapShader_T * shader, GLTexture2D_T * texture,
                                                        GLMesh_T * mesh, 
                                                        GLenum mesh_mode);
 
-void MapShader_InsertStateToQueue(MapShader_T * shader, int is_transparent);
+
+MapShaderState_T * MapShader_CreateState(MapShader_T * shader);
 
 
 

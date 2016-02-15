@@ -63,8 +63,9 @@ void MapItemListRenderer_Destroy(MapItemListRenderer_T * rend)
 }
 
 
-void MapItemListRenderer_Render(MapItemListRenderer_T * rend, MatrixStack_T * stack, 
-                                                              GFXState_T * gfx_state)
+void MapItemListRenderer_Render(MapItemListRenderer_T * rend, RenderQueue_T * render_queue,
+                                                              MatrixStack_T * stack, 
+                                                              GFXState_T    * gfx_state)
 {
    MapItem_T * list;
    size_t list_count, i;
@@ -82,7 +83,7 @@ void MapItemListRenderer_Render(MapItemListRenderer_T * rend, MatrixStack_T * st
          GFXState_SetWorldMatrix(gfx_state, &stack->matrix);
          WavefrontShader_SetState(rend->shader, gfx_state);
 
-         WavefrontMesh_Render(&rend->log_mesh, rend->shader, 0);
+         WavefrontMesh_Render(&rend->log_mesh, render_queue, rend->shader, 0);
          MatrixStack_Pop(stack);
    }
 }

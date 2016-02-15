@@ -5,7 +5,7 @@
 #include "GLMesh.h"
 
 
-typedef struct RenderQueue_S RenerQueue_T;
+typedef struct RenderQueue_S     RenderQueue_T;
 typedef struct RenderQueueLink_S RenderQueueLink_T;
 
 struct RenderQueueLink_S

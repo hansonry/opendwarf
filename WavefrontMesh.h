@@ -6,6 +6,8 @@
 #include "ObjectList.h"
 #include "WavefrontLoader.h"
 #include "WavefrontShader.h"
+#include "RenderQueue.h"
+
 
 typedef struct WavefrontMesh_S WavefrontMesh_T;
 struct WavefrontMesh_S
@@ -18,7 +20,9 @@ void WavefrontMesh_Init(WavefrontMesh_T * wmesh, WavefrontLoaderData_T * obj_dat
 
 void WavefrontMesh_Destroy(WavefrontMesh_T * wmesh);
 
-void WavefrontMesh_Render(WavefrontMesh_T * wmesh, WavefrontShader_T * shader, int is_transparent);
+void WavefrontMesh_Render(WavefrontMesh_T * wmesh, RenderQueue_T * render_queue, 
+                                                   WavefrontShader_T * shader, 
+                                                   int is_transparent);
 
 #endif // __WAVEFRONTMESH_H__
 

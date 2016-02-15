@@ -6,6 +6,7 @@
 #include "WavefrontShader.h"
 #include "MatrixStack.h"
 #include "GFXState.h"
+#include "RenderQueue.h"
 
 typedef struct PawnListRenderer_S PawnListRenderer_T;
 struct PawnListRenderer_S
@@ -20,7 +21,9 @@ void PawnListRenderer_Init(PawnListRenderer_T * rend, PawnList_T * list);
 void PawnListRenderer_Destroy(PawnListRenderer_T * rend);
 
 
-void PawnListRenderer_Render(PawnListRenderer_T * rend, MatrixStack_T * stack, GFXState_T * gfx_state);
+void PawnListRenderer_Render(PawnListRenderer_T * rend, RenderQueue_T * render_queue, 
+                                                        MatrixStack_T * stack, 
+                                                        GFXState_T    * gfx_state);
 
 #endif // __PAWNLISTRENDERER_H__
 

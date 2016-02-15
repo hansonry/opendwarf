@@ -6,55 +6,46 @@
 static void MapShader_Destory(Shader_T * _shader)
 {
    MapShader_T * shader = (MapShader_T*)_shader;
-   RenderQueue_Destory(&shader->queue_solid);
-   RenderQueue_Destory(&shader->queue_transparent);
 }
 
-static void MapShader_RenderQueue(MapShader_T * shader, RenderQueue_T * queue)
+static void MapShader_Renderer(Shader_T * _shader, void     * _shader_data,
+                                                   Shader_T * prev_shader,
+                                                   Shader_T * next_shader)
 {
-   MapShaderState_T state;
-   glUseProgram(shader->parent.shader_id);
-   glEnableVertexAttribArray(0);
-   glEnableVertexAttribArray(1);
-   glEnableVertexAttribArray(2);
-   glActiveTexture(GL_TEXTURE0);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-   glUniform1i(shader->uniform_texture, GL_TEXTURE0);
-   while(RenderQueue_Pop(queue, &state))
+   MapShader_T * shader = (MapShader_T *)_shader_data;
+   MapShaderState_T * state = (MapShaderState_T *) _shader_data;
+   if(_shader != prev_shader)
    {
-
-      glUniformMatrix4fv(shader->uniform_world,             1, GL_FALSE, state.matix_world.data);
-      glUniformMatrix4fv(shader->uniform_world_perspective, 1, GL_FALSE, state.matix_world_perspective.data);
-      glUniform3f(shader->uniform_light_direction, state.light_direction_x, 
-                                                   state.light_direction_y,
-                                                   state.light_direction_z);
-      glUniform3f(shader->uniform_light_color, state.light_color_r, 
-                                               state.light_color_g,
-                                               state.light_color_b);
-      glBindTexture(GL_TEXTURE_2D, state.texture->gl_id);
-      GLMesh_Render(state.mesh, state.mesh_mode);
+      glUseProgram(shader->parent.shader_id);
+      glEnableVertexAttribArray(0);
+      glEnableVertexAttribArray(1);
+      glEnableVertexAttribArray(2);
+      glActiveTexture(GL_TEXTURE0);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+      glUniform1i(shader->uniform_texture, GL_TEXTURE0);
    }
-   glDisableVertexAttribArray(0);
-   glDisableVertexAttribArray(1);
-   glDisableVertexAttribArray(2);
+
+
+   glUniformMatrix4fv(shader->uniform_world,             1, GL_FALSE, state->matix_world.data);
+   glUniformMatrix4fv(shader->uniform_world_perspective, 1, GL_FALSE, state->matix_world_perspective.data);
+   glUniform3f(shader->uniform_light_direction, state->light_direction_x, 
+                                                state->light_direction_y,
+                                                state->light_direction_z);
+   glUniform3f(shader->uniform_light_color, state->light_color_r, 
+                                            state->light_color_g,
+                                            state->light_color_b);
+   glBindTexture(GL_TEXTURE_2D, state->texture->gl_id);
+   GLMesh_Render(state->mesh, state->mesh_mode);
+
+   if(_shader != next_shader)
+   {
+      glDisableVertexAttribArray(0);
+      glDisableVertexAttribArray(1);
+      glDisableVertexAttribArray(2);
+   }
 }
 
-static void MapShader_Renderer(Shader_T * _shader, ShaderPass_T pass)
-{
-   MapShader_T * shader = (MapShader_T*)_shader;
-   if(pass == e_SP_Solid)
-   {
-      // Render the solid queue
-      MapShader_RenderQueue(shader, &shader->queue_solid);
-   }
-   else if(pass == e_SP_Transparent)
-   {
-      // Render the transparent queue
-      MapShader_RenderQueue(shader, &shader->queue_transparent);
-   }
-
-}
 
 Shader_T * MapShader_Create(const char * shader_name, GLuint shader_id)
 {
@@ -72,8 +63,6 @@ Shader_T * MapShader_Create(const char * shader_name, GLuint shader_id)
    shader->uniform_light_direction   = UL("LightDirection");
    shader->uniform_light_color       = -1; //UL("LightColor");
 
-   RenderQueue_Init(&shader->queue_solid, sizeof(MapShaderState_T));
-   RenderQueue_Init(&shader->queue_transparent, sizeof(MapShaderState_T));
 
    return (Shader_T *)shader;
 }
@@ -103,16 +92,8 @@ void MapShader_SetMeshAndTexture(MapShader_T * shader, GLTexture2D_T * texture,
 }
 
 
-void MapShader_InsertStateToQueue(MapShader_T * shader, int is_transparent)
+MapShaderState_T * MapShader_CreateState(MapShader_T * shader)
 {
-   if(is_transparent)
-   {
-      RenderQueue_Add(&shader->queue_transparent, &shader->state);
-   }
-   else
-   {
-      RenderQueue_Add(&shader->queue_solid, &shader->state);
-   }
 }
 
 

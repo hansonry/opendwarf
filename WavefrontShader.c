@@ -34,7 +34,7 @@ static void WavefrontShader_Renderer(Shader_T * _shader, void     * _shader_data
                                             state->light_color_g,
                                             state->light_color_b);
    glBindTexture(GL_TEXTURE_2D, state->texture->gl_id);
-   GLMesh_Render(state.mesh, state->mesh_mode);
+   GLMesh_Render(state->mesh, state->mesh_mode);
 
    // Cleanup
    if(_shader != next_shader)

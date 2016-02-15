@@ -32,7 +32,9 @@ void PawnListRenderer_Destroy(PawnListRenderer_T * rend)
 }
 
 
-void PawnListRenderer_Render(PawnListRenderer_T * rend, MatrixStack_T * stack, GFXState_T * gfx_state)
+void PawnListRenderer_Render(PawnListRenderer_T * rend, RenderQueue_T * render_queue, 
+                                                        MatrixStack_T * stack, 
+                                                        GFXState_T    * gfx_state)
 {
    Matrix3D_T temp, offset;
    Pawn_T ** plist,* pawn;
@@ -51,7 +53,7 @@ void PawnListRenderer_Render(PawnListRenderer_T * rend, MatrixStack_T * stack, G
                                           pawn->cmd_sys.vispos_z);
       GFXState_SetWorldMatrix(gfx_state, &stack->matrix);
       WavefrontShader_SetState(rend->shader, gfx_state);
-      WavefrontMesh_Render(&rend->pawn_mesh, rend->shader, 0);
+      WavefrontMesh_Render(&rend->pawn_mesh, render_queue, rend->shader, 0);
       MatrixStack_Pop(stack);
    }
 

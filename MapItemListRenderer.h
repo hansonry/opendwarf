@@ -6,6 +6,7 @@
 #include "GFXState.h"
 #include "WavefrontMesh.h"
 #include "WavefrontShader.h"
+#include "RenderQueue.h"
 
 
 typedef struct MapItemListRenderer_S MapItemListRenderer_T;
@@ -21,8 +22,9 @@ void MapItemListRenderer_Destroy(MapItemListRenderer_T * rend);
 
 
 
-void MapItemListRenderer_Render(MapItemListRenderer_T * rend, MatrixStack_T * stack, 
-                                                              GFXState_T * gfx_state);
+void MapItemListRenderer_Render(MapItemListRenderer_T * rend, RenderQueue_T * render_queue,
+                                                              MatrixStack_T * stack, 
+                                                              GFXState_T    * gfx_state);
 
 
 #endif // __MAPITEMLISTRENDERER_H__
