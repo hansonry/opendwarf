@@ -226,6 +226,9 @@ static void MapChunkRender_LoadResources(MapChunkRender_T * rend)
 
 
    rend->texture = ManagerGLTexture2D_Get(texture_manager, "assets/tiles.png");
+   glBindTexture(GL_TEXTURE_2D, rend->texture->gl_id);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
    rend->shader = (MapShader_T *)ManagerShader_Get(shader_manager, "block");
 }

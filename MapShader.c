@@ -21,8 +21,6 @@ static void MapShader_Renderer(Shader_T * _shader, void     * _shader_data,
       glEnableVertexAttribArray(1);
       glEnableVertexAttribArray(2);
       glActiveTexture(GL_TEXTURE0);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
       glUniform1i(shader->uniform_texture, GL_TEXTURE0);
    }
 
