@@ -91,7 +91,7 @@ void StockPileListRenderer_Render(StockPileListRenderer_T * rend, RenderQueue_T 
                                                             GL_QUADS);
 
 
-      RenderQueue_Add(render_queue, &rend->shader->parent, state);
+      RenderQueue_Add(render_queue, &rend->shader->parent, state, 1);
          
       MatrixStack_Pop(stack);
 

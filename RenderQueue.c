@@ -13,23 +13,32 @@ void RenderQueue_Destory(RenderQueue_T * queue)
 }
 
 static RenderQueueLink_T * RenderQueueLink_CreateLink(Shader_T * shader,
-                                                      void     * shader_state)
+                                                      void     * shader_state,
+                                                      int        is_transparent)
 {
    RenderQueueLink_T * link;
    link = malloc(sizeof(RenderQueueLink_T));
+   link->next         = NULL;
    link->shader       = shader;
    link->shader_state = shader_state;
-   link->priority     = 0;
-   link->next         = NULL;
+   if(is_transparent)
+   {
+      link->priority = 1;
+   }
+   else
+   {
+      link->priority = 0;
+   }
    return link;
 }
 
 void RenderQueue_Add(RenderQueue_T * queue, Shader_T * shader, 
-                                            void     * shader_state)
+                                            void     * shader_state,
+                                            int        is_transparent)
 {
    RenderQueueLink_T * link, * prev, * loop;
    int is_placed;
-   link = RenderQueueLink_CreateLink(shader, shader_state);
+   link = RenderQueueLink_CreateLink(shader, shader_state, is_transparent);
 
    loop = queue->root;
    prev = NULL;

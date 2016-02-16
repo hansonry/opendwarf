@@ -152,7 +152,7 @@ void WavefrontMesh_Render(WavefrontMesh_T * wmesh, RenderQueue_T * render_queue,
       WavefrontShaderState_SetMeshAndTexture(state, mt_list[i]->texture, 
                                                     &mt_list[i]->mesh, 
                                                     GL_TRIANGLES);
-      RenderQueue_Add(render_queue, &shader->parent, state);
+      RenderQueue_Add(render_queue, &shader->parent, state, is_transparent);
    }
 
 }

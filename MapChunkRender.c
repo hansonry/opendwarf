@@ -272,7 +272,7 @@ void MapChunkRender_Render(MapChunkRender_T * rend, RenderQueue_T * render_queue
    MapShaderState_SetMeshAndTexture(state, rend->texture, &rend->mesh, GL_TRIANGLES);
 
 
-   RenderQueue_Add(render_queue, &rend->shader->parent, state);
+   RenderQueue_Add(render_queue, &rend->shader->parent, state, 0);
 
 }
 

@@ -28,7 +28,8 @@ void RenderQueue_Init(RenderQueue_T * queue);
 void RenderQueue_Destory(RenderQueue_T * queue);
 
 void RenderQueue_Add(RenderQueue_T * queue, Shader_T * shader, 
-                                            void     * shader_state);
+                                            void     * shader_state,
+                                            int        is_transparent);
 
 
 void RenderQueue_Flush(RenderQueue_T * queue);

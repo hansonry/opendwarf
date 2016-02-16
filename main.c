@@ -359,10 +359,10 @@ static void game_render(CEngine_T * engine)
 
 
    //UnitCube_Render(&cube);
+   StockPileListRenderer_Render(&stockpile_list_renderer, &render_queue, &m_stack, &gfx_state);
    MapChunkRender_Render(&map_chunk_render,               &render_queue, &m_stack, &gfx_state);
    MapItemListRenderer_Render(&map_item_list_renderer,    &render_queue, &m_stack, &gfx_state);
    PawnListRenderer_Render(&pawn_list_renderer,           &render_queue, &m_stack, &gfx_state);
-   StockPileListRenderer_Render(&stockpile_list_renderer, &render_queue, &m_stack, &gfx_state);
 
 
 
