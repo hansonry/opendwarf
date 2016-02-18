@@ -1,5 +1,6 @@
 #include "PawnList.h"
 #include <stdlib.h>
+#include <string.h>
 
 void PawnList_Init(PawnList_T * list)
 {
