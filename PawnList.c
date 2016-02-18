@@ -1,54 +1,65 @@
 #include "PawnList.h"
-
+#include <stdlib.h>
 
 void PawnList_Init(PawnList_T * list)
 {
-   ObjectList_Init(&list->pawn_list);
-   MemoryRefSet_Init(&list->pawn_mem, sizeof(Pawn_T), (MemoryRefSet_Freeer_T)Pawn_Destroy);
+   ObjectList_Init(&list->pawn_list, 0);
    PositionSet_Init(&list->visibility_set);
 }
 
 void PawnList_Destroy(PawnList_T * list)
 {
    ObjectList_Destory(&list->pawn_list);
-   MemoryRefSet_Destroy(&list->pawn_mem);
    PositionSet_Desstroy(&list->visibility_set);
 }
 
 void PawnList_Update(PawnList_T * list, float seconds)
 {
-   Pawn_T ** pawn_list;
+   PawnRefCount_T * pawn_ref;
    size_t i, count;
 
-   MemoryRefSet_CheckCounts(&list->pawn_mem);
-   PositionSet_Clear(&list->visibility_set);
+   count = ObjectList_Count(&list->pawn_list);
 
-   pawn_list = ObjectList_Get(&list->pawn_list, &count);
-
-   for(i = 0; i < count; i++)
+   for(i = count - 1; i < count; i--)
    {
-      Pawn_Update(pawn_list[i], seconds);
-      Pawn_AddVisibility(pawn_list[i], &list->visibility_set);
+      pawn_ref = ObjectList_Get(&list->pawn_list, i);
+      if(RefCounter_ShouldDelete(&pawn_ref->ref))
+      {
+         ObjectList_RemoveFast(&list->pawn_list, i);
+         Pawn_Destroy(&pawn_ref->pawn);
+         free(pawn_ref);
+      }
+      else
+      {
+         Pawn_Update(&pawn_ref->pawn, seconds);
+         Pawn_AddVisibility(&pawn_ref->pawn, &list->visibility_set);
+      }
    }
 
 }
 
 void PawnList_AddCopy(PawnList_T * list, const Pawn_T * pawn)
 {
-   Pawn_T * l_pawn;
+   PawnRefCount_T * pawn_ref;
 
-   l_pawn = MemoryRefSet_CopyAllocate(&list->pawn_mem, pawn);
-   MemoryRefSet_Keep(&list->pawn_mem, l_pawn);
-   ObjectList_Add(&list->pawn_list, l_pawn);
+   pawn_ref = malloc(sizeof(PawnRefCount_T));
+   RefCounter_Init(&pawn_ref->ref);
+   RefCounter_Keep(&pawn_ref->ref);
+   ObjectList_AddAtEnd(&list->pawn_list, pawn_ref);
+
+   memcpy(&pawn_ref->pawn, pawn, sizeof(Pawn_T));
 }
 
 Pawn_T * PawnList_Add(PawnList_T * list)
 {
-   Pawn_T * pawn;
-   pawn = MemoryRefSet_Allocate(&list->pawn_mem);
-   MemoryRefSet_Keep(&list->pawn_mem, pawn);
-   ObjectList_Add(&list->pawn_list, pawn);
-   return pawn;
+
+   PawnRefCount_T * pawn_ref;
+
+   pawn_ref = malloc(sizeof(PawnRefCount_T));
+   RefCounter_Init(&pawn_ref->ref);
+   RefCounter_Keep(&pawn_ref->ref);
+   ObjectList_AddAtEnd(&list->pawn_list, pawn_ref);
+   return &pawn_ref->pawn;
 }
 
 Position_T * PawnList_GetVisibilityList(PawnList_T * list, size_t * count)

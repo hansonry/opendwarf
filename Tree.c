@@ -7,25 +7,26 @@ typedef unsigned char byte_t;
 void Tree_Init(Tree_T * tree)
 {
    tree->root = NULL;
-   ObjectList_Init(&tree->node_list);
+   ObjectList_Init(&tree->node_list, 0);
 
 }
 
 void Tree_Destroy(Tree_T * tree)
 {
    size_t i, count;
-   TreeNode_T ** node_list;
+   TreeNode_T * node;
    tree->root = NULL;
 
-   node_list = ObjectList_Get(&tree->node_list, &count);
+   count = ObjectList_Count(&tree->node_list);
 
    for(i = 0; i < count; i ++)
    {
-      if(node_list[i]->owns_object == 1 && node_list[i]->callback != NULL)
+      node = ObjectList_Get(&tree->node_list, i);
+      if(node->owns_object == 1 && node->callback != NULL)
       {
-         node_list[i]->callback(node_list[i], e_TNE_Destory, NULL);
+         node->callback(node, e_TNE_Destory, NULL);
       }
-      free(node_list[i]);
+      free(node);
    }
 
    ObjectList_Destory(&tree->node_list);
@@ -41,7 +42,7 @@ TreeNode_T * Tree_NewNodeWithNewObject(Tree_T * tree, TreeNodeCallback_T callbac
    node->callback = callback;
    node->owns_object = 1;
    node->object = ((byte_t*)node) + sizeof(TreeNode_T);
-   ObjectList_Add(&tree->node_list, node);
+   ObjectList_AddAtEnd(&tree->node_list, node);
 
    if(node->callback != NULL)
    {
@@ -59,7 +60,7 @@ TreeNode_T * Tree_NewNode(Tree_T * tree, TreeNodeCallback_T callback, void * obj
    node->callback = callback;
    node->owns_object = 0;
    node->object = object;
-   ObjectList_Add(&tree->node_list, node);
+   ObjectList_AddAtEnd(&tree->node_list, node);
    return node;
 }
 

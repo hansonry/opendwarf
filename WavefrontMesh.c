@@ -20,16 +20,17 @@ struct WMMeshTexture_S
 
 static WMMeshTexture_T * WavefrontMesh_LookupWMMeshTexture(ObjectList_T * obj_list, size_t material_index)
 {
-   WMMeshTexture_T * mesh_texture, ** mt_list;
+   WMMeshTexture_T * mesh_texture, * mt_item;
    size_t i, count;
    
    mesh_texture = NULL;
-   mt_list = ObjectList_Get(obj_list, &count);
+   count = ObjectList_Count(obj_list);
    for(i = 0; i < count; i++)
    {
-      if(mt_list[i]->material_index == material_index)
+      mt_item = ObjectList_Get(obj_list, i);
+      if(mt_item->material_index == material_index)
       {
-         mesh_texture = mt_list[i];
+         mesh_texture = mt_item;
          break;
       }
    }
@@ -49,7 +50,7 @@ static void WavefrontMesh_Convert(WavefrontMesh_T * wmesh, WavefrontLoaderData_T
    const unsigned int mesh_sizes[3] = {3, 3, 2};
    float vertex[8];
    ManagerGLTexture2D_T * text_manager;
-   WMMeshTexture_T * mesh_texture, ** mt_list;
+   WMMeshTexture_T * mesh_texture, * mt_item;
    const WavefrontLoaderFaceVertex_T * vert;
    
    text_manager = Resources_GetTextureManager();
@@ -62,7 +63,7 @@ static void WavefrontMesh_Convert(WavefrontMesh_T * wmesh, WavefrontLoaderData_T
       if(mesh_texture == NULL)
       {
          mesh_texture = malloc(sizeof(WMMeshTexture_T));
-         ObjectList_Add(&wmesh->mesh_texture_list, mesh_texture);
+         ObjectList_AddAtEnd(&wmesh->mesh_texture_list, mesh_texture);
          GLMeshBuilder_Init(&mesh_texture->mesh_builder, mesh_sizes, 3);
          mesh_texture->material_index = material_index;
          filename = FileTools_Append(image_file_prefix, obj_data->string_list[obj_data->material_list[material_index].mapKd_string_index]);
@@ -99,12 +100,13 @@ static void WavefrontMesh_Convert(WavefrontMesh_T * wmesh, WavefrontLoaderData_T
    }
 
    // One Mesh for each material
-   mt_list = ObjectList_Get(&wmesh->mesh_texture_list, &count);
+   count = ObjectList_Count(&wmesh->mesh_texture_list);
    for(i = 0; i < count; i ++)
    {
-      GLMeshBuilder_CreateGLMesh(&mt_list[i]->mesh_builder, &mt_list[i]->mesh);
-      GLMesh_MoveToGFXCard(&mt_list[i]->mesh);
-      GLMeshBuilder_Destroy(&mt_list[i]->mesh_builder);
+      mt_item = ObjectList_Get(&wmesh->mesh_texture_list, i);
+      GLMeshBuilder_CreateGLMesh(&mt_item->mesh_builder, &mt_item->mesh);
+      GLMesh_MoveToGFXCard(&mt_item->mesh);
+      GLMeshBuilder_Destroy(&mt_item->mesh_builder);
    }
 
 
@@ -112,21 +114,22 @@ static void WavefrontMesh_Convert(WavefrontMesh_T * wmesh, WavefrontLoaderData_T
 
 void WavefrontMesh_Init(WavefrontMesh_T * wmesh, WavefrontLoaderData_T * obj_data, const char * image_file_prefix)
 {
-   ObjectList_Init(&wmesh->mesh_texture_list);
+   ObjectList_Init(&wmesh->mesh_texture_list, 0);
    WavefrontMesh_Convert(wmesh, obj_data, image_file_prefix);
 }
 
 void WavefrontMesh_Destroy(WavefrontMesh_T * wmesh)
 {
    size_t i, count;
-   WMMeshTexture_T ** list;
+   WMMeshTexture_T * item;
 
-   list = ObjectList_Get(&wmesh->mesh_texture_list, &count);
-   
+   count = ObjectList_Count(&wmesh->mesh_texture_list);
+
    for(i = 0; i < count; i++)
    {
-      GLMesh_Cleanup(&list[i]->mesh);
-      free(list[i]);
+      item = ObjectList_Get(&wmesh->mesh_texture_list, i);
+      GLMesh_Cleanup(&item->mesh);
+      free(item);
    }
 
    ObjectList_Destory(&wmesh->mesh_texture_list);
@@ -140,17 +143,18 @@ void WavefrontMesh_Render(WavefrontMesh_T * wmesh, RenderQueue_T * render_queue,
                                                    int is_transparent)
 {
    WavefrontShaderState_T * state;
-   WMMeshTexture_T ** mt_list;
+   WMMeshTexture_T * mt_item;
    size_t i, count;
 
-   mt_list = ObjectList_Get(&wmesh->mesh_texture_list, &count);
+   count = ObjectList_Count(&wmesh->mesh_texture_list);
    for(i = 0; i < count; i ++)
    {
+      mt_item = ObjectList_Get(&wmesh->mesh_texture_list, i);
       state = MemoryBlock_Allocate(mem_block);
       memcpy(state, state_template, sizeof(WavefrontShaderState_T));
 
-      WavefrontShaderState_SetMeshAndTexture(state, mt_list[i]->texture, 
-                                                    &mt_list[i]->mesh, 
+      WavefrontShaderState_SetMeshAndTexture(state, mt_item->texture, 
+                                                    &mt_item->mesh, 
                                                     GL_TRIANGLES);
       RenderQueue_Add(render_queue, &shader->parent, state, is_transparent);
    }

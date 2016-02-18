@@ -40,17 +40,17 @@ void PawnListRenderer_Render(PawnListRenderer_T * rend, RenderQueue_T * render_q
 {
    WavefrontShaderState_T state;
    Matrix3D_T temp, offset;
-   Pawn_T ** plist,* pawn;
+   Pawn_T * pawn;
    size_t i, count;
 
    MemoryBlock_FreeAll(&rend->mem_block);
 
-   plist = ObjectList_Get(&rend->list->pawn_list, &count);
+   count = ObjectList_Count(&rend->list->pawn_list);
 
    for(i = 0; i < count; i++)
    {
+      pawn = ObjectList_Get(&rend->list->pawn_list, i);
       MatrixStack_Push(stack);
-      pawn = plist[i];
       
       MatrixStack_ApplyTranslation(stack, pawn->cmd_sys.vispos_x, 
                                           pawn->cmd_sys.vispos_y, 

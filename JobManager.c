@@ -37,7 +37,7 @@ void JobManager_Update(JobManager_T * manager, float seconds)
    Position_T * stockpile_list;
    Position_T pos;
    Job_T job, *job_list;
-   Pawn_T ** pawn_list;
+   Pawn_T * pawn;
    int found;
 
    // Clear Lists
@@ -117,7 +117,7 @@ void JobManager_Update(JobManager_T * manager, float seconds)
 
    // Check for bord pawns to give jobs to
    job_list = ArrayList_Get(&manager->job_list, &job_count, NULL);
-   pawn_list = ObjectList_Get(&manager->pawn_list->pawn_list, &pawn_count);
+   pawn_count = ObjectList_Count(&manager->pawn_list->pawn_list);
 
    if(job_count < pawn_count)
    {
@@ -130,9 +130,10 @@ void JobManager_Update(JobManager_T * manager, float seconds)
 
    for(i = 0; i < min_count; i++)
    {
-      if(!Pawn_HasJob(pawn_list[i]))
+      pawn = ObjectList_Get(&manager->pawn_list->pawn_list, i);
+      if(!Pawn_HasJob(pawn))
       {
-         Pawn_SetJob(pawn_list[i], &job_list[i]);
+         Pawn_SetJob(pawn, &job_list[i]);
       }
    }
 

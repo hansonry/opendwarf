@@ -1,14 +1,21 @@
 #ifndef __ITEMLIST_H__
 #define __ITEMLIST_H__
-#include "MemoryRefSet.h"
 #include "ObjectList.h"
 #include "Item.h"
+#include "RefCounter.h"
 
-typedef struct ItemList_S ItemList_T;
+typedef struct ItemList_S     ItemList_T;
+typedef struct ItemRefCount_S ItemRefCount_T;
+
+struct ItemRefCount_S
+{
+   RefCounter_T ref;
+   Item_T       item;
+};
+
 struct ItemList_S
 {
    ObjectList_T item_list;
-   MemoryRefSet_T item_mem;
 };
 
 void ItemList_Init(ItemList_T * list);

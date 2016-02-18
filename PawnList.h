@@ -2,14 +2,21 @@
 #define __PAWNLIST_H__
 #include "Pawn.h"
 #include "ObjectList.h"
-#include "MemoryRefSet.h"
 #include "PositionSet.h"
+#include "RefCounter.h"
 
-typedef struct PawnList_S PawnList_T;
+typedef struct PawnList_S     PawnList_T;
+typedef struct PawnRefCount_S PawnRefCount_T;
+
+struct PawnRefCount_S
+{
+   Pawn_T       pawn;
+   RefCounter_T ref;   
+};
+
 struct PawnList_S
 {
    ObjectList_T   pawn_list;
-   MemoryRefSet_T pawn_mem;
    PositionSet_T  visibility_set;
 };
 

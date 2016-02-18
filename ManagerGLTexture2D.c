@@ -6,7 +6,7 @@
 
 void ManagerGLTexture2D_Init(ManagerGLTexture2D_T * manager)
 {
-   ObjectList_Init(&manager->list);
+   ObjectList_Init(&manager->list, 0);
    StringMap_Init(&manager->map);
 
 }
@@ -14,14 +14,15 @@ void ManagerGLTexture2D_Init(ManagerGLTexture2D_T * manager)
 void ManagerGLTexture2D_Destory(ManagerGLTexture2D_T * manager)
 {
    size_t i , count;
-   GLTexture2D_T ** list;
+   GLTexture2D_T * text;
 
-   list = ObjectList_Get(&manager->list, &count);
+   count = ObjectList_Count(&manager->list);
 
    for(i = 0; i < count; i++)
    {
-      GLTexture2D_Destroy(list[i]);
-      free(list[i]);
+      text = ObjectList_Get(&manager->list, i);
+      GLTexture2D_Destroy(text);
+      free(text);
    }
 
    
@@ -38,7 +39,7 @@ GLTexture2D_T * ManagerGLTexture2D_Get(ManagerGLTexture2D_T * manager, const cha
    {
       out = malloc(sizeof(GLTexture2D_T));
       GLTexture2D_Load(out, filename);
-      ObjectList_Add(&manager->list, out);
+      ObjectList_AddAtEnd(&manager->list, out);
       StringMap_Put(&manager->map, filename, out);
    }
    return out;

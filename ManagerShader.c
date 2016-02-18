@@ -7,19 +7,20 @@
 
 void ManagerShader_Init(ManagerShader_T * manager)
 {
-   ObjectList_Init(&manager->list);
+   ObjectList_Init(&manager->list, 0);
    StringMap_Init(&manager->map);
 }
 
 void ManagerShader_Destroy(ManagerShader_T * manager)
 {
    size_t i, count;
-   Shader_T ** list;
+   Shader_T * shader;
 
-   list = ObjectList_Get(&manager->list, &count);
+   count = ObjectList_Count(&manager->list);
    for(i = 0; i < count; i++)
    {
-      Shader_Free(list[i]);
+      shader = ObjectList_Get(&manager->list, i);
+      Shader_Free(shader);
    }
 
 
@@ -35,7 +36,7 @@ Shader_T * ManagerShader_Get(ManagerShader_T * manager, const char * shader_id)
    if(ptr == NULL)
    {
       ptr = Shader_Create(shader_id);
-      ObjectList_Add(&manager->list, ptr);
+      ObjectList_AddAtEnd(&manager->list, ptr);
       StringMap_Put(&manager->map, shader_id, ptr);
    }
 

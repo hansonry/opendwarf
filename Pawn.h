@@ -6,11 +6,13 @@
 #include "Job.h"
 #include <stddef.h>
 #include "PositionSet.h"
+#include "RefCounter.h"
 
 typedef struct Pawn_S Pawn_T;
 
 struct Pawn_S
 {
+   RefCounter_T ref_count;
    MapChunk_T * map;
    PawnCmd_T * cmd_list;
    size_t cmd_list_count;
