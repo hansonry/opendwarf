@@ -89,7 +89,7 @@ void MapItemListRenderer_Render(MapItemListRenderer_T * rend, RenderQueue_T * re
       GFXState_SetWorldMatrix(gfx_state, &stack->matrix);
       WavefrontShaderState_SetGFXState(&state, gfx_state);
 
-      WavefrontMesh_Render(&rend->log_mesh, render_queue, rend->shader,&rend->mem_block, &state, 0);
+      WavefrontMesh_Render(&rend->log_mesh, render_queue, rend->shader, &rend->mem_block, &state, 0);
       MatrixStack_Pop(stack);
    }
 }
