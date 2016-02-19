@@ -2,9 +2,11 @@
 #define __MAPITEMLIST_H__
 
 #include "Item.h"
-#include "ArrayList.h"
+#include "ObjectList.h"
+#include "RefCounter.h"
 
 typedef struct MapItem_S         MapItem_T;
+typedef struct MapItemRefCount_S MapItemRefCount_T;
 typedef struct MapItemList_S     MapItemList_T;
 
 
@@ -16,9 +18,15 @@ struct MapItem_S
    int z;
 };
 
+struct MapItemRefCount_S
+{
+   RefCounter_T ref;
+   MapItem_T    item;
+};
+
 struct MapItemList_S
 {
-   ArrayList_T mapitem_list;
+   ObjectList_T mapitem_list;
 };
 
 void MapItemList_Init(MapItemList_T * list);

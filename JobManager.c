@@ -33,6 +33,7 @@ void JobManager_Update(JobManager_T * manager, float seconds)
 {
    size_t i, k;
    size_t map_item_count, stockpile_count, min_count, job_count, pawn_count;
+   MapItemRefCount_T * map_item_rc;
    MapItem_T * map_item_list;
    Position_T * stockpile_list;
    Position_T pos;
@@ -46,18 +47,19 @@ void JobManager_Update(JobManager_T * manager, float seconds)
    ArrayList_Clear(&manager->job_list);
 
    // Find stockpiles and items that are not satified 
-   map_item_list  = ArrayList_Get(&manager->map_item_list->mapitem_list, &map_item_count,  NULL);
+   map_item_count = ObjectList_Count(&manager->map_item_list->mapitem_list);
    stockpile_list = ArrayList_Get(&manager->stockpile_list->list,        &stockpile_count, NULL);
 
 
    for(i = 0; i < map_item_count; i++)
    {
+      map_item_rc = ObjectList_Get(&manager->map_item_list->mapitem_list, i);
       found = 0;
       for(k = 0; k < stockpile_count; k ++)
       {
-         Position_Set(&pos, map_item_list[i].x, 
-                            map_item_list[i].y,
-                            map_item_list[i].z);
+         Position_Set(&pos, map_item_rc->item.x, 
+                            map_item_rc->item.y,
+                            map_item_rc->item.z);
          if(Position_IsEqual(&pos, &stockpile_list[k]))
          {
             found = 1;
@@ -67,7 +69,7 @@ void JobManager_Update(JobManager_T * manager, float seconds)
 
       if(found == 0)
       {
-         ArrayList_CopyAdd(&manager->unhappy_items, &map_item_list[i], NULL);
+         ArrayList_CopyAdd(&manager->unhappy_items, &map_item_rc->item, NULL);
       }
    }
 
@@ -76,9 +78,9 @@ void JobManager_Update(JobManager_T * manager, float seconds)
       found = 0;
       for(i = 0; i < map_item_count; i ++)
       {
-         Position_Set(&pos, map_item_list[i].x, 
-                            map_item_list[i].y,
-                            map_item_list[i].z);
+         Position_Set(&pos, map_item_rc->item.x, 
+                            map_item_rc->item.y,
+                            map_item_rc->item.z);
          if(Position_IsEqual(&pos, &stockpile_list[k]))
          {
             found = 1;
