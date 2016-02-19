@@ -1,14 +1,29 @@
 #ifndef __STOCKPILELIST_H__
 #define __STOCKPILELIST_H__
 
-#include "ArrayList.h"
+#include "ObjectList.h"
 #include "Position.h"
+#include "RefCounter.h"
 
-typedef struct StockPileList_S StockPileList_T;
+typedef struct StockPileList_S     StockPileList_T;
+typedef struct StockPile_S         StockPile_T;
+typedef struct StockPileRefCount_S StockPileRefCount_T;
+
+
+struct StockPile_S
+{
+   Position_T pos;
+};
+
+struct StockPileRefCount_S
+{
+   RefCounter_T ref;
+   StockPile_T  stockpile;
+};
 
 struct StockPileList_S
 {
-   ArrayList_T list;
+   ObjectList_T list;
 };
 
 

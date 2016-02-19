@@ -1,7 +1,8 @@
 #include "StockPileList.h"
 #include "StockPileEvent.h"
 #include "LogicResources.h"
-
+#include <string.h>
+#include <stdlib.h>
 
 void StockPileEvent_CreateStockpile_Init(TypeMap_T * event, const Position_T * pos)
 {
@@ -31,7 +32,7 @@ static void StockPileList_ReciveEvent(void * object, const TypeMap_T * event)
 void StockPileList_Init(StockPileList_T * list)
 {
    ManagerEvent_T * event_man;
-   ArrayList_Init(&list->list, sizeof(Position_T), 0);
+   ObjectList_Init(&list->list, 0);
    event_man = Resources_GetEventManager();
    ManagerEvent_RegisterCallback(event_man, list, StockPileList_ReciveEvent);
 }
@@ -39,7 +40,16 @@ void StockPileList_Init(StockPileList_T * list)
 void StockPileList_Destroy(StockPileList_T * list)
 {
    ManagerEvent_T * event_man;
-   ArrayList_Destory(&list->list);
+   size_t i, count;
+   StockPileRefCount_T * stock_rc;
+   count = ObjectList_Count(&list->list);
+   for(i = 0; i < count; i++)
+   {
+      stock_rc = ObjectList_Get(&list->list, i);
+      free(stock_rc);
+   }
+
+   ObjectList_Destory(&list->list);
 
    event_man = Resources_GetEventManager();
    ManagerEvent_UnregisterCallback(event_man, list); 
@@ -48,20 +58,26 @@ void StockPileList_Destroy(StockPileList_T * list)
 
 void StockPileList_AddPosition(StockPileList_T * list, const Position_T * pos)
 {
-   ArrayList_CopyAdd(&list->list, pos, NULL);
+   StockPileRefCount_T * stock_rc;
+
+   stock_rc = malloc(sizeof(StockPileRefCount_T));
+   Position_Copy(&stock_rc->stockpile.pos, pos);
+   RefCounter_Init(&stock_rc->ref);
+   ObjectList_AddAtEnd(&list->list, stock_rc);
 }
 
 void StockPileList_RemovePosition(StockPileList_T * list, const Position_T * pos)
 {
-   Position_T * pos_list;
+   StockPileRefCount_T * stock_rc;
    size_t i, count;
 
-   pos_list = ArrayList_Get(&list->list, &count, NULL);
+   count = ObjectList_Count(&list->list);
    for(i = 0; i < count; i++)
    {
-      if(Position_IsEqual(&pos_list[i], pos))
+      stock_rc = ObjectList_Get(&list->list, i);
+      if(Position_IsEqual(&stock_rc->stockpile.pos, pos))
       {
-         ArrayList_Remove(&list->list, i);
+         ObjectList_RemoveFast(&list->list, i);
          break;
       }
    }

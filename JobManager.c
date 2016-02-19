@@ -34,6 +34,7 @@ void JobManager_Update(JobManager_T * manager, float seconds)
    size_t i, k;
    size_t map_item_count, stockpile_count, min_count, job_count, pawn_count;
    MapItemRefCount_T * map_item_rc;
+   StockPileRefCount_T * stockpile_rc;
    MapItem_T * map_item_list;
    Position_T * stockpile_list;
    Position_T pos;
@@ -48,7 +49,7 @@ void JobManager_Update(JobManager_T * manager, float seconds)
 
    // Find stockpiles and items that are not satified 
    map_item_count = ObjectList_Count(&manager->map_item_list->mapitem_list);
-   stockpile_list = ArrayList_Get(&manager->stockpile_list->list,        &stockpile_count, NULL);
+   stockpile_count = ObjectList_Count(&manager->stockpile_list->list);
 
 
    for(i = 0; i < map_item_count; i++)
@@ -57,10 +58,11 @@ void JobManager_Update(JobManager_T * manager, float seconds)
       found = 0;
       for(k = 0; k < stockpile_count; k ++)
       {
+         stockpile_rc = ObjectList_Get(&manager->stockpile_list->list, k);
          Position_Set(&pos, map_item_rc->item.x, 
                             map_item_rc->item.y,
                             map_item_rc->item.z);
-         if(Position_IsEqual(&pos, &stockpile_list[k]))
+         if(Position_IsEqual(&pos, &stockpile_rc->stockpile.pos))
          {
             found = 1;
             break;
@@ -75,13 +77,15 @@ void JobManager_Update(JobManager_T * manager, float seconds)
 
    for(k = 0; k < stockpile_count; k++)
    {
+      stockpile_rc = ObjectList_Get(&manager->stockpile_list->list, k);
       found = 0;
       for(i = 0; i < map_item_count; i ++)
       {
+         map_item_rc = ObjectList_Get(&manager->map_item_list->mapitem_list, i);
          Position_Set(&pos, map_item_rc->item.x, 
                             map_item_rc->item.y,
                             map_item_rc->item.z);
-         if(Position_IsEqual(&pos, &stockpile_list[k]))
+         if(Position_IsEqual(&pos, &stockpile_rc->stockpile.pos))
          {
             found = 1;
             break;
@@ -90,7 +94,7 @@ void JobManager_Update(JobManager_T * manager, float seconds)
 
       if(found == 0)
       {
-         ArrayList_CopyAdd(&manager->unhappy_stockpiles, &stockpile_list[k], NULL);
+         ArrayList_CopyAdd(&manager->unhappy_stockpiles, &stockpile_rc->stockpile, NULL);
       }
    }
 
