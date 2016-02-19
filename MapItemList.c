@@ -41,7 +41,10 @@ static void MapItemList_EventCallback(void * object, const TypeMap_T * event)
       map_item.pos.x = TypeMap_GetInt(event, "X");
       map_item.pos.y = TypeMap_GetInt(event, "Y");
       map_item.pos.z = TypeMap_GetInt(event, "Z");
-      MapItemList_Add(list, &map_item);
+      MapItemList_Add(list, map_item.pos.x,
+                            map_item.pos.y,
+                            map_item.pos.z,
+                            map_item.item);
    }
 
 }
@@ -97,15 +100,15 @@ void MapItemList_Update(MapItemList_T * list, float seconds)
    }
 }
 
-void MapItemList_Add(MapItemList_T * list, const MapItem_T * item)
+void MapItemList_Add(MapItemList_T * list, int x, int y, int z, Item_T * item)
 {
    MapItem_T * item_rc;
    ManagerEvent_T * event_man;
    TypeMap_T event;
    
    item_rc = malloc(sizeof(MapItem_T));
+   MapItem_Init(item_rc, x, y, z, item);
 
-   memcpy(item_rc, item, sizeof(MapItem_T));
    RefCounter_Keep(&item_rc->ref);
 
    ObjectList_AddAtEnd(&list->mapitem_list, item_rc);

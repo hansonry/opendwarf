@@ -252,7 +252,10 @@ static int PawnCmdSystem_Drop_Update(PawnCmdSystem_T * sys, PawnCmdData_Drop_T *
       map_item.item  = sys->held_item;
       sys->held_item = NULL;
 
-      MapItemList_Add(sys->map_item_list, &map_item);
+      MapItemList_Add(sys->map_item_list, map_item.pos.x, 
+                                          map_item.pos.y, 
+                                          map_item.pos.z, 
+                                          map_item.item);
 
       result = 0;
    }

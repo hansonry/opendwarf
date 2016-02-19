@@ -23,7 +23,7 @@ void MapItemList_Destory(MapItemList_T * list);
 
 void MapItemList_Update(MapItemList_T * list, float seconds);
 
-void MapItemList_Add(MapItemList_T * list, const MapItem_T * item);
+void MapItemList_Add(MapItemList_T * list, int x, int y, int z, Item_T * item);
 
 void MapItemList_Remove(MapItemList_T * list, Item_T * item);
 
