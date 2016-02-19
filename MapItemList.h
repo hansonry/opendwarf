@@ -1,28 +1,27 @@
 #ifndef __MAPITEMLIST_H__
 #define __MAPITEMLIST_H__
 
-#include "Item.h"
-#include "ArrayList.h"
+#include "ObjectList.h"
+#include "RefCounter.h"
+#include "ListState.h"
+#include "MapItem.h"
+#include "RefCounterQueue.h"
 
-typedef struct MapItem_S         MapItem_T;
 typedef struct MapItemList_S     MapItemList_T;
 
 
-struct MapItem_S
-{
-   Item_T * item;
-   int x;
-   int y;
-   int z;
-};
+
 
 struct MapItemList_S
 {
-   ArrayList_T mapitem_list;
+   ObjectList_T      mapitem_list;
+   RefCounterQueue_T mem_queue;
 };
 
 void MapItemList_Init(MapItemList_T * list);
 void MapItemList_Destory(MapItemList_T * list);
+
+void MapItemList_Update(MapItemList_T * list, float seconds);
 
 void MapItemList_Add(MapItemList_T * list, const MapItem_T * item);
 

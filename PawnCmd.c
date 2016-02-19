@@ -246,9 +246,9 @@ static int PawnCmdSystem_Drop_Update(PawnCmdSystem_T * sys, PawnCmdData_Drop_T *
    else
    {
       sys->flags     = 1;
-      map_item.x     = sys->position.x;
-      map_item.y     = sys->position.y;
-      map_item.z     = sys->position.z;
+      map_item.pos.x = sys->position.x;
+      map_item.pos.y = sys->position.y;
+      map_item.pos.z = sys->position.z;
       map_item.item  = sys->held_item;
       sys->held_item = NULL;
 
