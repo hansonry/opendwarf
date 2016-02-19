@@ -70,7 +70,7 @@ void MapItemListRenderer_Render(MapItemListRenderer_T * rend, RenderQueue_T * re
                                                               GFXState_T    * gfx_state)
 {
    WavefrontShaderState_T state;
-   MapItemRefCount_T * item_rc;
+   MapItem_T * item_rc;
    size_t list_count, i;
    int index;
    Matrix3D_T temp, translater;
@@ -82,9 +82,9 @@ void MapItemListRenderer_Render(MapItemListRenderer_T * rend, RenderQueue_T * re
    {
       item_rc = ObjectList_Get(&rend->list->mapitem_list, i);
       MatrixStack_Push(stack);
-      MatrixStack_ApplyTranslation(stack, item_rc->item.x, 
-                                          item_rc->item.y, 
-                                          item_rc->item.z);
+      MatrixStack_ApplyTranslation(stack, item_rc->pos.x, 
+                                          item_rc->pos.y, 
+                                          item_rc->pos.z);
 
       GFXState_SetWorldMatrix(gfx_state, &stack->matrix);
       WavefrontShaderState_SetGFXState(&state, gfx_state);

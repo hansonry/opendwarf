@@ -255,7 +255,6 @@ static void game_setup(CEngine_T * engine)
    WavefrontMesh_Init(&log_mesh, &log_data, "assets/");
    WavefrontLoader_Delete(&log_data);
 
-
    // open dwarf
    mapchunk_setup();
    Item_Setup();
@@ -317,7 +316,6 @@ static void game_update(CEngine_T * engine, float seconds)
       GLCam_FPS_Mouse(&fps_cam, dx, dy);
 
    }
-
    GLCam_FPS_Update(&fps_cam, seconds);
    PawnList_Update(&pawn_list, seconds);
 

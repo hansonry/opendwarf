@@ -69,7 +69,7 @@ void StockPileListRenderer_Render(StockPileListRenderer_T * rend, RenderQueue_T 
    size_t count, i;
    ColorTextureLightShaderState_T * state;
    Matrix3D_T temp, translater;
-   StockPileRefCount_T * stock_rc;
+   StockPile_T * stock_rc;
 
    MemoryBlock_FreeAll(&rend->mem_block);
 
@@ -78,9 +78,9 @@ void StockPileListRenderer_Render(StockPileListRenderer_T * rend, RenderQueue_T 
    {
       stock_rc = ObjectList_Get(&rend->list->list, i);
       MatrixStack_Push(stack);
-      MatrixStack_ApplyTranslation(stack, stock_rc->stockpile.pos.x, 
-                                          stock_rc->stockpile.pos.y, 
-                                          stock_rc->stockpile.pos.z);
+      MatrixStack_ApplyTranslation(stack, stock_rc->pos.x, 
+                                          stock_rc->pos.y, 
+                                          stock_rc->pos.z);
       GFXState_SetWorldMatrix(gfx_state, &stack->matrix);
 
 

@@ -33,14 +33,14 @@ void JobManager_Update(JobManager_T * manager, float seconds)
 {
    size_t i, k;
    size_t map_item_count, stockpile_count, min_count, job_count, pawn_count;
-   MapItemRefCount_T * map_item_rc;
-   StockPileRefCount_T * stockpile_rc;
+   MapItem_T * map_item_rc;
+   StockPile_T * stockpile_rc;
    MapItem_T * map_item_list;
    Position_T * stockpile_list;
-   Position_T pos;
    Job_T job, *job_list;
    Pawn_T * pawn;
    int found;
+
 
    // Clear Lists
    ArrayList_Clear(&manager->unhappy_items);
@@ -59,10 +59,7 @@ void JobManager_Update(JobManager_T * manager, float seconds)
       for(k = 0; k < stockpile_count; k ++)
       {
          stockpile_rc = ObjectList_Get(&manager->stockpile_list->list, k);
-         Position_Set(&pos, map_item_rc->item.x, 
-                            map_item_rc->item.y,
-                            map_item_rc->item.z);
-         if(Position_IsEqual(&pos, &stockpile_rc->stockpile.pos))
+         if(Position_IsEqual(&map_item_rc->pos, &stockpile_rc->pos))
          {
             found = 1;
             break;
@@ -71,7 +68,7 @@ void JobManager_Update(JobManager_T * manager, float seconds)
 
       if(found == 0)
       {
-         ArrayList_CopyAdd(&manager->unhappy_items, &map_item_rc->item, NULL);
+         ArrayList_CopyAdd(&manager->unhappy_items, map_item_rc, NULL);
       }
    }
 
@@ -82,10 +79,7 @@ void JobManager_Update(JobManager_T * manager, float seconds)
       for(i = 0; i < map_item_count; i ++)
       {
          map_item_rc = ObjectList_Get(&manager->map_item_list->mapitem_list, i);
-         Position_Set(&pos, map_item_rc->item.x, 
-                            map_item_rc->item.y,
-                            map_item_rc->item.z);
-         if(Position_IsEqual(&pos, &stockpile_rc->stockpile.pos))
+         if(Position_IsEqual(&map_item_rc->pos, &stockpile_rc->pos))
          {
             found = 1;
             break;
@@ -94,7 +88,7 @@ void JobManager_Update(JobManager_T * manager, float seconds)
 
       if(found == 0)
       {
-         ArrayList_CopyAdd(&manager->unhappy_stockpiles, &stockpile_rc->stockpile, NULL);
+         ArrayList_CopyAdd(&manager->unhappy_stockpiles, &stockpile_rc->pos, NULL);
       }
    }
 
@@ -114,10 +108,9 @@ void JobManager_Update(JobManager_T * manager, float seconds)
 
    for(i = 0; i < min_count; i++)
    {
-      Position_Set(&pos, map_item_list[i].x, 
-                         map_item_list[i].y,
-                         map_item_list[i].z);
-      Job_MoveItem_Init(&job, map_item_list[i].item, &pos, &stockpile_list[i]);
+      Job_MoveItem_Init(&job, map_item_list[i].item, 
+                              &map_item_list[i].pos, 
+                              &stockpile_list[i]);
       ArrayList_CopyAdd(&manager->job_list, &job, NULL);
    }
 
