@@ -20,8 +20,14 @@ void StringMap_Init(StringMap_T * map)
 
 void StringMap_Destory(StringMap_T * map)
 {
+   size_t i;
    if(map->list != NULL)
    {
+      for(i = 0; i < map->list_count; i++)
+      {
+         free(map->list[i].str);
+      }
+
       free(map->list);
       map->list = NULL;
    }

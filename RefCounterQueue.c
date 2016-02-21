@@ -37,33 +37,36 @@ void * RefCounterQueue_Next(RefCounterQueue_T * queue)
    void     * result;
 
    m_list = ArrayList_Get(&queue->list, &count, NULL);
-
-   // Compute the last index
-   if(queue->last_index == 0)
-   {
-      end_index = count - 1;
-   }
-   else
-   {
-      end_index = queue->last_index - 1;
-   }
-
-   i = queue->last_index;
    result = NULL;
-   while(i != end_index)
+   if(count > 0)
    {
-      if(RefCounter_ShouldDelete(m_list[i].counter))
+
+      // Compute the last index
+      if(queue->last_index == 0)
       {
-         result = m_list[i].memory;
-         ArrayList_Remove(&queue->list, i);
-         i = end_index; // Exit Loop
+         end_index = count - 1;
       }
       else
       {
-         i ++;
-         if(i >= count)
+         end_index = queue->last_index - 1;
+      }
+
+      i = queue->last_index;
+      while(i != end_index)
+      {
+         if(RefCounter_ShouldDelete(m_list[i].counter))
          {
-            i = 0;
+            result = m_list[i].memory;
+            ArrayList_Remove(&queue->list, i);
+            i = end_index; // Exit Loop
+         }
+         else
+         {
+            i ++;
+            if(i >= count)
+            {
+               i = 0;
+            }
          }
       }
    }

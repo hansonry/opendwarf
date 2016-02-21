@@ -71,11 +71,15 @@ void MatrixStack_Push(MatrixStack_T * stack)
 
 void MatrixStack_Pop(MatrixStack_T * stack)
 {
+   MatrixStackLink_T * temp;
+
    if(stack->root != NULL && stack->depth > 0)
    {
       Matrix3D_Copy(&stack->matrix, &stack->root->matrix);
+      temp = stack->root;
       stack->root = stack->root->next;
       stack->depth --;
+      free(temp);
    }
    else
    {

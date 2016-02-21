@@ -305,7 +305,7 @@ static void game_update(CEngine_T * engine, float seconds)
    PawnList_Update(&pawn_list, seconds);
    ItemList_Update(&item_list, seconds);
    MapItemList_Update(&map_item_list, seconds);
-   StockPileList_Update(&stockpile_list, seconds, &map_item_list);
+   //StockPileList_Update(&stockpile_list, seconds, &map_item_list);
 
 
    pos_list = PawnList_GetVisibilityList(&pawn_list, &count);

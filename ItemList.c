@@ -35,6 +35,7 @@ void ItemList_Update(ItemList_T * list, float seconds)
    {
       item = ObjectList_Get(&list->item_list, i);
    }
+
    while((item = RefCounterQueue_Next(&list->mem_queue)) != NULL)
    {
       Item_Destory(item);

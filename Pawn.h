@@ -12,7 +12,7 @@ typedef struct Pawn_S Pawn_T;
 
 struct Pawn_S
 {
-   RefCounter_T ref_count;
+   RefCounter_T ref;
    MapChunk_T * map;
    PawnCmd_T * cmd_list;
    size_t cmd_list_count;

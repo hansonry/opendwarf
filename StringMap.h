@@ -2,7 +2,7 @@
 #define __STRINGMAP_H__
 #include <stddef.h>
 
-typedef struct StringMap_S StringMap_T;
+typedef struct StringMap_S        StringMap_T;
 typedef struct StringMapElement_S StringMapElement_T;
 
 struct StringMap_S

@@ -27,6 +27,7 @@ void Pawn_Init(Pawn_T * pawn, MapChunk_T * map, MapItemList_T * map_item_list)
    pawn->cmd_list = NULL;
    pawn->cmd_list_count = 0;
    pawn->cmd_index = 0;
+   RefCounter_Init(&pawn->ref);
    PawnCmdSystem_Init(&pawn->cmd_sys, map_item_list, 4, 2, 4, 1.0f);
 }
 

@@ -3,21 +3,16 @@
 #include "Pawn.h"
 #include "ObjectList.h"
 #include "PositionSet.h"
-#include "RefCounter.h"
+#include "RefCounterQueue.h"
 
 typedef struct PawnList_S     PawnList_T;
-typedef struct PawnRefCount_S PawnRefCount_T;
 
-struct PawnRefCount_S
-{
-   Pawn_T       pawn;
-   RefCounter_T ref;   
-};
 
 struct PawnList_S
 {
-   ObjectList_T   pawn_list;
-   PositionSet_T  visibility_set;
+   RefCounterQueue_T mem_queue;
+   ObjectList_T      pawn_list;
+   PositionSet_T     visibility_set;
 };
 
 void PawnList_Init(PawnList_T * list);
