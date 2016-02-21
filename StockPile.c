@@ -17,8 +17,6 @@ void StockPile_Destroy(StockPile_T * stockpile)
    if(stockpile->claimed_map_item != NULL)
    {
       RefCounter_Release(&stockpile->claimed_map_item->ref);
-      stockpile->claimed_map_item = NULL;
-      stockpile->claimed_map_item->claimed_stockpile = NULL;
    }
 }
 

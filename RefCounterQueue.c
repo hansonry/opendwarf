@@ -58,10 +58,13 @@ void * RefCounterQueue_Next(RefCounterQueue_T * queue)
          ArrayList_Remove(&queue->list, i);
          i = end_index; // Exit Loop
       }
-      i ++;
-      if(i >= count)
+      else
       {
-         i = 0;
+         i ++;
+         if(i >= count)
+         {
+            i = 0;
+         }
       }
    }
    

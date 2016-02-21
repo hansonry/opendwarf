@@ -15,7 +15,6 @@
 #include "UnitCube.h"
 #include "GLTexture2D.h"
 #include "SDL2/SDL_ttf.h"
-#include "GLFont.h"
 #include "GLCam_FPS.h"
 #include "MapChunk.h"
 #include "MapChunkRender.h"
@@ -79,8 +78,6 @@ RenderQueue_T render_queue;
 WavefrontMesh_T log_mesh;
 UnitCube_T cube;
 
-GLTexture2D_T * test_text, font_text;
-GLFont_T font_hanken;
 GLCam_FPS_T fps_cam;
 int cam_drag;
 Shader_T *shader_wavefront;
@@ -238,10 +235,6 @@ static void game_setup(CEngine_T * engine)
    py = 0;
    a2 = 0;
 
-   // Font Test
-   GLFont_Init(&font_hanken, "Hanken-Book.ttf", 16);
-   GLFont_CreateGLTexture(&font_hanken, &font_text, "Hello", 1, 0, 0, 1);
-
    // FPS Camera
    GLCam_FPS_Init(&fps_cam);
    cam_drag = 0;
@@ -266,10 +259,6 @@ static void game_cleanup(CEngine_T * engine)
 {
    MatrixStack_Destroy(&m_stack);
    UnitCube_Cleanup(&cube);
-
-   // Font Test
-   GLFont_Destory(&font_hanken);
-   GLTexture2D_Destroy(&font_text);
 
    // Mesh test
    WavefrontMesh_Destroy(&log_mesh);
@@ -314,6 +303,9 @@ static void game_update(CEngine_T * engine, float seconds)
    }
    GLCam_FPS_Update(&fps_cam, seconds);
    PawnList_Update(&pawn_list, seconds);
+   ItemList_Update(&item_list, seconds);
+   MapItemList_Update(&map_item_list, seconds);
+   StockPileList_Update(&stockpile_list, seconds, &map_item_list);
 
 
    pos_list = PawnList_GetVisibilityList(&pawn_list, &count);
