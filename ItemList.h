@@ -4,7 +4,7 @@
 #include "Item.h"
 #include "RefCounterQueue.h"
 
-typedef struct ItemList_S     ItemList_T;
+typedef struct ItemList_S ItemList_T;
 
 struct ItemList_S
 {
@@ -18,7 +18,7 @@ void ItemList_Destroy(ItemList_T * list);
 void ItemList_Update(ItemList_T * list, float seconds);
 
 
-Item_T * ItemList_Add(ItemList_T * list);
+Item_T * ItemList_Add(ItemList_T * list, ItemType_T type);
 
 #endif // __ITEMLIST_H__
 

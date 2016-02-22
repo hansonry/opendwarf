@@ -14,6 +14,7 @@ struct StockPile_S
 };
 
 void StockPile_Init(StockPile_T * stockpile, int x, int y, int z);
+void StockPile_Unlink(StockPile_T * stockpile);
 void StockPile_Destroy(StockPile_T * stockpile);
 
 #endif // __STOCKPILE_H__

@@ -17,6 +17,8 @@ struct MapItem_S
 
 
 void MapItem_Init(MapItem_T * map_item, int x, int y, int z, Item_T * item);
+
+void MapItem_Unlink(MapItem_T * map_item);
 void MapItem_Destroy(MapItem_T * map_item);
 
 

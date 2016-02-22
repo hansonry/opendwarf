@@ -44,11 +44,12 @@ void ItemList_Update(ItemList_T * list, float seconds)
 }
 
 
-Item_T * ItemList_Add(ItemList_T * list)
+Item_T * ItemList_Add(ItemList_T * list, ItemType_T type)
 {
    Item_T * item;
 
    item = malloc(sizeof(Item_T));
+   Item_Init(item, type);
    RefCounter_Keep(&item->ref);
    ObjectList_AddAtEnd(&list->item_list, item);
    RefCounterQueue_Add(&list->mem_queue, item, &item->ref);

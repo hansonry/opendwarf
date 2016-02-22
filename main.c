@@ -142,16 +142,14 @@ static void Item_Setup(void)
    MapItemList_Init(&map_item_list);
    MapItemListRenderer_Init(&map_item_list_renderer, &map_item_list);
 
-   item = ItemList_Add(&item_list); 
-   Item_Init(item, e_IT_Log);
+   item = ItemList_Add(&item_list, e_IT_Log); 
   
    TypeMap_Init(&event);   
    Position_Set(&pos, 0, 2, 0);
    MapItemEvent_AddMapItemRequest_Init(&event, item, &pos);
    ManagerEvent_SendEvent(man_event, &event);
 
-   item = ItemList_Add(&item_list);
-   Item_Init(item, e_IT_Log);
+   item = ItemList_Add(&item_list, e_IT_Log);
   
    Position_Set(&pos, 1, 2, 0);
    MapItemEvent_AddMapItemRequest_Init(&event, item, &pos);
@@ -305,7 +303,7 @@ static void game_update(CEngine_T * engine, float seconds)
    PawnList_Update(&pawn_list, seconds);
    ItemList_Update(&item_list, seconds);
    MapItemList_Update(&map_item_list, seconds);
-   //StockPileList_Update(&stockpile_list, seconds, &map_item_list);
+   StockPileList_Update(&stockpile_list, seconds, &map_item_list);
 
 
    pos_list = PawnList_GetVisibilityList(&pawn_list, &count);

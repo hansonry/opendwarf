@@ -19,7 +19,7 @@ void PawnList_Destroy(PawnList_T * list)
    {
       pawn = ObjectList_Get(&list->pawn_list, i);
       Pawn_Destroy(pawn);
-      free(pawn);
+      //free(pawn);
    }
 
    ObjectList_Destory(&list->pawn_list);
@@ -44,7 +44,7 @@ void PawnList_Update(PawnList_T * list, float seconds)
    while((pawn_ref = RefCounterQueue_Next(&list->mem_queue)) != NULL)
    {
       Pawn_Destroy(pawn_ref);
-      free(pawn_ref);
+      //free(pawn_ref);
    }
 
 }

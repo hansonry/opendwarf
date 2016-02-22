@@ -95,6 +95,7 @@ void MapItemList_Update(MapItemList_T * list, float seconds)
 
    while((item_rc = RefCounterQueue_Next(&list->mem_queue)) != NULL)
    {
+      MapItem_Unlink(item_rc);
       MapItem_Destroy(item_rc);
       free(item_rc);
    }

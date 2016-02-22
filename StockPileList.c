@@ -65,35 +65,34 @@ void StockPileList_Update(StockPileList_T * list, float seconds,
    StockPile_T * stockpile_rc;
    MapItem_T * item_rc;
 
+   
    item_count = ObjectList_Count(&map_item_list->mapitem_list);
    k = 0;
    count = ObjectList_Count(&list->list);
    for(i = 0; i < count; i ++)
    {
       stockpile_rc = ObjectList_Get(&list->list, i);
-      if(stockpile_rc->claimed_map_item == NULL)
+      // Find Map Item
+      while((k < item_count) && 
+            (stockpile_rc->claimed_map_item == NULL))
       {
-         // Find Map Item
-         while(k < item_count)
+         item_rc = ObjectList_Get(&map_item_list->mapitem_list, k);
+         if(item_rc->claimed_stockpile == NULL)
          {
-            item_rc = ObjectList_Get(&map_item_list->mapitem_list, k);
-            if(item_rc->claimed_stockpile == NULL)
-            {
-               RefCounter_Keep(&item_rc->ref);
-               RefCounter_Keep(&stockpile_rc->ref);
-               stockpile_rc->claimed_map_item = item_rc;
-               item_rc->claimed_stockpile = stockpile_rc;
-            }
-            k++;
+            RefCounter_Keep(&item_rc->ref);
+            RefCounter_Keep(&stockpile_rc->ref);
+            stockpile_rc->claimed_map_item = item_rc;
+            item_rc->claimed_stockpile     = stockpile_rc;
          }
-
+         k++;
       }
-
    }
+   
 
    // Cleanup Memory
    while((stockpile_rc = RefCounterQueue_Next(&list->mem_queue)) != NULL)
    {
+      StockPile_Unlink(stockpile_rc);
       StockPile_Destroy(stockpile_rc);
       free(item_rc);
    }
