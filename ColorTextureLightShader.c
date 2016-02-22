@@ -23,6 +23,8 @@ static void ColorTextureLightShader_Renderer(Shader_T * _shader, void     * _sta
       glEnableVertexAttribArray(2);
       glActiveTexture(GL_TEXTURE0);
       glUniform1i(shader->uniform_texture, GL_TEXTURE0);
+      glEnable(GL_BLEND);
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
    }
 
 

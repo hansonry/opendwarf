@@ -29,7 +29,7 @@ void main()
    }
    else
    {
-      DiffuseColor = vec4(0, 0, 0, 0);
+      DiffuseColor = vec4(0, 0, 0, 1.0f);
    }
 
    AmbiantColor = vec4(vec3(1,1,1) * 0.2, 0.0);
