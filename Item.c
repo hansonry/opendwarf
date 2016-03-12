@@ -6,7 +6,7 @@
 void Item_Init(Item_T * item, ItemType_T type)
 {
    item->type = type;
-   RefCounter_Init(&item->ref);
+   KeepAlive_Init(&item->k_alive);
 }
 
 void Item_Destory(Item_T * item)

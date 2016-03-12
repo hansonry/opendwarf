@@ -2,18 +2,15 @@
 #define __STOCKPILELIST_H__
 
 #include "ObjectList.h"
-#include "RefCounter.h"
 #include "StockPile.h"
 #include "ListState.h"
 #include "MapItemList.h"
-#include "RefCounterQueue.h"
 
 typedef struct StockPileList_S     StockPileList_T;
 
 struct StockPileList_S
 {
    ObjectList_T list;
-   RefCounterQueue_T mem_queue;
 };
 
 

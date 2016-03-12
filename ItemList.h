@@ -2,14 +2,12 @@
 #define __ITEMLIST_H__
 #include "ObjectList.h"
 #include "Item.h"
-#include "RefCounterQueue.h"
 
 typedef struct ItemList_S ItemList_T;
 
 struct ItemList_S
 {
-   ObjectList_T      item_list;
-   RefCounterQueue_T mem_queue;
+   ObjectList_T item_list;
 };
 
 void ItemList_Init(ItemList_T * list);

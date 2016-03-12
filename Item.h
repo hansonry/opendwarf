@@ -1,6 +1,6 @@
 #ifndef __ITEM_H__
 #define __ITEM_H__
-#include "RefCounter.h"
+#include "KeepAlive.h"
 
 typedef enum   ItemType_E ItemType_T;
 typedef struct Item_S     Item_T;
@@ -14,7 +14,7 @@ enum ItemType_E
 struct Item_S
 {
    ItemType_T   type;
-   RefCounter_T ref;
+   KeepAlive_T  k_alive;
 };
 
 void Item_Init(Item_T * item, ItemType_T type);

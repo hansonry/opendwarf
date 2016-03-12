@@ -4,7 +4,6 @@
 void ItemList_Init(ItemList_T * list)
 {
    ObjectList_Init(&list->item_list, 0);
-   RefCounterQueue_Init(&list->mem_queue);
 }
 
 void ItemList_Destroy(ItemList_T * list)
@@ -21,7 +20,6 @@ void ItemList_Destroy(ItemList_T * list)
    }
 
    ObjectList_Destory(&list->item_list);
-   RefCounterQueue_Destroy(&list->mem_queue);
 }
 
 
@@ -31,16 +29,17 @@ void ItemList_Update(ItemList_T * list, float seconds)
    Item_T * item;
 
    count = ObjectList_Count(&list->item_list);
-   for(i = 0; i < count; i++)
+   for(i = count - 1 ; i < count; i--)
    {
       item = ObjectList_Get(&list->item_list, i);
+      if(KeepAlive_Update(&item->k_alive) == e_KAS_Released)
+      {
+         ObjectList_RemoveFast(&list->item_list, i);
+         Item_Destory(item);
+         free(item);
+      }
    }
 
-   while((item = RefCounterQueue_Next(&list->mem_queue)) != NULL)
-   {
-      Item_Destory(item);
-      free(item);
-   }
 }
 
 
@@ -50,9 +49,7 @@ Item_T * ItemList_Add(ItemList_T * list, ItemType_T type)
 
    item = malloc(sizeof(Item_T));
    Item_Init(item, type);
-   RefCounter_Keep(&item->ref);
    ObjectList_AddAtEnd(&list->item_list, item);
-   RefCounterQueue_Add(&list->mem_queue, item, &item->ref);
    return item;
 }
 

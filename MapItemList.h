@@ -2,20 +2,15 @@
 #define __MAPITEMLIST_H__
 
 #include "ObjectList.h"
-#include "RefCounter.h"
 #include "ListState.h"
 #include "MapItem.h"
-#include "RefCounterQueue.h"
 
 typedef struct MapItemList_S     MapItemList_T;
-
-
 
 
 struct MapItemList_S
 {
    ObjectList_T      mapitem_list;
-   RefCounterQueue_T mem_queue;
 };
 
 void MapItemList_Init(MapItemList_T * list);

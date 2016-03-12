@@ -2,6 +2,7 @@
 #include "MapItemEvent.h"
 #include "LogicResources.h"
 #include "MapItemEvent.h"
+#include "StockPile.h"
 #include <string.h>
 #include <stdlib.h>
 
@@ -56,7 +57,6 @@ void MapItemList_Init(MapItemList_T * list)
 
    ManagerEvent_RegisterCallback(event_man, list, MapItemList_EventCallback);
    ObjectList_Init(&list->mapitem_list, 0);
-   RefCounterQueue_Init(&list->mem_queue);
 }
 
 void MapItemList_Destory(MapItemList_T * list)
@@ -78,7 +78,6 @@ void MapItemList_Destory(MapItemList_T * list)
 
 
    
-   RefCounterQueue_Destroy(&list->mem_queue);
    ObjectList_Destory(&list->mapitem_list);
 }
 
@@ -88,17 +87,28 @@ void MapItemList_Update(MapItemList_T * list, float seconds)
    size_t i, count;
 
    count = ObjectList_Count(&list->mapitem_list);
-   for(i = 0; i < count; i++)
+   for(i = count - 1; i < count; i--)
    {
       item_rc = ObjectList_Get(&list->mapitem_list, i);
+      if(KeepAlive_Update(&item_rc->k_alive) == e_KAS_Released)
+      {
+         ObjectList_RemoveFast(&list->mapitem_list, i);
+         MapItem_Destroy(item_rc);
+         free(item_rc);
+      }
+      else
+      {
+         if(item_rc->claimed_stockpile != NULL)
+         {
+            KeepAlive_KeepAlive(&item_rc->claimed_stockpile->k_alive);
+         }
+         if(item_rc->item != NULL)
+         {
+            KeepAlive_KeepAlive(&item_rc->item->k_alive);
+         }
+      }
    }
 
-   while((item_rc = RefCounterQueue_Next(&list->mem_queue)) != NULL)
-   {
-      MapItem_Unlink(item_rc);
-      MapItem_Destroy(item_rc);
-      free(item_rc);
-   }
 }
 
 void MapItemList_Add(MapItemList_T * list, int x, int y, int z, Item_T * item)
@@ -110,10 +120,8 @@ void MapItemList_Add(MapItemList_T * list, int x, int y, int z, Item_T * item)
    item_rc = malloc(sizeof(MapItem_T));
    MapItem_Init(item_rc, x, y, z, item);
 
-   RefCounter_Keep(&item_rc->ref);
 
    ObjectList_AddAtEnd(&list->mapitem_list, item_rc);
-   RefCounterQueue_Add(&list->mem_queue, item_rc, &item_rc->ref);
 
    event_man = Resources_GetEventManager();
    TypeMap_Init(&event);
@@ -144,8 +152,8 @@ void MapItemList_Remove(MapItemList_T * list, Item_T * item)
    }
    if(found == 1)
    {
-      RefCounter_Release(&item_rc->ref);
       ObjectList_RemoveFast(&list->mapitem_list, index);
+      KeepAlive_RequestRelease(&item_rc->k_alive);
       event_man = Resources_GetEventManager();
       TypeMap_Init(&event);
       MapItemEvent_RemoveMapItemNotify_Init(&event, item_rc);

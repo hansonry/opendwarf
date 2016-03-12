@@ -3,14 +3,12 @@
 #include "Pawn.h"
 #include "ObjectList.h"
 #include "PositionSet.h"
-#include "RefCounterQueue.h"
 
 typedef struct PawnList_S     PawnList_T;
 
 
 struct PawnList_S
 {
-   RefCounterQueue_T mem_queue;
    ObjectList_T      pawn_list;
    PositionSet_T     visibility_set;
 };

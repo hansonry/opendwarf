@@ -33,7 +33,6 @@ void StockPileList_Init(StockPileList_T * list)
 {
    ManagerEvent_T * event_man;
    ObjectList_Init(&list->list, 0);
-   RefCounterQueue_Init(&list->mem_queue);
    event_man = Resources_GetEventManager();
    ManagerEvent_RegisterCallback(event_man, list, StockPileList_ReciveEvent);
 }
@@ -52,7 +51,6 @@ void StockPileList_Destroy(StockPileList_T * list)
    }
 
    ObjectList_Destory(&list->list);
-   RefCounterQueue_Destroy(&list->mem_queue);
 
    event_man = Resources_GetEventManager();
    ManagerEvent_UnregisterCallback(event_man, list); 
@@ -69,33 +67,41 @@ void StockPileList_Update(StockPileList_T * list, float seconds,
    item_count = ObjectList_Count(&map_item_list->mapitem_list);
    k = 0;
    count = ObjectList_Count(&list->list);
-   for(i = 0; i < count; i ++)
+   for(i = count - 1; i < count; i --)
    {
       stockpile_rc = ObjectList_Get(&list->list, i);
-      // Find Map Item
-      while((k < item_count) && 
-            (stockpile_rc->claimed_map_item == NULL))
+
+      if(KeepAlive_Update(&stockpile_rc->k_alive) == e_KAS_Released)
       {
-         item_rc = ObjectList_Get(&map_item_list->mapitem_list, k);
-         if(item_rc->claimed_stockpile == NULL)
+         ObjectList_RemoveFast(&list->list, i);
+         StockPile_Destroy(stockpile_rc);
+         free(stockpile_rc);
+      }
+      else
+      {
+
+         // Find Map Item
+         while((k < item_count) && 
+               (stockpile_rc->claimed_map_item == NULL))
          {
-            RefCounter_Keep(&item_rc->ref);
-            RefCounter_Keep(&stockpile_rc->ref);
-            stockpile_rc->claimed_map_item = item_rc;
-            item_rc->claimed_stockpile     = stockpile_rc;
+            item_rc = ObjectList_Get(&map_item_list->mapitem_list, k);
+            if(item_rc->claimed_stockpile == NULL)
+            {
+               stockpile_rc->claimed_map_item = item_rc;
+               item_rc->claimed_stockpile     = stockpile_rc;
+            }
+            k++;
          }
-         k++;
+
+         if(stockpile_rc->claimed_map_item != NULL)
+         {
+            KeepAlive_KeepAlive(&stockpile_rc->claimed_map_item->k_alive);
+         }
+
       }
    }
    
 
-   // Cleanup Memory
-   while((stockpile_rc = RefCounterQueue_Next(&list->mem_queue)) != NULL)
-   {
-      StockPile_Unlink(stockpile_rc);
-      StockPile_Destroy(stockpile_rc);
-      free(item_rc);
-   }
 }
 
 void StockPileList_AddPosition(StockPileList_T * list, const Position_T * pos)
@@ -104,9 +110,7 @@ void StockPileList_AddPosition(StockPileList_T * list, const Position_T * pos)
 
    stock_rc = malloc(sizeof(StockPile_T));
    StockPile_Init(stock_rc, pos->x, pos->y, pos->z);
-   RefCounter_Keep(&stock_rc->ref);
    ObjectList_AddAtEnd(&list->list, stock_rc);
-   RefCounterQueue_Add(&list->mem_queue, stock_rc, &stock_rc->ref);
 }
 
 void StockPileList_RemovePosition(StockPileList_T * list, const Position_T * pos)
@@ -120,8 +124,8 @@ void StockPileList_RemovePosition(StockPileList_T * list, const Position_T * pos
       stock_rc = ObjectList_Get(&list->list, i);
       if(Position_IsEqual(&stock_rc->pos, pos))
       {
-         RefCounter_Release(&stock_rc->ref);
          ObjectList_RemoveFast(&list->list, i);
+         KeepAlive_RequestRelease(&stock_rc->k_alive);
          break;
       }
    }
